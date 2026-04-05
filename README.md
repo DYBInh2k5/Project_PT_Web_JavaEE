@@ -74,4 +74,7 @@ Ung dung web quan ly va ban sach duoc xay dung theo kien truc MVC (Servlet + JSP
 
 ## Tac gia
 
-- Sinh vien thuc hien: cap nhat theo thong tin nhom/ca nhan truoc khi nop.
+- Sinh vien thuc hien: Võ Duy Bình
+- Nganh: Ky thuat phan mem
+- Truong: Dai hoc Hoa Sen
+- MSSV: 22301500
