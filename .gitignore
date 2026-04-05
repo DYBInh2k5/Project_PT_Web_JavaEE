@@ -1,0 +1,24 @@
+# Build outputs
+/build/
+/dist/
+
+# NetBeans private config
+/nbproject/private/
+
+# Temporary runtime/generated files
+*.log
+*.tmp
+*.out
+shop_cookies.txt
+stitch_tmp.out
+mcp_*.json
+stitch_project_page.html
+
+# Local environment files
+.env
+.env.*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

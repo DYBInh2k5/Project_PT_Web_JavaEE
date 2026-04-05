@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Lookup | Bookora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "primary-fixed-dim": "#e9c349",
+                        "surface-tint": "#735c00",
+                        "surface-container-highest": "#e3e2df",
+                        "surface-container": "#efeeea",
+                        "inverse-surface": "#2f312e",
+                        "surface": "#faf9f5",
+                        "secondary": "#3b6934",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#42493e",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002201",
+                        "tertiary": "#3a3939",
+                        "on-secondary-fixed-variant": "#23501e",
+                        "background": "#faf9f5",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-tertiary-container": "#c5c2c2",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#ffe088",
+                        "outline": "#72796e",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#a1d494",
+                        "secondary-container": "#b9eeab",
+                        "on-primary-fixed-variant": "#574500",
+                        "surface-container-high": "#e9e8e4",
+                        "tertiary-container": "#515050",
+                        "on-primary-fixed": "#241a00",
+                        "tertiary-fixed": "#e5e2e1",
+                        "primary": "#473700",
+                        "surface-variant": "#e3e2df",
+                        "on-surface": "#1b1c1a",
+                        "on-error": "#ffffff",
+                        "primary-container": "#624e00",
+                        "surface-container-low": "#f4f4f0",
+                        "surface-dim": "#dbdad6",
+                        "outline-variant": "#c2c9bb",
+                        "on-background": "#1b1c1a",
+                        "inverse-on-surface": "#f2f1ed",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf9f5",
+                        "inverse-primary": "#e9c349",
+                        "on-primary-container": "#e5bf46",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#3f6d38",
+                        "secondary-fixed": "#bcf0ae",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .font-notoSerif { font-family: 'Noto Serif', serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-manrope min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#faf9f5]/80 dark:bg-[#1b1c1a]/80 backdrop-blur-md">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="text-3xl font-bold tracking-tighter text-[#473700] dark:text-[#f4f4f0] font-notoSerif">Bookora</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-notoSerif text-lg font-medium italic text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Shop</a>
+<a class="font-notoSerif text-lg font-medium italic text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Cart</a>
+<a class="font-notoSerif text-lg font-medium italic text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">My Orders</a>
+<a class="font-notoSerif text-lg font-medium italic text-[#3b6934] border-b-2 border-[#3b6934] pb-1 transition-colors duration-300" href="#">Order Lookup</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#473700] dark:text-[#f4f4f0] hover:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+<div class="w-10 h-10 overflow-hidden rounded-full border border-outline-variant/30">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional man with a friendly expression in a modern, softly lit indoor environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoi8YoSSDdt9-unpCRvySfV6XqrbEIslni2X-7_qwoGQa_7eBeFluMUce97sZtofKpGbHXEIM35iR6AOAvwhSKjXmz1na4cAINJnyo7xpNWLikm4n2tI6OKj1PuHi89YqWCbB0_3LzNTHaSsoVlMyUD4gJhbgpKJq61udCpPlv9pNypRKgLH7vRgnc-M17jHjKrPhust1yhZcQu9-TeWTomXnCXLtM4gaDuGcczDFi0ObJ3jmVgZxpOclTMFK6M4Wqus308l8N0h4"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-32 pb-20 px-6">
+<div class="max-w-xl mx-auto">
+<!-- Header Section -->
+<div class="mb-12 text-center md:text-left">
+<h1 class="text-5xl font-headline font-bold text-primary mb-4 tracking-tight">Trace Your Journey.</h1>
+<p class="text-on-surface-variant text-lg max-w-md leading-relaxed italic">Enter your details below to locate your curated collection and track its voyage to your doorstep.</p>
+</div>
+<!-- Lookup Form Section -->
+<div class="bg-surface-container-low p-8 md:p-12 shadow-sm relative overflow-hidden">
+<!-- Asymmetric Decorative Element -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-secondary/5 rounded-full blur-3xl"></div>
+<form class="space-y-8 relative z-10">
+<div class="space-y-6">
+<div class="relative group">
+<label class="block text-xs font-bold uppercase tracking-widest text-primary mb-2" for="invoice_id">Invoice ID</label>
+<input class="w-full bg-transparent border-0 border-b-2 border-outline-variant focus:ring-0 focus:border-primary py-3 transition-all placeholder:text-outline-variant/60 font-medium text-lg" id="invoice_id" placeholder="BK-77294-X" type="text"/>
+</div>
+<div class="relative group">
+<label class="block text-xs font-bold uppercase tracking-widest text-primary mb-2" for="contact_info">Phone Number or Email</label>
+<input class="w-full bg-transparent border-0 border-b-2 border-outline-variant focus:ring-0 focus:border-primary py-3 transition-all placeholder:text-outline-variant/60 font-medium text-lg" id="contact_info" placeholder="curator@example.com" type="text"/>
+</div>
+</div>
+<!-- Error Message Placeholder -->
+<div class="flex items-center gap-3 text-error bg-error-container/20 p-4 border-l-2 border-error hidden">
+<span class="material-symbols-outlined text-sm" data-icon="error">error</span>
+<span class="text-sm font-medium italic">The details provided do not match our archives. Please verify and try again.</span>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary py-4 px-8 font-bold tracking-tight hover:bg-primary-container transition-all flex justify-between items-center group" type="submit">
+<span>Locate Order</span>
+<span class="material-symbols-outlined transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Result Card (Conditional Mockup) -->
+<div class="mt-12 space-y-6">
+<div class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+                    Recent Archive Found
+                </div>
+<div class="bg-surface-container-highest p-1 bg-gradient-to-br from-surface-container-highest to-surface-container">
+<div class="bg-surface p-8 flex flex-col md:flex-row gap-8 items-start">
+<!-- Book Cover / Image Placeholder -->
+<div class="w-32 h-44 bg-surface-container shadow-xl overflow-hidden flex-shrink-0 relative">
+<img alt="Book Order" class="w-full h-full object-cover" data-alt="A thick hardback book with a minimalist white cover and dark typography sitting on a textured linen surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2IsKiOVc7N96pedk00aThrwOrU4FXlNsIUjnGHOccVkZQkcRj6xlNolj3LQcXe7J17_r-RAIw-m0TmyggcFQUp2Pa1GviAT4KH3zuTXU01GnjDFLsGOiy02jPtnIvhHZbH09E9GNk00AgVkZpn3eMHHGy7m-PvL3oc9t14Xzh7AT4ZvOr_Rnb9m3GtZCAq0jxvPpXrE3X5IcgIEdQ-aWQj5I3ZRpYQfZhyXtOtS0nFmgoH5Imio4UqGFtFz4zF62ag1XR7A5Agfs"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/5"></div>
+</div>
+<div class="flex-grow space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline font-bold text-primary">Order #BK-77294-X</h3>
+<p class="text-on-surface-variant italic">Placed on October 14, 2023</p>
+</div>
+<span class="bg-secondary/10 text-secondary px-3 py-1 text-xs font-bold uppercase tracking-tighter">In Transit</span>
+</div>
+<div class="grid grid-cols-2 gap-6 pt-4 border-t border-outline-variant/20">
+<div>
+<p class="text-[10px] uppercase font-bold text-outline tracking-widest mb-1">Items</p>
+<p class="text-sm font-medium">3 Curated Hardcovers</p>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-outline tracking-widest mb-1">Total</p>
+<p class="text-sm font-medium">$128.50</p>
+</div>
+</div>
+<div class="pt-4">
+<a class="inline-flex items-center gap-2 text-secondary font-bold text-sm group" href="#">
+                                    View Full Details
+                                    <div class="h-[1px] w-8 bg-secondary transition-all group-hover:w-12"></div>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Librarian's Tab (Signature Component) -->
+<div class="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
+<div class="bg-secondary text-on-secondary px-2 py-8 rounded-l-xl shadow-lg cursor-pointer hover:pl-4 transition-all group">
+<span class="material-symbols-outlined mb-4" data-icon="bookmark" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<p class="[writing-mode:vertical-lr] font-bold tracking-widest text-[10px] uppercase">Reading List</p>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-[#f4f4f0] dark:bg-[#121211] w-full py-12 px-8 mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 max-w-screen-2xl mx-auto">
+<div class="text-xl font-bold text-[#473700] dark:text-[#f4f4f0] font-notoSerif">Bookora</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-manrope text-sm tracking-wide text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline transition-opacity" href="#">About Us</a>
+<a class="font-manrope text-sm tracking-wide text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline transition-opacity" href="#">Shipping Policy</a>
+<a class="font-manrope text-sm tracking-wide text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline transition-opacity" href="#">Privacy</a>
+<a class="font-manrope text-sm tracking-wide text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline transition-opacity" href="#">Contact</a>
+</div>
+<div class="font-manrope text-sm tracking-wide text-[#473700]/60 dark:text-[#f4f4f0]/60">
+                © 2024 Bookora. The Digital Curator.
+            </div>
+</div>
+</footer>
+</body></html>

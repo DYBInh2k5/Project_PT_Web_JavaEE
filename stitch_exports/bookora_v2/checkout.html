@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "primary-fixed-dim": "#e9c349",
+                    "surface-tint": "#735c00",
+                    "surface-container-highest": "#e3e2df",
+                    "surface-container": "#efeeea",
+                    "inverse-surface": "#2f312e",
+                    "surface": "#faf9f5",
+                    "secondary": "#3b6934",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#42493e",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#002201",
+                    "tertiary": "#3a3939",
+                    "on-secondary-fixed-variant": "#23501e",
+                    "background": "#faf9f5",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "on-tertiary-container": "#c5c2c2",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffe088",
+                    "outline": "#72796e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#a1d494",
+                    "secondary-container": "#b9eeab",
+                    "on-primary-fixed-variant": "#574500",
+                    "surface-container-high": "#e9e8e4",
+                    "tertiary-container": "#515050",
+                    "on-primary-fixed": "#241a00",
+                    "tertiary-fixed": "#e5e2e1",
+                    "primary": "#473700",
+                    "surface-variant": "#e3e2df",
+                    "on-surface": "#1b1c1a",
+                    "on-error": "#ffffff",
+                    "primary-container": "#624e00",
+                    "surface-container-low": "#f4f4f0",
+                    "surface-dim": "#dbdad6",
+                    "outline-variant": "#c2c9bb",
+                    "on-background": "#1b1c1a",
+                    "inverse-on-surface": "#f2f1ed",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf9f5",
+                    "inverse-primary": "#e9c349",
+                    "on-primary-container": "#e5bf46",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#3f6d38",
+                    "secondary-fixed": "#bcf0ae",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .font-notoSerif { font-family: 'Noto Serif', serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e3e2df; border-radius: 10px; }
+        .glass-header { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-manrope selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#faf9f5]/80 dark:bg-[#1b1c1a]/80 backdrop-blur-md">
+<nav class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto border-none">
+<div class="text-3xl font-bold tracking-tighter text-[#473700] dark:text-[#f4f4f0] font-notoSerif">
+                Bookora
+            </div>
+<div class="hidden md:flex items-center space-x-8 font-notoSerif text-lg font-medium italic">
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Shop</a>
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Cart</a>
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">My Orders</a>
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Order Lookup</a>
+</div>
+<div class="flex items-center space-x-6">
+<button class="relative group">
+<span class="material-symbols-outlined text-2xl text-[#473700] dark:text-[#f4f4f0]">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-on-secondary text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a person with a warm smile, soft natural lighting, editorial photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxmC3chF3JYrAtLzsKvww-O3ZuE4c7Ay9d5HpbdTxVuMWCJpdx4GY6JDdunHVpjb7o_mggt9fP6w2DZVSwpzav0WuRqtWHsMUYGcnl0k3-gEWb0XHoEl_-7eRKTCl0HsMjT8Ch6aDxsbkByE3865X3zazN3RN4iLqdJ2N_6UJkIbTNkwAz5UDBd048AKEj5zuyNkFTjAiZCvbQZEwgtwj0GFqlgPDd51Var4eOpd_693K2mdaOZbho7ufNOu-UyYFJbn4QKEwNAA"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-24 px-8 max-w-screen-2xl mx-auto">
+<!-- Success Alert (Hidden by default, shown if orderCode exists) -->
+<div class="mb-12 p-6 bg-secondary-container text-on-secondary-container rounded-lg border-l-4 border-secondary flex items-center gap-4">
+<span class="material-symbols-outlined">check_circle</span>
+<p class="text-sm font-medium">Order #BK-92837 placed successfully! A confirmation email has been sent.</p>
+</div>
+<h1 class="font-notoSerif text-5xl font-bold mb-16 tracking-tight text-primary">Finalize Your Collection</h1>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Customer Information -->
+<div class="lg:col-span-7 space-y-12">
+<form action="{{contextPath}}/checkout" class="space-y-12" method="POST">
+<section>
+<h2 class="font-notoSerif text-2xl mb-8 flex items-center gap-3">
+<span class="text-secondary font-notoSerif italic">01.</span> Customer Information
+                        </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+<div class="space-y-2 group">
+<label class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Full Name</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary transition-all placeholder:text-outline-variant/50" name="name" placeholder="Elias Thorne" required="" type="text"/>
+</div>
+<div class="space-y-2 group">
+<label class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Phone Number</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary transition-all placeholder:text-outline-variant/50" name="phone" placeholder="+1 (555) 000-0000" required="" type="tel"/>
+</div>
+<div class="md:col-span-2 space-y-2 group">
+<label class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Email Address</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary transition-all placeholder:text-outline-variant/50" name="email" placeholder="elias.thorne@curator.com" required="" type="email"/>
+</div>
+<div class="md:col-span-2 space-y-2 group">
+<label class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Shipping Address</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary transition-all placeholder:text-outline-variant/50" name="address" placeholder="123 Library Lane, Inkwood, NY 10001" required="" type="text"/>
+</div>
+</div>
+</section>
+<section class="pt-8">
+<h2 class="font-notoSerif text-2xl mb-8 flex items-center gap-3">
+<span class="text-secondary font-notoSerif italic">02.</span> Curated Offers
+                        </h2>
+<div class="bg-surface-container-low p-8 rounded-lg space-y-6">
+<div class="flex gap-4">
+<input class="flex-grow bg-surface-container-highest border-0 py-4 px-6 rounded-md focus:ring-1 focus:ring-primary placeholder:text-outline-variant/60" placeholder="Enter coupon code" type="text"/>
+<button class="bg-primary text-on-primary px-8 py-4 rounded-md font-bold text-sm tracking-wide hover:bg-primary-container hover:text-on-primary-container transition-all" type="button">APPLY</button>
+</div>
+<div class="space-y-3">
+<p class="text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-4">Active Promotions</p>
+<div class="flex flex-wrap gap-3">
+<button class="group flex items-center gap-3 bg-surface-container-highest px-4 py-2 rounded-full border border-outline-variant/20 hover:border-secondary transition-all" type="button">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">sell</span>
+<span class="text-sm font-semibold tracking-tight">TANG1</span>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">15% OFF</span>
+</button>
+<button class="group flex items-center gap-3 bg-surface-container-highest px-4 py-2 rounded-full border border-outline-variant/20 hover:border-secondary transition-all" type="button">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">sell</span>
+<span class="text-sm font-semibold tracking-tight">COUPON</span>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">$10 OFF</span>
+</button>
+<button class="group flex items-center gap-3 bg-surface-container-highest px-4 py-2 rounded-full border border-outline-variant/20 hover:border-secondary transition-all" type="button">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">sell</span>
+<span class="text-sm font-semibold tracking-tight">%FIRST</span>
+<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">20% OFF</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<div class="pt-8">
+<button class="w-full bg-primary-container text-on-primary-container py-6 rounded-md font-bold text-lg tracking-widest hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-primary/10 flex justify-center items-center gap-4" type="submit">
+                            PLACE YOUR ORDER
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center mt-6 text-xs text-on-surface-variant italic">Secure SSL encrypted checkout. Your literary journey is safe with us.</p>
+</div>
+</form>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="lg:col-span-5">
+<div class="sticky top-32 bg-surface-container-low rounded-lg p-10 overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 -mr-16 -mt-16 rounded-full blur-3xl"></div>
+<h2 class="font-notoSerif text-2xl mb-10 relative">Order Summary</h2>
+<div class="space-y-8 mb-10 relative">
+<!-- Item 1 -->
+<div class="flex gap-6 items-start">
+<div class="w-20 h-28 bg-surface-container-highest rounded-sm shadow-sm flex-shrink-0 overflow-hidden transform -rotate-2 hover:rotate-0 transition-transform duration-500 border border-outline-variant/10">
+<img alt="The Great Gatsby Cover" class="w-full h-full object-cover" data-alt="classic vintage book cover with gold foil deco patterns on dark navy background, cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjcYHkhA9WIqp0ZkNTTmZ2sLdemX6hk9AU2Wk8CAmtU1iob8oXGBjARS5zzELXtUOz7nZktvlDkLxAA505dXZW64UFhU3MWaVLzg-VUTkXeZW5vYHhT3AE_oZpH8Z8v3LkcqCPLBI__Ae9sxlQcIKTJt2iY76NdRYe1Sdip2EwRW-Y9iGbSQwhSPcKgUJxhg65OXzwNLx2X88O4HFABCcIzb78_PvaxbTQ9JxU0cLpyi0CRxZP0oOssdTyK8b-ipHtv08CAtKzE4g"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-primary mb-1">The Great Gatsby</h3>
+<p class="text-xs text-on-surface-variant mb-2">Hardcover • Collector's Ed.</p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Qty: 1</span>
+<span class="font-bold text-sm">$45.00</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-6 items-start">
+<div class="w-20 h-28 bg-surface-container-highest rounded-sm shadow-sm flex-shrink-0 overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-500 border border-outline-variant/10">
+<img alt="Aesthetic Book Spine" class="w-full h-full object-cover" data-alt="minimalist aesthetic book cover with elegant serif typography and neutral earth tones, soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdrPAg6P9iUMZXEjoZShem58t3UkeDWr0FqGLb0SAGfKDYGXF7X7gmwkNAO2T3Jj_Sek8sLLp70s62BC7cEanlj-EbGUZ3TZmOiUjBzBwoV11dipaFsrFL3kP2lQyt34tmEJLlxnbo-lGJ4HcnAGLTXjnUubFLWuWRoloYLqSg6T2psFbEbaQisHrdVZrXONfG8d11_6uaPOVgflMDwmEp3XCM63XpmtPSctG2PE8W5Gk6Tgn-lEBGMq48N0y7L4ZA53ddoIVTa1E"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-primary mb-1">Meditations</h3>
+<p class="text-xs text-on-surface-variant mb-2">Linen Bound • Marcus Aurelius</p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Qty: 1</span>
+<span class="font-bold text-sm">$32.00</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4 pt-8 border-t border-outline-variant/30 relative">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Subtotal</span>
+<span class="font-medium">$77.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Shipping (Express)</span>
+<span class="font-medium">$12.00</span>
+</div>
+<div class="flex justify-between text-sm text-secondary">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">confirmation_number</span>
+                                Promo: TANG1
+                            </span>
+<span class="font-medium">-$11.55</span>
+</div>
+<div class="flex justify-between text-lg font-bold pt-4 text-primary">
+<span class="font-notoSerif">Final Total</span>
+<span class="font-notoSerif">$77.45</span>
+</div>
+</div>
+<!-- Subtle Brand Accent -->
+<div class="mt-12 text-center">
+<p class="text-[10px] uppercase tracking-[0.3em] text-outline-variant font-bold">Curated by Bookora</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 bg-[#f4f4f0] dark:bg-[#121211] border-t border-surface-container-highest">
+<div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 font-manrope text-sm tracking-wide">
+<div class="text-xl font-bold text-[#473700] dark:text-[#f4f4f0] font-notoSerif">
+                Bookora.
+            </div>
+<div class="flex gap-8 text-[#473700]/60 dark:text-[#f4f4f0]/60">
+<a class="hover:text-[#3b6934] transition-opacity opacity-80 hover:opacity-100 hover:underline" href="#">About Us</a>
+<a class="hover:text-[#3b6934] transition-opacity opacity-80 hover:opacity-100 hover:underline" href="#">Shipping Policy</a>
+<a class="hover:text-[#3b6934] transition-opacity opacity-80 hover:opacity-100 hover:underline" href="#">Privacy</a>
+<a class="hover:text-[#3b6934] transition-opacity opacity-80 hover:opacity-100 hover:underline" href="#">Contact</a>
+</div>
+<div class="text-[#473700]/60 dark:text-[#f4f4f0]/60">
+                © 2024 Bookora. The Digital Curator.
+            </div>
+</div>
+</footer>
+<!-- Librarian's Tab (Signature Component) -->
+<div class="fixed right-0 top-1/2 -translate-y-1/2 z-40">
+<div class="bg-secondary text-on-secondary px-3 py-8 rounded-l-xl shadow-2xl flex flex-col items-center gap-4 cursor-pointer hover:pl-5 transition-all group">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<span class="[writing-mode:vertical-lr] font-notoSerif italic text-xs tracking-widest font-medium">READING LIST</span>
+</div>
+</div>
+</body></html>

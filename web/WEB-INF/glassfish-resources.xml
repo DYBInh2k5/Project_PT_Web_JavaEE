@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <jdbc-connection-pool
+        name="QLBanSachPool"
+        datasource-classname="com.microsoft.sqlserver.jdbc.SQLServerDataSource"
+        res-type="javax.sql.DataSource">
+        <property name="serverName" value="localhost"/>
+        <property name="portNumber" value="1433"/>
+        <property name="databaseName" value="QLBanSach"/>
+        <property name="user" value="sa"/>
+        <property name="password" value="1"/>
+        <property name="URL" value="jdbc:sqlserver://localhost:1433;databaseName=QLBanSach;encrypt=true;trustServerCertificate=true"/>
+    </jdbc-connection-pool>
+
+    <jdbc-resource
+        jndi-name="jdbc/QLBanSachDS"
+        pool-name="QLBanSachPool"/>
+</resources>

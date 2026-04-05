@@ -1,0 +1,127 @@
+:root {
+  --surface: #faf9f5;
+  --surface-container: #efeeea;
+  --surface-container-high: #e9e8e4;
+  --surface-container-low: #f4f4f0;
+  --primary: #473700;
+  --primary-soft: #624e00;
+  --secondary: #3b6934;
+  --on-surface: #1b1c1a;
+  --on-surface-variant: #42493e;
+  --outline-variant: #c2c9bb;
+}
+
+.shop-surface {
+  font-family: 'Manrope', sans-serif;
+  color: var(--on-surface);
+  background-color: var(--surface);
+  letter-spacing: 0.01em;
+}
+
+.shop-bg-home {
+  background:
+    radial-gradient(circle at 8% 18%, rgba(233, 195, 73, 0.18) 0%, rgba(250, 249, 245, 0) 42%),
+    radial-gradient(circle at 90% 82%, rgba(161, 212, 148, 0.16) 0%, rgba(250, 249, 245, 0) 40%),
+    var(--surface);
+}
+
+.shop-bg-detail {
+  background:
+    radial-gradient(circle at 80% 16%, rgba(233, 195, 73, 0.16) 0%, rgba(250, 249, 245, 0) 38%),
+    var(--surface);
+}
+
+.shop-bg-cart {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(194, 201, 187, 0.2) 0%, rgba(250, 249, 245, 0) 32%),
+    var(--surface);
+}
+
+.shop-bg-checkout {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(161, 212, 148, 0.14) 0%, rgba(250, 249, 245, 0) 36%),
+    var(--surface);
+}
+
+.shop-bg-orders {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(161, 212, 148, 0.2) 0%, rgba(250, 249, 245, 0) 38%),
+    var(--surface);
+}
+
+.shop-bg-lookup {
+  background:
+    radial-gradient(circle at 84% 20%, rgba(233, 195, 73, 0.12) 0%, rgba(250, 249, 245, 0) 35%),
+    var(--surface);
+}
+
+.shop-bg-order {
+  background:
+    radial-gradient(circle at 88% 14%, rgba(233, 195, 73, 0.16) 0%, rgba(250, 249, 245, 0) 36%),
+    var(--surface);
+}
+
+.brand {
+  font-family: 'Noto Serif', serif;
+  color: var(--primary);
+}
+
+.shop-page {
+  min-height: 100vh;
+}
+
+.shop-page > main {
+  padding-top: 7.25rem;
+}
+
+.glass-card {
+  background: rgba(250, 249, 245, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(194, 201, 187, 0.3);
+}
+
+.shop-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(250, 249, 245, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(194, 201, 187, 0.28);
+}
+
+.shop-nav-link {
+  font-family: 'Noto Serif', serif;
+  font-style: italic;
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: rgba(71, 55, 0, 0.72);
+  transition: color 0.25s ease;
+}
+
+.shop-nav-link:hover {
+  color: var(--secondary);
+}
+
+.shop-nav-link.active {
+  color: var(--secondary);
+  border-bottom: 2px solid var(--secondary);
+  padding-bottom: 0.2rem;
+}
+
+.shop-chip {
+  border: 1px solid rgba(194, 201, 187, 0.45);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 0.6rem;
+}
+
+@media (max-width: 768px) {
+  .shop-surface {
+    background-attachment: fixed;
+  }
+
+  .shop-page > main {
+    padding-top: 6.25rem;
+  }
+}

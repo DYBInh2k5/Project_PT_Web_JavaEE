@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System Interruptions | The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#271902",
+                        "secondary": "#006c49",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#111c2d",
+                        "tertiary": "#1e1200",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-container": "#a38c6a",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#d8e3fb",
+                        "tertiary-fixed-dim": "#ddc39d",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-primary": "#bcc7de",
+                        "on-primary-container": "#8590a6",
+                        "on-secondary-fixed": "#002113",
+                        "tertiary-fixed": "#fadfb8",
+                        "secondary-container": "#6cf8bb",
+                        "background": "#f7f9fb",
+                        "primary": "#091426",
+                        "surface-dim": "#d8dadc",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed-variant": "#005236",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#00714d",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777d",
+                        "surface-bright": "#f7f9fb",
+                        "surface-tint": "#545f73",
+                        "tertiary-container": "#35260c",
+                        "on-background": "#191c1e",
+                        "on-surface-variant": "#45474c",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1e293b",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#bcc7de",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#564427"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0px 12px 32px rgba(25, 28, 30, 0.06);
+        }
+        .glass-effect {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen selection:bg-secondary-container selection:text-on-secondary-container">
+<header class="w-full h-16 sticky top-0 z-40 bg-[#f7f9fb] dark:bg-slate-900 flex justify-between items-center px-8 w-full">
+<div class="text-xl font-bold text-[#091426] dark:text-white tracking-tight font-headline">The Digital Curator</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-8 py-12">
+<header class="mb-16">
+<h1 class="font-headline font-extrabold text-4xl text-primary tracking-tight mb-2 uppercase text-[10px] tracking-[0.2em] text-on-surface-variant">System Status</h1>
+<h2 class="font-headline font-bold text-3xl text-primary">Technical Interruptions</h2>
+<div class="h-1 w-12 bg-secondary mt-4"></div>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+<section class="flex flex-col gap-6">
+<div class="bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden h-[500px] justify-between">
+<div class="absolute top-0 right-0 p-4">
+<span class="text-xs font-label font-semibold text-outline-variant tracking-widest">403</span>
+</div>
+<div class="mt-8">
+<div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mb-8 mx-auto">
+<span class="material-symbols-outlined text-5xl text-primary" data-icon="lock_person">lock_person</span>
+</div>
+<h3 class="font-headline font-bold text-2xl text-primary mb-4">Access Forbidden</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                            The Curator's archives are protected. You do not have the clearance level required to view this specific collection or administrative panel.
+                        </p>
+</div>
+<div class="w-full flex flex-col gap-3">
+<a class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-headline font-bold text-sm tracking-wide transition-all active:opacity-80 flex items-center justify-center gap-2" href="/">
+<span class="material-symbols-outlined text-lg" data-icon="home">home</span>
+                            Return to Dashboard
+                        </a>
+<button class="w-full py-4 bg-surface-container-high text-on-surface rounded-xl font-headline font-bold text-sm tracking-wide transition-all hover:bg-surface-dim">
+                            Request Access
+                        </button>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-6 md:mt-12">
+<div class="bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden h-[500px] justify-between border-t-4 border-secondary">
+<div class="absolute top-0 right-0 p-4">
+<span class="text-xs font-label font-semibold text-outline-variant tracking-widest">404</span>
+</div>
+<div class="mt-8">
+<div class="w-24 h-24 bg-secondary-container/20 rounded-full flex items-center justify-center mb-8 mx-auto">
+<span class="material-symbols-outlined text-5xl text-secondary" data-icon="menu_book">menu_book</span>
+</div>
+<h3 class="font-headline font-bold text-2xl text-primary mb-4">Lost in the Stacks</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                            The volume you are looking for has been misfiled or removed from our digital library. We couldn't find the page at this location.
+                        </p>
+</div>
+<div class="w-full flex flex-col gap-3">
+<a class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-headline font-bold text-sm tracking-wide transition-all active:opacity-80 flex items-center justify-center gap-2" href="/">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+                            Search Inventory
+                        </a>
+<a class="w-full py-4 bg-surface-container-high text-on-surface rounded-xl font-headline font-bold text-sm tracking-wide transition-all hover:bg-surface-dim flex items-center justify-center gap-2" href="/">
+                            Back to Home
+                        </a>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-6">
+<div class="bg-surface-container-lowest editorial-shadow rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden h-[500px] justify-between">
+<div class="absolute top-0 right-0 p-4">
+<span class="text-xs font-label font-semibold text-outline-variant tracking-widest">500</span>
+</div>
+<div class="mt-8">
+<div class="w-24 h-24 bg-error-container/20 rounded-full flex items-center justify-center mb-8 mx-auto">
+<span class="material-symbols-outlined text-5xl text-error" data-icon="cloud_off">cloud_off</span>
+</div>
+<h3 class="font-headline font-bold text-2xl text-primary mb-4">Internal Disruption</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                            Our cataloguing system has encountered an unexpected structural error. Our technicians have been notified to restore the archive.
+                        </p>
+</div>
+<div class="w-full flex flex-col gap-3">
+<button class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-headline font-bold text-sm tracking-wide transition-all active:opacity-80 flex items-center justify-center gap-2" onclick="window.location.reload()">
+<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
+                            Try Refreshing
+                        </button>
+<a class="w-full py-4 bg-surface-container-high text-on-surface rounded-xl font-headline font-bold text-sm tracking-wide transition-all hover:bg-surface-dim flex items-center justify-center gap-2" href="/">
+                            Back to Home
+                        </a>
+</div>
+</div>
+</section>
+</div>
+<section class="mt-20">
+<div class="bg-surface-container-low rounded-xl p-12 relative overflow-hidden">
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div>
+<span class="inline-block py-1 px-3 bg-secondary-container text-on-secondary-container font-label text-[10px] font-bold uppercase tracking-widest rounded mb-6">Support Status: Active</span>
+<h2 class="font-headline font-extrabold text-3xl text-primary mb-6 leading-tight">Need immediate assistance with the management portal?</h2>
+<p class="text-on-surface-variant text-lg mb-8 leading-relaxed max-w-md">
+                            If these errors persist, our head curators are available for direct technical support to ensure your inventory remains accessible.
+                        </p>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-primary text-white font-headline font-bold text-sm rounded-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="support_agent">support_agent</span>
+                                Contact Librarian
+                            </button>
+<button class="px-6 py-3 border border-outline-variant bg-transparent text-primary font-headline font-bold text-sm rounded-xl">
+                                System Logs
+                            </button>
+</div>
+</div>
+<div class="hidden lg:block relative h-64 rounded-xl overflow-hidden shadow-2xl">
+<img alt="Library aisle with sunlight" class="w-full h-full object-cover" data-alt="dramatic perspective of library bookshelf aisles with warm sunlight streaming through high windows creating long shadows on wooden floor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtCEuvn2oBFjbH8v2DrCNP7J5C0z4eZNV3TEh5i00hczN-lzzWzKe-N2B17XLFK7iKQ2XLm41r4miR1ADhdoM2phSdLuRKJa9mEr07JcdPTO5XEO43gUgcqpvYvaDNmxoBtetMrhGrfPZMbazVkaYMwXhREZIAx9YO1jjbXC0wrXKX-vcRz3QU5Z4xXbxhB8jYaGzo6QqDJ-Y4WP1YP2UDMBToPLJweCBBkTC52UhYaRAgXKkYJAColkZfvV39oK0Kcyh_Ce0KHQs"/>
+<div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="mt-24 border-t border-outline-variant/10 py-12 px-8">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-white" data-icon="menu_book">menu_book</span>
+</div>
+<span class="font-headline font-extrabold text-lg tracking-tight">The Digital Curator</span>
+</div>
+<nav class="flex gap-8 text-sm font-label font-medium text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">API Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">Security</a>
+</nav>
+<p class="text-xs font-label text-outline">© 2024 Bookstore Management Systems. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

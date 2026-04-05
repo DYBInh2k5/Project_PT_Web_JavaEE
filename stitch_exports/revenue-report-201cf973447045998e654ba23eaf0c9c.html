@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#271902",
+                    "secondary": "#006c49",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#111c2d",
+                    "tertiary": "#1e1200",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-container": "#a38c6a",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#d8e3fb",
+                    "tertiary-fixed-dim": "#ddc39d",
+                    "secondary-fixed-dim": "#4edea3",
+                    "surface-container-high": "#e6e8ea",
+                    "inverse-primary": "#bcc7de",
+                    "on-primary-container": "#8590a6",
+                    "on-secondary-fixed": "#002113",
+                    "tertiary-fixed": "#fadfb8",
+                    "secondary-container": "#6cf8bb",
+                    "background": "#f7f9fb",
+                    "primary": "#091426",
+                    "surface-dim": "#d8dadc",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline-variant": "#c5c6cd",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface": "#f7f9fb",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#00714d",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#3c475a",
+                    "on-primary": "#ffffff",
+                    "outline": "#75777d",
+                    "surface-bright": "#f7f9fb",
+                    "surface-tint": "#545f73",
+                    "tertiary-container": "#35260c",
+                    "on-background": "#191c1e",
+                    "on-surface-variant": "#45474c",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-error": "#ffffff",
+                    "primary-container": "#1e293b",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#bcc7de",
+                    "surface-variant": "#e0e3e5",
+                    "inverse-surface": "#2d3133",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed-variant": "#564427"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="h-screen w-72 fixed left-0 top-0 bg-[#f2f4f6] dark:bg-slate-950 flex flex-col py-8 z-50">
+<div class="px-8 mb-10">
+<h1 class="font-headline font-extrabold text-2xl tracking-tight text-primary">The Digital Curator</h1>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Management Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-600 dark:text-slate-400 px-8 py-3 flex items-center gap-3 hover:text-[#006c49] dark:hover:text-emerald-400 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 px-8 py-3 flex items-center gap-3 hover:text-[#006c49] dark:hover:text-emerald-400 transition-all" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-medium">Inventory</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 px-8 py-3 flex items-center gap-3 hover:text-[#006c49] dark:hover:text-emerald-400 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium">Customers</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 px-8 py-3 flex items-center gap-3 hover:text-[#006c49] dark:hover:text-emerald-400 transition-all" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-medium">Invoices</span>
+</a>
+<a class="bg-white dark:bg-slate-800 text-[#091426] dark:text-white font-bold rounded-l-none rounded-r-full shadow-sm px-8 py-3 flex items-center gap-3 scale-105 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium">Reports</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 px-8 py-3 flex items-center gap-3 hover:text-[#006c49] dark:hover:text-emerald-400 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-8">
+<div class="flex items-center gap-3 p-4 bg-surface-container rounded-xl mb-6">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-headline font-bold">JD</div>
+<div>
+<p class="text-sm font-bold text-primary">Library Admin</p>
+<p class="text-xs text-on-surface-variant">Profile Settings</p>
+</div>
+</div>
+<button class="w-full flex items-center gap-3 text-error px-4 py-3 hover:bg-error-container/20 rounded-lg transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium">Logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen">
+<!-- TopNavBar -->
+<header class="w-full h-16 sticky top-0 z-40 bg-[#f7f9fb] dark:bg-slate-900 flex justify-between items-center px-8">
+<div class="flex items-center gap-4">
+<h2 class="font-headline font-semibold text-lg text-primary">Revenue Report</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">account_circle</span>
+</div>
+</header>
+<!-- Editorial Content Section -->
+<div class="p-8 space-y-8">
+<!-- Filters Header (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+<div class="md:col-span-8 bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.06)] border border-outline-variant/15">
+<div class="flex flex-col md:flex-row gap-6">
+<div class="flex-1 space-y-2">
+<label class="font-label text-xs font-semibold text-on-surface-variant tracking-wider uppercase">Date From</label>
+<input class="w-full bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/40 text-sm py-2.5" type="date"/>
+</div>
+<div class="flex-1 space-y-2">
+<label class="font-label text-xs font-semibold text-on-surface-variant tracking-wider uppercase">Date To</label>
+<input class="w-full bg-surface-container-low border-none rounded-md focus:ring-2 focus:ring-primary/40 text-sm py-2.5" type="date"/>
+</div>
+</div>
+</div>
+<div class="md:col-span-4">
+<button class="w-full h-full py-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">analytics</span>
+                        Generate Detailed Report
+                    </button>
+</div>
+</section>
+<!-- Key Metrics Summary -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Total Revenue</p>
+<h3 class="font-headline text-3xl font-extrabold text-primary">$42,890.50</h3>
+<div class="mt-4 flex items-center gap-1 text-secondary text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12.5% vs last month</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Books Sold</p>
+<h3 class="font-headline text-3xl font-extrabold text-primary">1,204</h3>
+<div class="mt-4 flex items-center gap-1 text-secondary text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+8.2% vs last month</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Average Order</p>
+<h3 class="font-headline text-3xl font-extrabold text-primary">$35.62</h3>
+<div class="mt-4 flex items-center gap-1 text-tertiary text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_flat</span>
+<span>Stable</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">New Customers</p>
+<h3 class="font-headline text-3xl font-extrabold text-primary">86</h3>
+<div class="mt-4 flex items-center gap-1 text-error text-sm font-bold">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>-2.1% vs last month</span>
+</div>
+</div>
+</div>
+<!-- Main Report Visuals -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Daily Summary Table -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant/15 overflow-hidden">
+<div class="p-6 flex justify-between items-center border-b border-surface-container-low">
+<h4 class="font-headline font-bold text-lg">Daily Revenue Summary</h4>
+<button class="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-1">
+                            Download CSV <span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 font-label text-xs font-bold text-on-surface-variant uppercase tracking-widest">Date</th>
+<th class="px-6 py-4 font-label text-xs font-bold text-on-surface-variant uppercase tracking-widest text-right">Transactions</th>
+<th class="px-6 py-4 font-label text-xs font-bold text-on-surface-variant uppercase tracking-widest text-right">Revenue</th>
+<th class="px-6 py-4 font-label text-xs font-bold text-on-surface-variant uppercase tracking-widest text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5 font-medium text-sm">Oct 12, 2023</td>
+<td class="px-6 py-5 text-sm text-right">42</td>
+<td class="px-6 py-5 font-bold text-sm text-right">$1,450.00</td>
+<td class="px-6 py-5 text-center">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Finalized</span>
+</td>
+</tr>
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5 font-medium text-sm">Oct 11, 2023</td>
+<td class="px-6 py-5 text-sm text-right">38</td>
+<td class="px-6 py-5 font-bold text-sm text-right">$1,210.50</td>
+<td class="px-6 py-5 text-center">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Finalized</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5 font-medium text-sm">Oct 10, 2023</td>
+<td class="px-6 py-5 text-sm text-right">51</td>
+<td class="px-6 py-5 font-bold text-sm text-right">$2,100.00</td>
+<td class="px-6 py-5 text-center">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Finalized</span>
+</td>
+</tr>
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5 font-medium text-sm">Oct 09, 2023</td>
+<td class="px-6 py-5 text-sm text-right">29</td>
+<td class="px-6 py-5 font-bold text-sm text-right">$980.20</td>
+<td class="px-6 py-5 text-center">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Finalized</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5 font-medium text-sm">Oct 08, 2023</td>
+<td class="px-6 py-5 text-sm text-right">45</td>
+<td class="px-6 py-5 font-bold text-sm text-right">$1,890.00</td>
+<td class="px-6 py-5 text-center">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Finalized</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Top 10 Selling Books (Asymmetric List) -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-primary text-white p-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-headline font-bold text-lg mb-4">Top Selling Books</h4>
+<div class="space-y-4">
+<div class="flex items-start gap-4">
+<div class="w-12 h-16 bg-white/20 rounded shadow-md flex-shrink-0 flex items-center justify-center font-headline text-xl italic text-white/40">1</div>
+<div class="flex-1">
+<p class="font-bold text-sm leading-tight">The Midnight Library</p>
+<p class="text-xs text-white/60">Matt Haig • 152 sales</p>
+<p class="text-xs font-bold text-secondary-fixed-dim mt-1">$4,256.00 Rev</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-12 h-16 bg-white/20 rounded shadow-md flex-shrink-0 flex items-center justify-center font-headline text-xl italic text-white/40">2</div>
+<div class="flex-1">
+<p class="font-bold text-sm leading-tight">Lessons in Chemistry</p>
+<p class="text-xs text-white/60">Bonnie Garmus • 128 sales</p>
+<p class="text-xs font-bold text-secondary-fixed-dim mt-1">$3,584.00 Rev</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-12 h-16 bg-white/20 rounded shadow-md flex-shrink-0 flex items-center justify-center font-headline text-xl italic text-white/40">3</div>
+<div class="flex-1">
+<p class="font-bold text-sm leading-tight">Tomorrow, and Tomorrow...</p>
+<p class="text-xs text-white/60">Gabrielle Zevin • 110 sales</p>
+<p class="text-xs font-bold text-secondary-fixed-dim mt-1">$3,080.00 Rev</p>
+</div>
+</div>
+</div>
+<button class="mt-6 w-full py-2 bg-white/10 hover:bg-white/20 rounded text-xs font-bold uppercase tracking-widest transition-colors">View All Top 10</button>
+</div>
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-secondary rounded-full opacity-20 blur-3xl"></div>
+</div>
+<!-- Clean Simple Chart Area (Decorative Illustration) -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15 flex flex-col items-center justify-center min-h-[200px]">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4">Revenue Distribution</p>
+<div class="flex items-end gap-3 h-24">
+<div class="w-6 bg-primary h-[40%] rounded-t-sm"></div>
+<div class="w-6 bg-primary h-[60%] rounded-t-sm"></div>
+<div class="w-6 bg-primary h-[35%] rounded-t-sm"></div>
+<div class="w-6 bg-secondary h-[90%] rounded-t-sm"></div>
+<div class="w-6 bg-primary h-[50%] rounded-t-sm"></div>
+<div class="w-6 bg-primary h-[75%] rounded-t-sm"></div>
+</div>
+<div class="mt-4 w-full h-[1px] bg-surface-container"></div>
+<div class="flex justify-between w-full mt-2 text-[10px] text-on-surface-variant font-bold">
+<span>MON</span>
+<span>WED</span>
+<span>FRI</span>
+<span>SUN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Illustration (Hidden by Default but styled as requested) -->
+<!-- To show this, hide the table/metrics sections and reveal this container -->
+<section class="hidden flex flex-col items-center justify-center py-20 px-8 text-center bg-surface-container-low rounded-3xl border-2 border-dashed border-outline-variant/30">
+<div class="w-32 h-32 mb-6 bg-surface-container-high rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-on-surface-variant">search_off</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary mb-2">No data found for this period</h3>
+<p class="text-on-surface-variant max-w-sm mx-auto">We couldn't find any revenue records matching your selected date range. Try adjusting the filters or selecting a wider timeframe.</p>
+<button class="mt-8 px-6 py-3 bg-surface-container-lowest border border-outline-variant text-primary font-bold rounded-lg hover:bg-white transition-colors">Reset Filters</button>
+</section>
+</div>
+</main>
+<!-- Curator's Drawer (Slide out panel mock) -->
+<div class="fixed top-0 right-0 w-96 h-screen glass-panel border-l border-outline-variant/15 shadow-2xl z-50 translate-x-full transition-transform duration-300">
+<div class="p-8">
+<div class="flex justify-between items-center mb-10">
+<h4 class="font-headline font-bold text-xl">Quick Insights</h4>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-error">close</button>
+</div>
+<div class="space-y-8">
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4">Export Formats</p>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center gap-2 p-4 bg-surface-container rounded-xl hover:bg-surface-container-high">
+<span class="material-symbols-outlined">description</span>
+<span class="text-xs font-bold">PDF Report</span>
+</button>
+<button class="flex flex-col items-center gap-2 p-4 bg-surface-container rounded-xl hover:bg-surface-container-high">
+<span class="material-symbols-outlined">table_chart</span>
+<span class="text-xs font-bold">Excel Data</span>
+</button>
+</div>
+</div>
+<div class="p-6 bg-tertiary-fixed rounded-xl">
+<p class="text-on-tertiary-fixed font-bold text-sm mb-2">Academic Note</p>
+<p class="text-on-tertiary-fixed-variant text-xs leading-relaxed">The current revenue peak aligns with the Fall semester start. Historical data suggests a 15% increase in textbook sales next week.</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

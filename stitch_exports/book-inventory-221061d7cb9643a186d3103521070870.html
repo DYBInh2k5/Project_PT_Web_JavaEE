@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Digital Curator - Inventory Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#271902",
+                        "secondary": "#006c49",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#111c2d",
+                        "tertiary": "#1e1200",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-container": "#a38c6a",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#d8e3fb",
+                        "tertiary-fixed-dim": "#ddc39d",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-primary": "#bcc7de",
+                        "on-primary-container": "#8590a6",
+                        "on-secondary-fixed": "#002113",
+                        "tertiary-fixed": "#fadfb8",
+                        "secondary-container": "#6cf8bb",
+                        "background": "#f7f9fb",
+                        "primary": "#091426",
+                        "surface-dim": "#d8dadc",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed-variant": "#005236",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#00714d",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777d",
+                        "surface-bright": "#f7f9fb",
+                        "surface-tint": "#545f73",
+                        "tertiary-container": "#35260c",
+                        "on-background": "#191c1e",
+                        "on-surface-variant": "#45474c",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1e293b",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#bcc7de",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#564427"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-72 fixed left-0 top-0 bg-[#f2f4f6] flex flex-col py-8 z-50">
+<div class="px-8 mb-10">
+<h2 class="font-headline font-bold text-xl tracking-tight text-primary">Library Admin</h2>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Management Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-600 px-6 py-3 flex items-center gap-3 hover:text-[#006c49] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="bg-white text-[#091426] font-bold rounded-l-none rounded-r-full shadow-sm px-6 py-3 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-medium text-sm">Inventory</span>
+</a>
+<a class="text-slate-600 px-6 py-3 flex items-center gap-3 hover:text-[#006c49] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-medium text-sm">Customers</span>
+</a>
+<a class="text-slate-600 px-6 py-3 flex items-center gap-3 hover:text-[#006c49] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-medium text-sm">Invoices</span>
+</a>
+<a class="text-slate-600 px-6 py-3 flex items-center gap-3 hover:text-[#006c49] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-medium text-sm">Reports</span>
+</a>
+<a class="text-slate-600 px-6 py-3 flex items-center gap-3 hover:text-[#006c49] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-6">
+<button class="w-full flex items-center gap-3 px-6 py-3 text-slate-600 hover:text-error transition-all">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-medium text-sm">Logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-72 min-h-screen">
+<!-- TopAppBar Shell -->
+<header class="w-full h-16 sticky top-0 z-40 bg-[#f7f9fb] flex justify-between items-center px-8">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-bold text-[#091426] tracking-tight">The Digital Curator</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant opacity-50">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container-high border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Quick search catalog..." type="text"/>
+</div>
+<button class="p-2 hover:bg-slate-100 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border-2 border-background"></span>
+</button>
+<div class="flex items-center gap-3 border-l pl-6 border-outline-variant/30">
+<div class="text-right">
+<p class="text-xs font-bold text-primary leading-none">A. Sterling</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Chief Curator</p>
+</div>
+<img alt="Profile" class="w-8 h-8 rounded-full object-cover" data-alt="professional portrait of a middle-aged man with glasses in a library setting, soft natural lighting, blurred books in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC280QFPO0TdbyorFqqXiDSKsZpv5AdBZlaEbDOnpcv3Dp7O4YIwbV2rrhkIQXBpa2xpet7aVTx5UfGRrsc1UjAkYeUhFdTuar27M3IRPLbtwyU415J2bfOLDVLIi7BouXrwwdRYc0eDmJd5mAAtzYjrsOVOvjbV4DeMLlqyP6nOnpo9uCeA9XmxWprnpBiNygGha6P80J2svUDTlfZ_eDxPRW7Xrm4PxDDuS1skwCxBtUB_zwK8iyElpLngleQViJhv-TUKMspEOU"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<section class="p-10 max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline font-extrabold text-4xl text-primary tracking-tight mb-2">Inventory</h2>
+<p class="text-on-surface-variant font-medium">Curating 12,482 titles across 14 academic departments.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-headline font-semibold">Add New Book</span>
+</button>
+</div>
+<!-- Filters Bar -->
+<div class="bg-surface-container-low p-2 rounded-2xl flex items-center gap-4 mb-8">
+<div class="flex-1 flex gap-2">
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest border-none px-6 py-2.5 rounded-xl text-sm font-medium pr-10 focus:ring-2 focus:ring-primary/10">
+<option>All Categories</option>
+<option>Classical Literature</option>
+<option>Art History</option>
+<option>Philosophy</option>
+<option>Scientific Journals</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest border-none px-6 py-2.5 rounded-xl text-sm font-medium pr-10 focus:ring-2 focus:ring-primary/10">
+<option>Price Range</option>
+<option>$0 - $50</option>
+<option>$50 - $200</option>
+<option>$200+</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pr-2">
+<button class="p-2.5 text-on-surface-variant hover:bg-white rounded-xl transition-all">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2.5 text-on-surface-variant hover:bg-white rounded-xl transition-all">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/30">
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">ID</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Cover</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Book Title</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Author</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Category</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Price</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Stock</th>
+<th class="px-8 py-5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 text-sm font-semibold text-primary/40">#BK-9021</td>
+<td class="px-8 py-6">
+<div class="w-12 h-16 rounded-md overflow-hidden bg-surface-container shadow-sm">
+<img alt="Book Cover" class="w-full h-full object-cover" data-alt="minimalist book cover with elegant serif typography and deep blue background texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-f-EZHNWRBJuBqa8kxCqO56Lmbw8di0vPL9NQVlC4Etng6kvCaa6TZ88H1zyI4G_M_jRiFvQos1X7A6zLZ29Zy3ncAt_Zo6F-Z441ql7vCkxyMnbqC_AKPYBju8thLRgIGPyPFh9oN4MITUsP8LaHBDyUd9x7CcNi9CvUWvMsu4fF7BAsvYv-bQjdT64HTROs3doFsNxsYTdx7FiB007WW9maY6H8rsFPxm3WjNOFsg6zcSKR3JLlhztJX2N1pvGYrK1hYttzMgQ"/>
+</div>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-bold text-primary font-headline">The Ethics of Aesthetics</p>
+<p class="text-xs text-on-surface-variant">ISBN: 978-3-16-148410-0</p>
+</td>
+<td class="px-8 py-6 text-sm font-medium">Dr. Elena Vos</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-bold uppercase tracking-tighter text-on-surface">Philosophy</span>
+</td>
+<td class="px-8 py-6 font-headline font-bold text-primary">$84.50</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-sm font-bold">42</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 text-sm font-semibold text-primary/40">#BK-4412</td>
+<td class="px-8 py-6">
+<div class="w-12 h-16 rounded-md overflow-hidden bg-surface-container shadow-sm">
+<img alt="Book Cover" class="w-full h-full object-cover" data-alt="vintage leather book spine with gold foil lettering in dramatic studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaxcBbMik49UJXistWvE_tGO6iDBX-4KEaZv97yT2hMV9qWZBMnqR4hJNmWhlV7SuiBfYQXjpjg4VsJq6FCjR3IeTPTmdZTL8y3X9UQuvmvzrQIJlcmS6GpcWs352q5HMb16EXt4lvYczfj2HTIFaE2jr8-jU20ctyGcI74ma7nzhB3XZ7sqzBJHWBe72eUbGX3Dg2hmpYAHfXX63FUz8C9fq0DhzsaG4edYxq4BoS2qY_2DNgel8EOMedIQWRPso49dFm394gk8s"/>
+</div>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-bold text-primary font-headline">Renaissance Reimagined</p>
+<p class="text-xs text-on-surface-variant">ISBN: 978-0-12-345678-9</p>
+</td>
+<td class="px-8 py-6 text-sm font-medium">Marcus Aurelius Jr.</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-bold uppercase tracking-tighter text-on-surface">Art History</span>
+</td>
+<td class="px-8 py-6 font-headline font-bold text-primary">$120.00</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-sm font-bold">8</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-6 text-sm font-semibold text-primary/40">#BK-1056</td>
+<td class="px-8 py-6">
+<div class="w-12 h-16 rounded-md overflow-hidden bg-surface-container shadow-sm">
+<img alt="Book Cover" class="w-full h-full object-cover" data-alt="stack of antique books with weathered pages and textures, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB26qVXVF3txiMTNYOqUK-9AbjQRQGe-4TKinXDIf71VlyW2v0TU0FwHN5u5tr8QYkSak6Z3R5oQx-0jJq8_qodMVTvgqrSjpfCWh-x3SnOExCXLBbBfALP8lBfOeErtjuR5KfIrJGilA-QkrdXY814xZTJL9Q9Jbp_f0PgVIXTCPbSM6UPX7JE27uD4QsT89CsXb2VC4K-3sRppsM6hZMCL6hJIeNrwAcsLE0uZS-KVYb_F__K3OHJXRrj2XcfkQw_LIxMNNKaM6A"/>
+</div>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-bold text-primary font-headline">Modern Algorithms</p>
+<p class="text-xs text-on-surface-variant">ISBN: 978-5-67-890123-4</p>
+</td>
+<td class="px-8 py-6 text-sm font-medium">Prof. Alan Turing</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-bold uppercase tracking-tighter text-on-surface">Science</span>
+</td>
+<td class="px-8 py-6 font-headline font-bold text-primary">$45.99</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-sm font-bold">156</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-8 py-6 flex justify-between items-center bg-surface-container-low/20">
+<p class="text-xs text-on-surface-variant font-medium">Showing <span class="text-primary font-bold">1 - 25</span> of 12,482 titles</p>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold text-xs">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container font-bold text-xs text-on-surface-variant">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container font-bold text-xs text-on-surface-variant">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Curator's Drawer (Overlay Side Panel) -->
+<div class="fixed inset-0 z-[60] bg-primary/20 backdrop-blur-sm flex justify-end">
+<div class="w-[500px] h-full glass-panel shadow-2xl flex flex-col">
+<!-- Panel Header -->
+<div class="p-8 border-b border-outline-variant/10 flex justify-between items-center">
+<div>
+<h3 class="font-headline font-extrabold text-2xl text-primary">Curate Title</h3>
+<p class="text-sm text-on-surface-variant font-medium">Recording a new addition to the archive.</p>
+</div>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Panel Content/Form -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Image Upload Section -->
+<div class="flex flex-col items-center">
+<div class="w-40 h-56 bg-surface-container rounded-2xl border-2 border-dashed border-outline flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer mb-4">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="add_a_photo">add_a_photo</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Upload Cover</p>
+</div>
+<p class="text-[10px] text-on-surface-variant font-medium">JPEG or PNG, Max 2MB</p>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Book Title</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40" type="text" value="The Theory of Forms"/>
+<p class="text-[10px] text-error font-bold flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-xs" data-icon="error">error</span>
+                            Book Title is required
+                        </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Author</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40" placeholder="e.g. Plato" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Category</label>
+<select class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40 appearance-none">
+<option>Select Department</option>
+<option>Philosophy</option>
+<option>Mathematics</option>
+<option>Literature</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Unit Price</label>
+<div class="relative">
+<span class="absolute left-4 top-3 text-sm text-on-surface-variant">$</span>
+<input class="w-full bg-surface-container-high border-none rounded-xl pl-8 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/40" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Stock Quantity</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40" placeholder="0" type="number"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">Archival Summary</label>
+<textarea class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/40" placeholder="Brief metadata description..." rows="4"></textarea>
+</div>
+</div>
+</div>
+<!-- Panel Footer -->
+<div class="p-8 border-t border-outline-variant/10 bg-white/50">
+<div class="flex gap-4">
+<button class="flex-1 py-4 bg-surface-container-high text-on-surface font-bold rounded-xl hover:bg-surface-container-highest transition-all">Discard</button>
+<button class="flex-[2] py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition-all">Commit to Archive</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

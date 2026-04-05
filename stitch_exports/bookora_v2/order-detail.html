@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Details - Bookora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "primary-fixed-dim": "#e9c349",
+                    "surface-tint": "#735c00",
+                    "surface-container-highest": "#e3e2df",
+                    "surface-container": "#efeeea",
+                    "inverse-surface": "#2f312e",
+                    "surface": "#faf9f5",
+                    "secondary": "#3b6934",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#42493e",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#002201",
+                    "tertiary": "#3a3939",
+                    "on-secondary-fixed-variant": "#23501e",
+                    "background": "#faf9f5",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "on-tertiary-container": "#c5c2c2",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffe088",
+                    "outline": "#72796e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#a1d494",
+                    "secondary-container": "#b9eeab",
+                    "on-primary-fixed-variant": "#574500",
+                    "surface-container-high": "#e9e8e4",
+                    "tertiary-container": "#515050",
+                    "on-primary-fixed": "#241a00",
+                    "tertiary-fixed": "#e5e2e1",
+                    "primary": "#473700",
+                    "surface-variant": "#e3e2df",
+                    "on-surface": "#1b1c1a",
+                    "on-error": "#ffffff",
+                    "primary-container": "#624e00",
+                    "surface-container-low": "#f4f4f0",
+                    "surface-dim": "#dbdad6",
+                    "outline-variant": "#c2c9bb",
+                    "on-background": "#1b1c1a",
+                    "inverse-on-surface": "#f2f1ed",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf9f5",
+                    "inverse-primary": "#e9c349",
+                    "on-primary-container": "#e5bf46",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#3f6d38",
+                    "secondary-fixed": "#bcf0ae",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .font-notoSerif { font-family: 'Noto Serif', serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf9f5]/80 dark:bg-[#1b1c1a]/80 backdrop-blur-md">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<a class="text-3xl font-bold tracking-tighter text-[#473700] dark:text-[#f4f4f0] font-notoSerif" href="#">Bookora</a>
+<div class="hidden md:flex items-center gap-8 font-notoSerif text-lg font-medium italic">
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Shop</a>
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Cart</a>
+<a class="text-[#3b6934] border-b-2 border-[#3b6934] pb-1" href="#">My Orders</a>
+<a class="text-[#473700]/70 dark:text-[#f4f4f0]/70 hover:text-[#3b6934] transition-colors duration-300" href="#">Order Lookup</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 transition-transform active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#473700]">shopping_bag</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="professional headshot of a person with a friendly expression in a brightly lit studio environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClKdXh_dmXEVtv1dtKNU2zhFR6CdaCr5FSm1C74XQCL9_afUZWcEt7WP7HboJjwt-s1d__uQLASF2Sft8uLad_YZlVBJBFUZv333efuFe6EIucSDUPe7eMIfdKPo2q-09u8--qWPv3lnINb2F27l2OczQM8tgdRlLGZpGs0E8a5f33AUJK1PNjn67fA9XGImXXXFch1VDHb0h3eCkZM39MEbx_yrgN56Z_QUIzJ2wAMxYgyXyJhN_D_gO0pzqWisl6lLC5SRACBrY"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-8 max-w-screen-xl mx-auto">
+<!-- Header: Order Summary Card (Editorial Style) -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
+<div class="md:col-span-8 bg-surface-container-low p-10 flex flex-col justify-between">
+<div>
+<span class="text-xs font-bold uppercase tracking-widest text-secondary mb-4 block">Order Confirmation</span>
+<h1 class="text-5xl font-headline font-bold text-primary mb-2">ORD-8829-XL</h1>
+<p class="text-lg text-on-surface-variant italic font-headline mb-8">Thank you for your patronage, Julian.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Invoice ID</p>
+<p class="text-sm font-semibold">BK-2024-0042</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Order Date</p>
+<p class="text-sm font-semibold">Oct 24, 2024</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Customer</p>
+<p class="text-sm font-semibold">Julian Vane</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Order Total</p>
+<p class="text-sm font-bold text-primary">$142.50</p>
+</div>
+</div>
+</div>
+<!-- Asymmetric Accent Image -->
+<div class="md:col-span-4 h-64 md:h-full relative overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-700" data-alt="atmospheric photo of a stack of vintage hardcover books on a dark wooden table in a dimly lit library" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJGnfJMaRvKzjMD__pbuRbmiSEVNkQIk0QMsPGxZ8kEhon8S1NAnlTvJJgITwczhdM0oP3_jE-26AqsSX2JN72LQr2JCr3frVayIc4mnGXKYDKdJ-nKjhl-YdTrfa0yoKwz3dk7DIMssgw1I7xEqSR86ysfxwW2T_XBxJiGnrS2hRYVeJPEKuviQOMNDJhO-sT3yyIrWjaXXHbonQZwSdcz8kAuVhIVRPPICly2YY-CvrfRtedwh8dd7QJewjGJ9JWhFMQbGpiAFM"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+</div>
+</section>
+<!-- Verification Panel (Guest Logic) -->
+<section class="mb-16">
+<div class="bg-secondary-container text-on-secondary-container p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-3xl">mark_email_unread</span>
+<div>
+<p class="font-bold text-lg">Verification required for downloads.</p>
+<p class="text-sm opacity-90">Please verify your email address to unlock the digital invoice and order history.</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 font-bold text-sm hover:bg-primary-container hover:text-on-primary-container transition-all">
+                    Verify Email
+                </button>
+</div>
+</section>
+<!-- Itemized Table (The Curator's List) -->
+<section class="mb-16">
+<h2 class="text-2xl font-headline font-bold text-primary mb-8 border-b border-outline-variant/20 pb-4">Curated Selection</h2>
+<div class="space-y-12">
+<!-- Book Item 1 -->
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="w-32 h-44 flex-shrink-0 bg-surface-container-highest overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="minimalist book cover design with bold serif typography on a textured paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNyWbv9S45vMXfn87NJsuTE0Y7Q3E_DdPrl-7uiT-Tc6mIN-rLAR85jo8Qtnlye4WUjwZlq9W1m9H9PSJlMgSFcQhRLBZrBzzSVIojRtPQuTuvI5la0ll-4ivhMAyeaSOyOXZYKGHv9PzJn6WlS8uT-EkPFfo1aC8Qons_XjUpdq7fryoDF_w4KCBTHg1vNRXc5WosBjbaiHdkyJz6amV1tWYsUI4YeNH6TPb_fmb_Rx9N8-Q3c2bcki4cwR7GYIpUO92Qq4sO12w"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-headline font-bold">The Midnight Library</h3>
+<p class="font-bold text-primary">$24.00</p>
+</div>
+<p class="text-sm text-on-surface-variant mb-4 italic">Matt Haig • Hardcover • 1st Edition</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[11px] uppercase tracking-widest font-bold text-on-surface/40">
+<div>ISBN: 978-0525559474</div>
+<div>Qty: 1</div>
+<div>Tax: $1.92</div>
+</div>
+</div>
+</div>
+<!-- Book Item 2 -->
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="w-32 h-44 flex-shrink-0 bg-surface-container-highest overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="classic literature book spine and cover with gold foil accents on dark green leather" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANd1uMyRJVx5ockfQey4YQe35q0C1NzE_vQjnQqK4huvpRx1SxYO6bzaPOJSiB8yrWN1giMK7-_wTQFkCFh_dpLEUk831gOPZlJvz7tghjVzAqHXc-74BybbqtJ13p6WFAxLa5wwRZ65tY7paEdp0seNZ-PKObcqNQE2qMNa0viC_P0YF41q9L4OGAhv5AT_djMSXVxqKDCSQriTltS9jg1OpafOdvU8hU8L6dOBv495vWu8QihP9melL8YM8la-5tQsOMwp1UFN4"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-headline font-bold">The Shadow of the Wind</h3>
+<p class="font-bold text-primary">$32.50</p>
+</div>
+<p class="text-sm text-on-surface-variant mb-4 italic">Carlos Ruiz Zafón • Special Edition • Leather Bound</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[11px] uppercase tracking-widest font-bold text-on-surface/40">
+<div>ISBN: 978-0143034902</div>
+<div>Qty: 2</div>
+<div>Tax: $2.60</div>
+</div>
+</div>
+</div>
+<!-- Book Item 3 -->
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="w-32 h-44 flex-shrink-0 bg-surface-container-highest overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="open book with yellowing pages and elegant black ink text on a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ2i7ry64VN-OEcsJF6xBYI-82qAelYpZLQggZ20vByUTFnUdQzV597dFc6KKuKtgkmh-t6ZfSXxxJPy4tnfopwGDTt9VYz5YX-R-alBvd2nrfL5psCmkFggpMXtyJE3_Zga64vB2kNFFgrGGlolVc5AUG9rLf36tWPLEtQ6v3RlH0fCsqD7i501Ni16sf9doSYp6Ip4q1On15WXDQpxrompIbVfEEzlwHrK8ooAUdoAyXjvVTzhgB6c2mPtvhykf_SuNVXvl2Sfw"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-headline font-bold">Meditations</h3>
+<p class="font-bold text-primary">$18.00</p>
+</div>
+<p class="text-sm text-on-surface-variant mb-4 italic">Marcus Aurelius • Translation by Gregory Hays</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-[11px] uppercase tracking-widest font-bold text-on-surface/40">
+<div>ISBN: 978-0812968255</div>
+<div>Qty: 1</div>
+<div>Tax: $1.44</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Totals & Actions -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-12 pt-8 border-t border-outline-variant/10">
+<div class="w-full md:w-1/3 space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant italic">Subtotal</span>
+<span class="font-medium">$132.50</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant italic">Shipping (Express)</span>
+<span class="font-medium">$4.04</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant italic">Estimated Taxes</span>
+<span class="font-medium">$5.96</span>
+</div>
+<div class="flex justify-between text-2xl font-headline font-bold pt-4 border-t border-outline-variant/10">
+<span class="text-primary">Total Amount</span>
+<span class="text-primary">$142.50</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+<button class="flex items-center justify-center gap-2 px-8 py-4 bg-secondary text-on-secondary font-bold hover:bg-[#23501e] transition-colors rounded-none">
+<span class="material-symbols-outlined">download</span>
+                    Download PDF Invoice
+                </button>
+<button class="flex items-center justify-center gap-2 px-8 py-4 border border-outline-variant text-on-surface font-bold hover:bg-surface-container-high transition-colors rounded-none">
+<span class="material-symbols-outlined">support_agent</span>
+                    Contact Support
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer Navigation Shell -->
+<footer class="w-full py-12 px-8 bg-[#f4f4f0] dark:bg-[#121211] mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 max-w-screen-2xl mx-auto">
+<div class="text-xl font-bold text-[#473700] dark:text-[#f4f4f0] font-notoSerif">Bookora.</div>
+<div class="flex flex-wrap justify-center gap-8 font-manrope text-sm tracking-wide">
+<a class="text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">About Us</a>
+<a class="text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Shipping Policy</a>
+<a class="text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy</a>
+<a class="text-[#473700]/60 dark:text-[#f4f4f0]/60 hover:text-[#3b6934] hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact</a>
+</div>
+<p class="text-[#473700]/60 dark:text-[#f4f4f0]/60 font-manrope text-sm tracking-wide">© 2024 Bookora. The Digital Curator.</p>
+</div>
+</footer>
+<!-- Signature Component: The Librarian's Tab -->
+<div class="fixed right-0 top-1/2 -translate-y-1/2 z-40">
+<button class="bg-secondary text-on-secondary px-2 py-8 flex flex-col items-center gap-4 shadow-xl hover:translate-x-[-8px] transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<span class="[writing-mode:vertical-lr] font-bold text-xs uppercase tracking-widest">My Reading List</span>
+</button>
+</div>
+</body></html>
