@@ -1,23 +1,21 @@
 package com.project.web.filter;
 
-import com.project.db.SqlServerConnection;
+import com.project.dao.JpaSupport;
 import com.project.model.AuthUser;
 import com.project.web.auth.AuthSession;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class ActivityLogFilter implements Filter {
 
@@ -87,16 +85,22 @@ public class ActivityLogFilter implements Filter {
             return;
         }
 
-        String sql = "INSERT INTO dbo.LogHoatDong (MaNV, HanhDong, ThoiGian) VALUES (?, ?, ?)";
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, maNV.trim());
-            ps.setString(2, truncate(activity, 255));
-            ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            ps.executeUpdate();
-        } catch (SQLException ex) {
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery("INSERT INTO dbo.LogHoatDong (MaNV, HanhDong, ThoiGian) VALUES (?, ?, GETDATE())")
+                    .setParameter(1, maNV.trim())
+                    .setParameter(2, truncate(activity, 255))
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             LOGGER.log(Level.FINE, "Khong the ghi LogHoatDong", ex);
+        } finally {
+            em.close();
         }
     }
 

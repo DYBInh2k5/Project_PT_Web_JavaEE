@@ -5,15 +5,15 @@ import com.project.model.dto.RevenueByDate;
 import com.project.model.dto.TopBookReportItem;
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RevenueReportServlet", urlPatterns = {"/reports/revenue"})
 public class RevenueReportServlet extends HttpServlet {
@@ -45,7 +45,7 @@ public class RevenueReportServlet extends HttpServlet {
             List<TopBookReportItem> topBooks = reportDAO.findTopBooks(fromDate, toDate, 10);
             request.setAttribute("revenueRows", revenueRows);
             request.setAttribute("topBooks", topBooks);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("revenueRows", Collections.emptyList());
             request.setAttribute("topBooks", Collections.emptyList());
             request.setAttribute("errorMessage", "Khong tai duoc bao cao: " + ex.getMessage());

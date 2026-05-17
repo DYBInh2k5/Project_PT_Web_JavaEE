@@ -2,12 +2,12 @@ package com.project.web.promotion;
 
 import com.project.dao.PromotionDAO;
 import java.io.IOException;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException removed; use generic exception handling after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PromotionDeleteServlet", urlPatterns = {"/promotions/delete"})
 public class PromotionDeleteServlet extends HttpServlet {
@@ -27,7 +27,7 @@ public class PromotionDeleteServlet extends HttpServlet {
         try {
             promotionDAO.delete(maKM);
             response.sendRedirect(request.getContextPath() + "/promotions?msg=deleted");
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             response.sendRedirect(request.getContextPath() + "/promotions?msg=delete_failed");
         }
     }

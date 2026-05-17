@@ -1,9 +1,14 @@
 # Build outputs
 /build/
 /dist/
+/target/
 
 # NetBeans private config
 /nbproject/private/
+
+# IntelliJ IDEA
+/.idea/
+*.iml
 
 # Temporary runtime/generated files
 *.log

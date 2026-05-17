@@ -3,14 +3,14 @@ package com.project.web.customer;
 import com.project.dao.CustomerDAO;
 import com.project.model.Customer;
 import java.io.IOException;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "CustomerListServlet", urlPatterns = {"/customers"})
 public class CustomerListServlet extends HttpServlet {
@@ -26,7 +26,7 @@ public class CustomerListServlet extends HttpServlet {
 
         try {
             customers = customerDAO.findAll(q);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             customers = Collections.emptyList();
             request.setAttribute("errorMessage", "Khong tai duoc danh sach khach hang: " + ex.getMessage());
         }

@@ -4,12 +4,12 @@ import com.project.dao.BookDAO;
 import com.project.model.Book;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException removed; use generic exception handling after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "BookFormServlet", urlPatterns = {"/books/new", "/books/edit"})
 public class BookFormServlet extends HttpServlet {
@@ -38,7 +38,7 @@ public class BookFormServlet extends HttpServlet {
                 }
                 request.setAttribute("book", book);
                 request.setAttribute("isEdit", true);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 request.setAttribute("errorMessage", "Khong tai duoc du lieu sach: " + ex.getMessage());
                 request.setAttribute("isEdit", true);
             }
@@ -86,7 +86,7 @@ public class BookFormServlet extends HttpServlet {
                 bookDAO.insert(book);
                 response.sendRedirect(request.getContextPath() + "/books?msg=created");
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Luu sach that bai: " + ex.getMessage());
             request.setAttribute("book", book);
             request.setAttribute("isEdit", isEdit);

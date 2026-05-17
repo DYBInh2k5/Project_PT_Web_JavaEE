@@ -4,15 +4,15 @@ import com.project.dao.InvoiceDAO;
 import com.project.model.Invoice;
 import com.project.model.InvoiceItem;
 import java.io.IOException;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "ShopOrderDetailServlet", urlPatterns = {"/shop/order"})
 public class ShopOrderDetailServlet extends HttpServlet {
@@ -23,7 +23,7 @@ public class ShopOrderDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        javax.servlet.http.HttpSession session = request.getSession(true);
+        jakarta.servlet.http.HttpSession session = request.getSession(true);
         Map<Integer, Integer> cart = ShopCartSupport.getCart(session);
         request.setAttribute("cartCount", ShopCartSupport.getCartCount(cart));
 
@@ -72,7 +72,7 @@ public class ShopOrderDetailServlet extends HttpServlet {
             request.setAttribute("invoice", invoice);
             request.setAttribute("items", items);
             request.setAttribute("orderCode", ShopOrderCodeUtil.encode(maHD));
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Khong tai duoc don hang: " + ex.getMessage());
             request.setAttribute("items", Collections.emptyList());
         }

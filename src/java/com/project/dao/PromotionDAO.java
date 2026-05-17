@@ -1,20 +1,15 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.Promotion;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PromotionDAO {
 
-    public List<Promotion> findAll(String keyword) throws SQLException {
-        List<Promotion> promotions = new ArrayList<Promotion>();
+    public List<Promotion> findAll(String keyword) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT MaKM, TenKM, HinhThuc, GiaTri, MaCoupon, NgayBD, NgayKT ");
         sql.append("FROM dbo.KhuyenMai ");
@@ -26,47 +21,48 @@ public class PromotionDAO {
 
         sql.append("ORDER BY MaKM DESC");
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql.toString());
             if (hasKeyword) {
                 String q = "%" + keyword.trim() + "%";
-                ps.setString(1, q);
-                ps.setString(2, q);
-                ps.setString(3, q);
+                query.setParameter(1, q);
+                query.setParameter(2, q);
+                query.setParameter(3, q);
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    promotions.add(mapRow(rs));
-                }
+            List<Object[]> rows = query.getResultList();
+            List<Promotion> promotions = new ArrayList<Promotion>(rows.size());
+            for (Object[] row : rows) {
+                promotions.add(mapRow(row));
             }
+            return promotions;
+        } finally {
+            em.close();
         }
-
-        return promotions;
     }
 
-    public List<Promotion> findActivePromotions() throws SQLException {
-        List<Promotion> promotions = new ArrayList<Promotion>();
+    public List<Promotion> findActivePromotions() {
         String sql = "SELECT MaKM, TenKM, HinhThuc, GiaTri, MaCoupon, NgayBD, NgayKT "
                 + "FROM dbo.KhuyenMai "
                 + "WHERE (NgayBD IS NULL OR NgayBD <= CAST(GETDATE() AS date)) "
                 + "  AND (NgayKT IS NULL OR NgayKT >= CAST(GETDATE() AS date)) "
                 + "ORDER BY MaKM DESC";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                promotions.add(mapRow(rs));
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql).getResultList();
+            List<Promotion> promotions = new ArrayList<Promotion>(rows.size());
+            for (Object[] row : rows) {
+                promotions.add(mapRow(row));
             }
+            return promotions;
+        } finally {
+            em.close();
         }
-
-        return promotions;
     }
 
-    public Promotion findByCode(String couponCode) throws SQLException {
+    public Promotion findByCode(String couponCode) {
         if (couponCode == null || couponCode.trim().isEmpty()) {
             return null;
         }
@@ -77,76 +73,110 @@ public class PromotionDAO {
                 + "  AND (NgayBD IS NULL OR NgayBD <= CAST(GETDATE() AS date)) "
                 + "  AND (NgayKT IS NULL OR NgayKT >= CAST(GETDATE() AS date))";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, couponCode.trim());
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, couponCode.trim())
+                    .getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public Promotion findById(int maKM) throws SQLException {
+    public Promotion findById(int maKM) {
         String sql = "SELECT MaKM, TenKM, HinhThuc, GiaTri, MaCoupon, NgayBD, NgayKT "
                 + "FROM dbo.KhuyenMai WHERE MaKM = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maKM);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maKM)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public void insert(Promotion promotion) throws SQLException {
+    public void insert(Promotion promotion) {
         String sql = "INSERT INTO dbo.KhuyenMai (TenKM, HinhThuc, GiaTri, MaCoupon, NgayBD, NgayKT) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            bindFields(ps, promotion);
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, emptyToNull(promotion.getTenKM()))
+                    .setParameter(2, emptyToNull(promotion.getHinhThuc()))
+                    .setParameter(3, promotion.getGiaTri())
+                    .setParameter(4, emptyToNull(promotion.getMaCoupon()))
+                    .setParameter(5, promotion.getNgayBD())
+                    .setParameter(6, promotion.getNgayKT())
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    public void update(Promotion promotion) throws SQLException {
+    public void update(Promotion promotion) {
         String sql = "UPDATE dbo.KhuyenMai "
                 + "SET TenKM = ?, HinhThuc = ?, GiaTri = ?, MaCoupon = ?, NgayBD = ?, NgayKT = ? "
                 + "WHERE MaKM = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            bindFields(ps, promotion);
-            ps.setInt(7, promotion.getMaKM());
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, emptyToNull(promotion.getTenKM()))
+                    .setParameter(2, emptyToNull(promotion.getHinhThuc()))
+                    .setParameter(3, promotion.getGiaTri())
+                    .setParameter(4, emptyToNull(promotion.getMaCoupon()))
+                    .setParameter(5, promotion.getNgayBD())
+                    .setParameter(6, promotion.getNgayKT())
+                    .setParameter(7, promotion.getMaKM())
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    public void delete(int maKM) throws SQLException {
+    public void delete(int maKM) {
         String sql = "DELETE FROM dbo.KhuyenMai WHERE MaKM = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maKM);
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, maKM)
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    public boolean existsCouponCode(String couponCode, Integer excludeMaKM) throws SQLException {
+    public boolean existsCouponCode(String couponCode, Integer excludeMaKM) {
         if (couponCode == null || couponCode.trim().isEmpty()) {
             return false;
         }
@@ -154,25 +184,22 @@ public class PromotionDAO {
         String sql = "SELECT COUNT(1) AS Cnt FROM dbo.KhuyenMai WHERE MaCoupon = ?"
                 + (excludeMaKM == null ? "" : " AND MaKM <> ?");
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, couponCode.trim());
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql)
+                    .setParameter(1, couponCode.trim());
             if (excludeMaKM != null) {
-                ps.setInt(2, excludeMaKM);
+                query.setParameter(2, excludeMaKM);
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("Cnt") > 0;
-                }
-            }
+            Number count = (Number) query.getSingleResult();
+            return count != null && count.intValue() > 0;
+        } finally {
+            em.close();
         }
-
-        return false;
     }
 
-    public BigDecimal calculateDiscount(Promotion promotion, BigDecimal subtotal) throws SQLException {
+    public BigDecimal calculateDiscount(Promotion promotion, BigDecimal subtotal) {
         if (promotion == null) {
             return BigDecimal.ZERO;
         }
@@ -191,44 +218,27 @@ public class PromotionDAO {
             return value;
         }
 
-        throw new SQLException("Khuyen mai nay khong ho tro ap dung vao hoa don.");
+        throw new IllegalArgumentException("Khuyen mai nay khong ho tro ap dung vao hoa don.");
     }
 
-    private Promotion mapRow(ResultSet rs) throws SQLException {
+    private Promotion mapRow(Object[] row) {
         Promotion promotion = new Promotion();
-        promotion.setMaKM(rs.getInt("MaKM"));
-        promotion.setTenKM(rs.getString("TenKM"));
-        promotion.setHinhThuc(rs.getString("HinhThuc"));
-        promotion.setGiaTri(rs.getBigDecimal("GiaTri"));
-        promotion.setMaCoupon(rs.getString("MaCoupon"));
-        promotion.setNgayBD(rs.getDate("NgayBD"));
-        promotion.setNgayKT(rs.getDate("NgayKT"));
+        promotion.setMaKM(toInt(row[0]));
+        promotion.setTenKM(toString(row[1]));
+        promotion.setHinhThuc(toString(row[2]));
+        promotion.setGiaTri(row[3] == null ? null : (BigDecimal) row[3]);
+        promotion.setMaCoupon(toString(row[4]));
+        promotion.setNgayBD(row[5] == null ? null : (java.sql.Date) row[5]);
+        promotion.setNgayKT(row[6] == null ? null : (java.sql.Date) row[6]);
         return promotion;
     }
 
-    private void bindFields(PreparedStatement ps, Promotion promotion) throws SQLException {
-        ps.setString(1, emptyToNull(promotion.getTenKM()));
-        ps.setString(2, emptyToNull(promotion.getHinhThuc()));
+    private int toInt(Object value) {
+        return value == null ? 0 : ((Number) value).intValue();
+    }
 
-        if (promotion.getGiaTri() == null) {
-            ps.setNull(3, Types.DECIMAL);
-        } else {
-            ps.setBigDecimal(3, promotion.getGiaTri());
-        }
-
-        ps.setString(4, emptyToNull(promotion.getMaCoupon()));
-
-        if (promotion.getNgayBD() == null) {
-            ps.setNull(5, Types.DATE);
-        } else {
-            ps.setDate(5, promotion.getNgayBD());
-        }
-
-        if (promotion.getNgayKT() == null) {
-            ps.setNull(6, Types.DATE);
-        } else {
-            ps.setDate(6, promotion.getNgayKT());
-        }
+    private String toString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 
     private String emptyToNull(String value) {

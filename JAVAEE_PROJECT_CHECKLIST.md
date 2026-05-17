@@ -35,5 +35,5 @@
 ## San sang dua len GitHub
 - [x] Tao README tong quan cho project mon hoc Java EE shop ban sach
 - [x] Tao `.gitignore` de bo qua file build va cau hinh local
-- [ ] Cap nhat thong tin tac gia/nhom trong README truoc khi nop
+- [x] Cap nhat thong tin tac gia/nhom trong README truoc khi nop
 - [x] Tao repository GitHub va push source len nhanh chinh

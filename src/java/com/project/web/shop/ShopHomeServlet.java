@@ -3,15 +3,15 @@ package com.project.web.shop;
 import com.project.dao.BookDAO;
 import com.project.model.Book;
 import java.io.IOException;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "ShopHomeServlet", urlPatterns = {"/shop"})
 public class ShopHomeServlet extends HttpServlet {
@@ -26,7 +26,7 @@ public class ShopHomeServlet extends HttpServlet {
         List<Book> books;
         try {
             books = bookDAO.findAll(q);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             books = Collections.emptyList();
             request.setAttribute("errorMessage", "Khong tai duoc danh sach sach: " + ex.getMessage());
         }

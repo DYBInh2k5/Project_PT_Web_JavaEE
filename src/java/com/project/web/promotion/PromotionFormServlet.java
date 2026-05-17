@@ -5,12 +5,12 @@ import com.project.model.Promotion;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException removed; use generic exception handling after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PromotionFormServlet", urlPatterns = {"/promotions/new", "/promotions/edit"})
 public class PromotionFormServlet extends HttpServlet {
@@ -36,7 +36,7 @@ public class PromotionFormServlet extends HttpServlet {
                     return;
                 }
                 request.setAttribute("promotion", promotion);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 request.setAttribute("errorMessage", "Khong tai duoc khuyen mai: " + ex.getMessage());
             }
         } else {
@@ -90,7 +90,7 @@ public class PromotionFormServlet extends HttpServlet {
                 promotionDAO.insert(promotion);
                 response.sendRedirect(request.getContextPath() + "/promotions?msg=created");
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Luu khuyen mai that bai: " + ex.getMessage());
             request.setAttribute("promotion", promotion);
             request.setAttribute("isEdit", isEdit);

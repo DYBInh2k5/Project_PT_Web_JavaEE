@@ -1,23 +1,19 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.PurchaseReceipt;
 import com.project.model.PurchaseReceiptItem;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseDAO {
 
     public static class NewPurchaseItem {
-        private int maSach;
-        private int soLuong;
-        private BigDecimal donGia;
+        private final int maSach;
+        private final int soLuong;
+        private final BigDecimal donGia;
 
         public NewPurchaseItem(int maSach, int soLuong, BigDecimal donGia) {
             this.maSach = maSach;
@@ -38,180 +34,161 @@ public class PurchaseDAO {
         }
     }
 
-    public List<PurchaseReceipt> findAll() throws SQLException {
-        List<PurchaseReceipt> receipts = new ArrayList<PurchaseReceipt>();
+    public List<PurchaseReceipt> findAll() {
         String sql = "SELECT MaPN, NgayNhap, MaNV, TongTien FROM dbo.PhieuNhap ORDER BY MaPN DESC";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                receipts.add(mapReceipt(rs));
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql).getResultList();
+            List<PurchaseReceipt> receipts = new ArrayList<PurchaseReceipt>(rows.size());
+            for (Object[] row : rows) {
+                receipts.add(mapReceipt(row));
             }
+            return receipts;
+        } finally {
+            em.close();
         }
-
-        return receipts;
     }
 
-    public PurchaseReceipt findById(int maPN) throws SQLException {
+    public PurchaseReceipt findById(int maPN) {
         String sql = "SELECT MaPN, NgayNhap, MaNV, TongTien FROM dbo.PhieuNhap WHERE MaPN = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maPN);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapReceipt(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maPN)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapReceipt(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public List<PurchaseReceiptItem> findItemsByPurchaseId(int maPN) throws SQLException {
-        List<PurchaseReceiptItem> items = new ArrayList<PurchaseReceiptItem>();
+    public List<PurchaseReceiptItem> findItemsByPurchaseId(int maPN) {
         String sql = "SELECT ct.MaCTPN, ct.MaPN, ct.MaSach, ct.SoLuong, ct.DonGia, ct.ThanhTien, s.TenSach "
                 + "FROM dbo.ChiTietPhieuNhap ct "
                 + "LEFT JOIN dbo.Sach s ON ct.MaSach = s.MaSach "
                 + "WHERE ct.MaPN = ? ORDER BY ct.MaCTPN";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maPN);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    PurchaseReceiptItem item = new PurchaseReceiptItem();
-                    item.setMaCTPN(rs.getInt("MaCTPN"));
-                    item.setMaPN(rs.getInt("MaPN"));
-                    item.setMaSach(rs.getInt("MaSach"));
-                    item.setSoLuong(rs.getInt("SoLuong"));
-                    item.setDonGia(rs.getBigDecimal("DonGia"));
-                    item.setThanhTien(rs.getBigDecimal("ThanhTien"));
-                    item.setTenSach(rs.getString("TenSach"));
-                    items.add(item);
-                }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maPN)
+                    .getResultList();
+            List<PurchaseReceiptItem> items = new ArrayList<PurchaseReceiptItem>(rows.size());
+            for (Object[] row : rows) {
+                items.add(mapItem(row));
             }
+            return items;
+        } finally {
+            em.close();
         }
-
-        return items;
     }
 
-    public int createPurchase(Integer maNV, List<NewPurchaseItem> items) throws SQLException {
+    public int createPurchase(Integer maNV, List<NewPurchaseItem> items) {
         if (items == null || items.isEmpty()) {
-            throw new SQLException("Phieu nhap phai co it nhat 1 dong chi tiet.");
+            throw new IllegalArgumentException("Phieu nhap phai co it nhat 1 dong chi tiet.");
         }
 
-        Connection conn = null;
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            conn = SqlServerConnection.getConnection();
-            conn.setAutoCommit(false);
+            tx.begin();
 
-            int maPN = insertHeader(conn, maNV);
+            int maPN = insertHeader(em, maNV);
             BigDecimal total = BigDecimal.ZERO;
 
             for (NewPurchaseItem item : items) {
                 if (item.getSoLuong() <= 0) {
-                    throw new SQLException("So luong phai lon hon 0.");
+                    throw new IllegalArgumentException("So luong phai lon hon 0.");
                 }
                 if (item.getDonGia() == null || item.getDonGia().compareTo(BigDecimal.ZERO) < 0) {
-                    throw new SQLException("Don gia khong hop le cho sach ma " + item.getMaSach());
+                    throw new IllegalArgumentException("Don gia khong hop le cho sach ma " + item.getMaSach());
                 }
 
                 BigDecimal thanhTien = item.getDonGia().multiply(BigDecimal.valueOf(item.getSoLuong()));
-                insertDetail(conn, maPN, item.getMaSach(), item.getSoLuong(), item.getDonGia(), thanhTien);
-                increaseStock(conn, item.getMaSach(), item.getSoLuong());
+                insertDetail(em, maPN, item.getMaSach(), item.getSoLuong(), item.getDonGia(), thanhTien);
+                increaseStock(em, item.getMaSach(), item.getSoLuong());
                 total = total.add(thanhTien);
             }
 
-            updateTotal(conn, maPN, total);
-            conn.commit();
+            updateTotal(em, maPN, total);
+            tx.commit();
             return maPN;
-        } catch (SQLException ex) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException rollbackEx) {
-                    ex.addSuppressed(rollbackEx);
-                }
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
             }
             throw ex;
         } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException ignore) {
-                }
-            }
+            em.close();
         }
     }
 
-    private int insertHeader(Connection conn, Integer maNV) throws SQLException {
+    private int insertHeader(EntityManager em, Integer maNV) {
         String sql = "INSERT INTO dbo.PhieuNhap (NgayNhap, MaNV, TongTien) OUTPUT INSERTED.MaPN VALUES (GETDATE(), ?, 0)";
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            if (maNV == null) {
-                ps.setNull(1, java.sql.Types.INTEGER);
-            } else {
-                ps.setInt(1, maNV.intValue());
-            }
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
+        Number generated = (Number) em.createNativeQuery(sql)
+                .setParameter(1, maNV)
+                .getSingleResult();
+        if (generated == null) {
+            throw new IllegalArgumentException("Khong tao duoc phieu nhap.");
         }
-
-        throw new SQLException("Khong tao duoc phieu nhap.");
+        return generated.intValue();
     }
 
-    private void insertDetail(Connection conn, int maPN, int maSach, int soLuong, BigDecimal donGia, BigDecimal thanhTien)
-            throws SQLException {
+    private void insertDetail(EntityManager em, int maPN, int maSach, int soLuong, BigDecimal donGia, BigDecimal thanhTien) {
         String sql = "INSERT INTO dbo.ChiTietPhieuNhap (MaPN, MaSach, SoLuong, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maPN);
-            ps.setInt(2, maSach);
-            ps.setInt(3, soLuong);
-            ps.setBigDecimal(4, donGia);
-            ps.setBigDecimal(5, thanhTien);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, maPN)
+                .setParameter(2, maSach)
+                .setParameter(3, soLuong)
+                .setParameter(4, donGia)
+                .setParameter(5, thanhTien)
+                .executeUpdate();
     }
 
-    private void increaseStock(Connection conn, int maSach, int delta) throws SQLException {
+    private void increaseStock(EntityManager em, int maSach, int delta) {
         String sql = "UPDATE dbo.Sach SET SoLuong = ISNULL(SoLuong, 0) + ? WHERE MaSach = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, delta);
-            ps.setInt(2, maSach);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, delta)
+                .setParameter(2, maSach)
+                .executeUpdate();
     }
 
-    private void updateTotal(Connection conn, int maPN, BigDecimal total) throws SQLException {
+    private void updateTotal(EntityManager em, int maPN, BigDecimal total) {
         String sql = "UPDATE dbo.PhieuNhap SET TongTien = ? WHERE MaPN = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBigDecimal(1, total);
-            ps.setInt(2, maPN);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, total)
+                .setParameter(2, maPN)
+                .executeUpdate();
     }
 
-    private PurchaseReceipt mapReceipt(ResultSet rs) throws SQLException {
+    private PurchaseReceipt mapReceipt(Object[] row) {
         PurchaseReceipt receipt = new PurchaseReceipt();
-        receipt.setMaPN(rs.getInt("MaPN"));
-        receipt.setNgayNhap(rs.getTimestamp("NgayNhap"));
-
-        int maNV = rs.getInt("MaNV");
-        if (rs.wasNull()) {
-            receipt.setMaNV(null);
-        } else {
-            receipt.setMaNV(maNV);
-        }
-
-        receipt.setTongTien(rs.getBigDecimal("TongTien"));
+        receipt.setMaPN(toInt(row[0]));
+        receipt.setNgayNhap(row[1] == null ? null : (java.sql.Timestamp) row[1]);
+        receipt.setMaNV(row[2] == null ? null : toInt(row[2]));
+        receipt.setTongTien(row[3] == null ? BigDecimal.ZERO : (BigDecimal) row[3]);
         return receipt;
+    }
+
+    private PurchaseReceiptItem mapItem(Object[] row) {
+        PurchaseReceiptItem item = new PurchaseReceiptItem();
+        item.setMaCTPN(toInt(row[0]));
+        item.setMaPN(toInt(row[1]));
+        item.setMaSach(toInt(row[2]));
+        item.setSoLuong(toInt(row[3]));
+        item.setDonGia(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
+        item.setThanhTien(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
+        item.setTenSach(toString(row[6]));
+        return item;
+    }
+
+    private int toInt(Object value) {
+        return value == null ? 0 : ((Number) value).intValue();
+    }
+
+    private String toString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 }

@@ -3,13 +3,13 @@ package com.project.web.auth;
 import com.project.dao.AuthDAO;
 import com.project.model.AuthUser;
 import java.io.IOException;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+// SQLException removed; use generic exception handling after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
             session.setMaxInactiveInterval(30 * 60);
             response.sendRedirect(request.getContextPath() + "/dashboard");
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Khong the dang nhap: " + ex.getMessage());
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }

@@ -2,12 +2,12 @@ package com.project.web.customer;
 
 import com.project.dao.CustomerDAO;
 import java.io.IOException;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException removed; use generic exception handling after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "CustomerDeleteServlet", urlPatterns = {"/customers/delete"})
 public class CustomerDeleteServlet extends HttpServlet {
@@ -27,7 +27,7 @@ public class CustomerDeleteServlet extends HttpServlet {
         try {
             customerDAO.delete(maKH);
             response.sendRedirect(request.getContextPath() + "/customers?msg=deleted");
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             response.sendRedirect(request.getContextPath() + "/customers?msg=delete_failed");
         }
     }

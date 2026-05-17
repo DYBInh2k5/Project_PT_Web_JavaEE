@@ -1,26 +1,19 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.InvoiceItem;
 import com.project.model.ReturnItem;
 import com.project.model.ReturnTransaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ReturnDAO {
 
     public static class NewReturnItem {
-        private int maSach;
-        private int soLuong;
+        private final int maSach;
+        private final int soLuong;
 
         public NewReturnItem(int maSach, int soLuong) {
             this.maSach = maSach;
@@ -36,200 +29,164 @@ public class ReturnDAO {
         }
     }
 
-    public List<ReturnTransaction> findAll() throws SQLException {
-        List<ReturnTransaction> returns = new ArrayList<ReturnTransaction>();
+    public List<ReturnTransaction> findAll() {
         String sql = "SELECT dt.MaDT, dt.MaHD, dt.NgayDoi, dt.LyDo, dt.GhiChu, dt.KieuXuLy, hd.TongTien, kh.TenKH "
                 + "FROM dbo.DoiTra dt "
                 + "LEFT JOIN dbo.HoaDon hd ON dt.MaHD = hd.MaHD "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "ORDER BY dt.MaDT DESC";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                returns.add(mapHeader(rs));
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql).getResultList();
+            List<ReturnTransaction> returns = new ArrayList<ReturnTransaction>(rows.size());
+            for (Object[] row : rows) {
+                returns.add(mapHeader(row));
             }
+            return returns;
+        } finally {
+            em.close();
         }
-
-        return returns;
     }
 
-    public ReturnTransaction findById(int maDT) throws SQLException {
+    public ReturnTransaction findById(int maDT) {
         String sql = "SELECT dt.MaDT, dt.MaHD, dt.NgayDoi, dt.LyDo, dt.GhiChu, dt.KieuXuLy, hd.TongTien, kh.TenKH "
                 + "FROM dbo.DoiTra dt "
                 + "LEFT JOIN dbo.HoaDon hd ON dt.MaHD = hd.MaHD "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "WHERE dt.MaDT = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maDT);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapHeader(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maDT)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapHeader(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public List<ReturnItem> findItemsByReturnId(int maDT) throws SQLException {
-        List<ReturnItem> items = new ArrayList<ReturnItem>();
+    public List<ReturnItem> findItemsByReturnId(int maDT) {
         String sql = "SELECT ct.MaCTDT, ct.MaDT, ct.MaSach, ct.SoLuong, ct.DonGia, ct.ThanhTien, s.TenSach "
                 + "FROM dbo.ChiTietDoiTra ct "
                 + "LEFT JOIN dbo.Sach s ON ct.MaSach = s.MaSach "
                 + "WHERE ct.MaDT = ? ORDER BY ct.MaCTDT";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maDT);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    ReturnItem item = new ReturnItem();
-                    item.setMaCTDT(rs.getInt("MaCTDT"));
-                    item.setMaDT(rs.getInt("MaDT"));
-                    item.setMaSach(rs.getInt("MaSach"));
-                    item.setSoLuong(rs.getInt("SoLuong"));
-                    item.setDonGia(rs.getBigDecimal("DonGia"));
-                    item.setThanhTien(rs.getBigDecimal("ThanhTien"));
-                    item.setTenSach(rs.getString("TenSach"));
-                    items.add(item);
-                }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maDT)
+                    .getResultList();
+            List<ReturnItem> items = new ArrayList<ReturnItem>(rows.size());
+            for (Object[] row : rows) {
+                items.add(mapReturnItem(row));
             }
+            return items;
+        } finally {
+            em.close();
         }
-
-        return items;
     }
 
-    public List<InvoiceItem> findInvoiceItems(int maHD) throws SQLException {
-        List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+    public List<InvoiceItem> findInvoiceItems(int maHD) {
         String sql = "SELECT ct.MaCT, ct.MaHD, ct.MaSach, ct.SoLuong, ct.DonGia, ct.ThanhTien, s.TenSach "
                 + "FROM dbo.ChiTietHoaDon ct "
                 + "LEFT JOIN dbo.Sach s ON ct.MaSach = s.MaSach "
                 + "WHERE ct.MaHD = ? ORDER BY ct.MaCT";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maHD);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    InvoiceItem item = new InvoiceItem();
-                    item.setMaCT(rs.getInt("MaCT"));
-                    item.setMaHD(rs.getInt("MaHD"));
-                    item.setMaSach(rs.getInt("MaSach"));
-                    item.setSoLuong(rs.getInt("SoLuong"));
-                    item.setDonGia(rs.getBigDecimal("DonGia"));
-                    item.setThanhTien(rs.getBigDecimal("ThanhTien"));
-                    item.setTenSach(rs.getString("TenSach"));
-                    items.add(item);
-                }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maHD)
+                    .getResultList();
+            List<InvoiceItem> items = new ArrayList<InvoiceItem>(rows.size());
+            for (Object[] row : rows) {
+                items.add(mapInvoiceItem(row));
             }
+            return items;
+        } finally {
+            em.close();
         }
-
-        return items;
     }
 
-    public int createReturn(int maHD, String lyDo, String ghiChu, int kieuXuLy, List<NewReturnItem> items)
-            throws SQLException {
-
+    public int createReturn(int maHD, String lyDo, String ghiChu, int kieuXuLy, List<NewReturnItem> items) {
         if (items == null || items.isEmpty()) {
-            throw new SQLException("Phai co it nhat 1 dong chi tiet doi tra.");
+            throw new IllegalArgumentException("Phai co it nhat 1 dong chi tiet doi tra.");
         }
 
-        Connection conn = null;
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            conn = SqlServerConnection.getConnection();
-            conn.setAutoCommit(false);
+            tx.begin();
 
-            int maDT = insertHeader(conn, maHD, lyDo, ghiChu, kieuXuLy);
+            int maDT = insertHeader(em, maHD, lyDo, ghiChu, kieuXuLy);
             for (NewReturnItem item : items) {
                 if (item.getSoLuong() <= 0) {
-                    throw new SQLException("So luong doi tra phai lon hon 0.");
+                    throw new IllegalArgumentException("So luong doi tra phai lon hon 0.");
                 }
 
-                ReturnStockInfo stockInfo = getInvoiceStockInfoForUpdate(conn, maHD, item.getMaSach());
+                ReturnStockInfo stockInfo = getInvoiceStockInfoForUpdate(em, maHD, item.getMaSach());
                 if (stockInfo == null) {
-                    throw new SQLException("Khong tim thay sach ma " + item.getMaSach() + " trong hoa don " + maHD);
+                    throw new IllegalArgumentException("Khong tim thay sach ma " + item.getMaSach() + " trong hoa don " + maHD);
                 }
 
                 int available = stockInfo.getSoldQty() - stockInfo.getReturnedQty();
                 if (item.getSoLuong() > available) {
-                    throw new SQLException("So luong doi tra vuot qua so luong con co the doi tra cho sach ma " + item.getMaSach());
+                    throw new IllegalArgumentException("So luong doi tra vuot qua so luong con co the doi tra cho sach ma " + item.getMaSach());
                 }
 
                 BigDecimal thanhTien = stockInfo.getUnitPrice().multiply(BigDecimal.valueOf(item.getSoLuong()));
-                insertDetail(conn, maDT, item.getMaSach(), item.getSoLuong(), stockInfo.getUnitPrice(), thanhTien);
-                updateStock(conn, item.getMaSach(), stockInfo.getCurrentStock() + item.getSoLuong());
+                insertDetail(em, maDT, item.getMaSach(), item.getSoLuong(), stockInfo.getUnitPrice(), thanhTien);
+                updateStock(em, item.getMaSach(), stockInfo.getCurrentStock() + item.getSoLuong());
             }
 
-            conn.commit();
+            tx.commit();
             return maDT;
-        } catch (SQLException ex) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException rollbackEx) {
-                    ex.addSuppressed(rollbackEx);
-                }
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
             }
             throw ex;
         } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException ignore) {
-                }
-            }
+            em.close();
         }
     }
 
-    private int insertHeader(Connection conn, int maHD, String lyDo, String ghiChu, int kieuXuLy) throws SQLException {
+    private int insertHeader(EntityManager em, int maHD, String lyDo, String ghiChu, int kieuXuLy) {
         String sql = "INSERT INTO dbo.DoiTra (MaHD, NgayDoi, LyDo, GhiChu, KieuXuLy) OUTPUT INSERTED.MaDT VALUES (?, GETDATE(), ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, maHD);
-            ps.setString(2, emptyToNull(lyDo));
-            ps.setString(3, emptyToNull(ghiChu));
-            ps.setInt(4, kieuXuLy);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-        }
+        Number generated = (Number) em.createNativeQuery(sql)
+                .setParameter(1, maHD)
+                .setParameter(2, emptyToNull(lyDo))
+                .setParameter(3, emptyToNull(ghiChu))
+                .setParameter(4, kieuXuLy)
+                .getSingleResult();
 
-        throw new SQLException("Khong tao duoc phieu doi tra.");
+        if (generated == null) {
+            throw new IllegalArgumentException("Khong tao duoc phieu doi tra.");
+        }
+        return generated.intValue();
     }
 
-    private void insertDetail(Connection conn, int maDT, int maSach, int soLuong, BigDecimal donGia, BigDecimal thanhTien)
-            throws SQLException {
+    private void insertDetail(EntityManager em, int maDT, int maSach, int soLuong, BigDecimal donGia, BigDecimal thanhTien) {
         String sql = "INSERT INTO dbo.ChiTietDoiTra (MaDT, MaSach, SoLuong, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maDT);
-            ps.setInt(2, maSach);
-            ps.setInt(3, soLuong);
-            ps.setBigDecimal(4, donGia);
-            ps.setBigDecimal(5, thanhTien);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, maDT)
+                .setParameter(2, maSach)
+                .setParameter(3, soLuong)
+                .setParameter(4, donGia)
+                .setParameter(5, thanhTien)
+                .executeUpdate();
     }
 
-    private void updateStock(Connection conn, int maSach, int newStock) throws SQLException {
+    private void updateStock(EntityManager em, int maSach, int newStock) {
         String sql = "UPDATE dbo.Sach SET SoLuong = ? WHERE MaSach = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, newStock);
-            ps.setInt(2, maSach);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, newStock)
+                .setParameter(2, maSach)
+                .executeUpdate();
     }
 
-    private ReturnStockInfo getInvoiceStockInfoForUpdate(Connection conn, int maHD, int maSach) throws SQLException {
+    private ReturnStockInfo getInvoiceStockInfoForUpdate(EntityManager em, int maHD, int maSach) {
         String sql = "SELECT ct.SoLuong AS SoldQty, ct.DonGia, s.SoLuong AS CurrentStock, "
                 + "ISNULL(r.ReturnedQty, 0) AS ReturnedQty "
                 + "FROM dbo.ChiTietHoaDon ct "
@@ -241,37 +198,65 @@ public class ReturnDAO {
                 + "       ON r.MaHD = ct.MaHD AND r.MaSach = ct.MaSach "
                 + "WHERE ct.MaHD = ? AND ct.MaSach = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maHD);
-            ps.setInt(2, maSach);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int soldQty = rs.getInt("SoldQty");
-                    int returnedQty = rs.getInt("ReturnedQty");
-                    int currentStock = rs.getInt("CurrentStock");
-                    BigDecimal unitPrice = rs.getBigDecimal("DonGia");
-                    if (unitPrice == null) {
-                        unitPrice = BigDecimal.ZERO;
-                    }
-                    return new ReturnStockInfo(soldQty, returnedQty, currentStock, unitPrice);
-                }
-            }
+        List<Object[]> rows = em.createNativeQuery(sql)
+                .setParameter(1, maHD)
+                .setParameter(2, maSach)
+                .getResultList();
+        if (rows.isEmpty()) {
+            return null;
         }
 
-        return null;
+        Object[] row = rows.get(0);
+        int soldQty = toInt(row[0]);
+        BigDecimal unitPrice = row[1] == null ? BigDecimal.ZERO : (BigDecimal) row[1];
+        int currentStock = toInt(row[2]);
+        int returnedQty = toInt(row[3]);
+        return new ReturnStockInfo(soldQty, returnedQty, currentStock, unitPrice);
     }
 
-    private ReturnTransaction mapHeader(ResultSet rs) throws SQLException {
+    private ReturnTransaction mapHeader(Object[] row) {
         ReturnTransaction tx = new ReturnTransaction();
-        tx.setMaDT(rs.getInt("MaDT"));
-        tx.setMaHD(rs.getInt("MaHD"));
-        tx.setNgayDoi(rs.getTimestamp("NgayDoi"));
-        tx.setLyDo(rs.getString("LyDo"));
-        tx.setGhiChu(rs.getString("GhiChu"));
-        tx.setKieuXuLy(rs.getInt("KieuXuLy"));
-        tx.setTenKH(rs.getString("TenKH"));
-        tx.setTongTienHoaDon(rs.getBigDecimal("TongTien"));
+        tx.setMaDT(toInt(row[0]));
+        tx.setMaHD(toInt(row[1]));
+        tx.setNgayDoi(row[2] == null ? null : (java.sql.Timestamp) row[2]);
+        tx.setLyDo(toString(row[3]));
+        tx.setGhiChu(toString(row[4]));
+        tx.setKieuXuLy(toInt(row[5]));
+        tx.setTongTienHoaDon(row[6] == null ? BigDecimal.ZERO : (BigDecimal) row[6]);
+        tx.setTenKH(toString(row[7]));
         return tx;
+    }
+
+    private ReturnItem mapReturnItem(Object[] row) {
+        ReturnItem item = new ReturnItem();
+        item.setMaCTDT(toInt(row[0]));
+        item.setMaDT(toInt(row[1]));
+        item.setMaSach(toInt(row[2]));
+        item.setSoLuong(toInt(row[3]));
+        item.setDonGia(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
+        item.setThanhTien(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
+        item.setTenSach(toString(row[6]));
+        return item;
+    }
+
+    private InvoiceItem mapInvoiceItem(Object[] row) {
+        InvoiceItem item = new InvoiceItem();
+        item.setMaCT(toInt(row[0]));
+        item.setMaHD(toInt(row[1]));
+        item.setMaSach(toInt(row[2]));
+        item.setSoLuong(toInt(row[3]));
+        item.setDonGia(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
+        item.setThanhTien(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
+        item.setTenSach(toString(row[6]));
+        return item;
+    }
+
+    private int toInt(Object value) {
+        return value == null ? 0 : ((Number) value).intValue();
+    }
+
+    private String toString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 
     private String emptyToNull(String value) {

@@ -1,24 +1,21 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.Invoice;
 import com.project.model.InvoiceItem;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InvoiceDAO {
 
     public static class NewInvoiceItem {
-        private int maSach;
-        private int soLuong;
+        private final int maSach;
+        private final int soLuong;
 
         public NewInvoiceItem(int maSach, int soLuong) {
             this.maSach = maSach;
@@ -34,46 +31,43 @@ public class InvoiceDAO {
         }
     }
 
-    public List<Invoice> findAll() throws SQLException {
-        List<Invoice> invoices = new ArrayList<Invoice>();
+    public List<Invoice> findAll() {
         String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "ORDER BY hd.MaHD DESC";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                invoices.add(mapInvoiceRow(rs));
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql).getResultList();
+            List<Invoice> invoices = new ArrayList<Invoice>(rows.size());
+            for (Object[] row : rows) {
+                invoices.add(mapInvoiceRow(row));
             }
+            return invoices;
+        } finally {
+            em.close();
         }
-
-        return invoices;
     }
 
-    public Invoice findById(int maHD) throws SQLException {
+    public Invoice findById(int maHD) {
         String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "WHERE hd.MaHD = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maHD);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapInvoiceRow(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maHD)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapInvoiceRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public Invoice findByIdForCustomerLookup(int maHD, String phone, String email) throws SQLException {
+    public Invoice findByIdForCustomerLookup(int maHD, String phone, String email) {
         boolean hasPhone = phone != null && !phone.trim().isEmpty();
         boolean hasEmail = email != null && !email.trim().isEmpty();
         if (!hasPhone && !hasEmail) {
@@ -95,31 +89,27 @@ public class InvoiceDAO {
         }
         sql.append(")");
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-            ps.setInt(1, maHD);
-            int idx = 2;
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql.toString());
+            query.setParameter(1, maHD);
             if (hasPhone && hasEmail) {
-                ps.setString(idx++, phone.trim());
-                ps.setString(idx, email.trim());
+                query.setParameter(2, phone.trim());
+                query.setParameter(3, email.trim());
             } else if (hasPhone) {
-                ps.setString(idx, phone.trim());
+                query.setParameter(2, phone.trim());
             } else {
-                ps.setString(idx, email.trim());
+                query.setParameter(2, email.trim());
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapInvoiceRow(rs);
-                }
-            }
+            List<Object[]> rows = query.getResultList();
+            return rows.isEmpty() ? null : mapInvoiceRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public List<Invoice> findByIds(List<Integer> invoiceIds) throws SQLException {
+    public List<Invoice> findByIds(List<Integer> invoiceIds) {
         if (invoiceIds == null || invoiceIds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -138,99 +128,84 @@ public class InvoiceDAO {
         }
         sql.append(")");
 
-        List<Invoice> invoices = new ArrayList<Invoice>();
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql.toString());
             int idx = 1;
             for (Integer id : invoiceIds) {
-                ps.setInt(idx++, id == null ? -1 : id);
+                query.setParameter(idx++, id == null ? -1 : id);
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    invoices.add(mapInvoiceRow(rs));
+            List<Object[]> rows = query.getResultList();
+            Map<Integer, Invoice> byId = new LinkedHashMap<Integer, Invoice>();
+            for (Object[] row : rows) {
+                Invoice invoice = mapInvoiceRow(row);
+                byId.put(invoice.getMaHD(), invoice);
+            }
+
+            List<Invoice> ordered = new ArrayList<Invoice>();
+            for (Integer id : invoiceIds) {
+                if (id != null && byId.containsKey(id)) {
+                    ordered.add(byId.get(id));
                 }
             }
+            return ordered;
+        } finally {
+            em.close();
         }
-
-        List<Invoice> ordered = new ArrayList<Invoice>();
-        for (Integer id : invoiceIds) {
-            if (id == null) {
-                continue;
-            }
-            for (Invoice invoice : invoices) {
-                if (id.equals(invoice.getMaHD())) {
-                    ordered.add(invoice);
-                    break;
-                }
-            }
-        }
-
-        return ordered;
     }
 
-    public List<InvoiceItem> findItemsByInvoiceId(int maHD) throws SQLException {
+    public List<InvoiceItem> findItemsByInvoiceId(int maHD) {
         List<InvoiceItem> items = new ArrayList<InvoiceItem>();
         String sql = "SELECT ct.MaCT, ct.MaHD, ct.MaSach, ct.SoLuong, ct.DonGia, ct.ThanhTien, s.TenSach "
                 + "FROM dbo.ChiTietHoaDon ct "
                 + "LEFT JOIN dbo.Sach s ON ct.MaSach = s.MaSach "
                 + "WHERE ct.MaHD = ? ORDER BY ct.MaCT";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maHD);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    InvoiceItem item = new InvoiceItem();
-                    item.setMaCT(rs.getInt("MaCT"));
-                    item.setMaHD(rs.getInt("MaHD"));
-                    item.setMaSach(rs.getInt("MaSach"));
-                    item.setSoLuong(rs.getInt("SoLuong"));
-                    item.setDonGia(rs.getBigDecimal("DonGia"));
-                    item.setThanhTien(rs.getBigDecimal("ThanhTien"));
-                    item.setTenSach(rs.getString("TenSach"));
-                    items.add(item);
-                }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maHD)
+                    .getResultList();
+            for (Object[] row : rows) {
+                items.add(mapInvoiceItemRow(row));
             }
+            return items;
+        } finally {
+            em.close();
         }
-
-        return items;
     }
 
-    public int createInvoice(Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat, List<NewInvoiceItem> items)
-            throws SQLException {
-
+    public int createInvoice(Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat, List<NewInvoiceItem> items) {
         if (items == null || items.isEmpty()) {
-            throw new SQLException("Hoa don phai co it nhat 1 dong chi tiet.");
+            throw new IllegalArgumentException("Hoa don phai co it nhat 1 dong chi tiet.");
         }
 
-        Connection conn = null;
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
         try {
-            conn = SqlServerConnection.getConnection();
-            conn.setAutoCommit(false);
+            tx.begin();
 
-            int maHD = insertInvoiceHeader(conn, maKH, maNV, giamGia, thueVat);
+            int maHD = insertInvoiceHeader(em, maKH, maNV, giamGia, thueVat);
             BigDecimal subTotal = BigDecimal.ZERO;
 
             for (NewInvoiceItem item : items) {
                 if (item.getSoLuong() <= 0) {
-                    throw new SQLException("So luong phai lon hon 0.");
+                    throw new IllegalArgumentException("So luong phai lon hon 0.");
                 }
 
-                StockInfo stock = getStockInfoForUpdate(conn, item.getMaSach());
+                StockInfo stock = getStockInfoForUpdate(em, item.getMaSach());
                 if (stock == null) {
-                    throw new SQLException("Khong tim thay sach ma " + item.getMaSach());
+                    throw new IllegalArgumentException("Khong tim thay sach ma " + item.getMaSach());
                 }
 
                 if (stock.getSoLuongTon() < item.getSoLuong()) {
-                    throw new SQLException("So luong ton khong du cho sach ma " + item.getMaSach());
+                    throw new IllegalArgumentException("So luong ton khong du cho sach ma " + item.getMaSach());
                 }
 
                 BigDecimal thanhTien = stock.getDonGia().multiply(BigDecimal.valueOf(item.getSoLuong()));
-                insertInvoiceItem(conn, maHD, item, stock.getDonGia(), thanhTien);
-                updateBookStock(conn, item.getMaSach(), stock.getSoLuongTon() - item.getSoLuong());
+                insertInvoiceItem(em, maHD, item, stock.getDonGia(), thanhTien);
+                updateBookStock(em, item.getMaSach(), stock.getSoLuongTon() - item.getSoLuong());
                 subTotal = subTotal.add(thanhTien);
             }
 
@@ -244,155 +219,123 @@ public class InvoiceDAO {
                 total = BigDecimal.ZERO;
             }
 
-            updateInvoiceTotals(conn, maHD, total, discount, vat);
-            conn.commit();
+            updateInvoiceTotals(em, maHD, total, discount, vat);
+            tx.commit();
             return maHD;
-
-        } catch (SQLException ex) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException rollbackEx) {
-                    ex.addSuppressed(rollbackEx);
-                }
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
             }
             throw ex;
         } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException ignore) {
-                }
-            }
+            em.close();
         }
     }
 
-    private int insertInvoiceHeader(Connection conn, Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat)
-            throws SQLException {
-
+    private int insertInvoiceHeader(EntityManager em, Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat) {
         String sql = "INSERT INTO dbo.HoaDon (MaNV, MaKH, NgayLap, TongTien, GiamGia, ThueVAT) "
                 + "OUTPUT INSERTED.MaHD VALUES (?, ?, GETDATE(), ?, ?, ?)";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            if (maNV == null || maNV.trim().isEmpty()) {
-                ps.setNull(1, Types.NVARCHAR);
-            } else {
-                ps.setString(1, maNV.trim());
-            }
+        Number generated = (Number) em.createNativeQuery(sql)
+                .setParameter(1, maNV == null || maNV.trim().isEmpty() ? null : maNV.trim())
+                .setParameter(2, maKH)
+                .setParameter(3, BigDecimal.ZERO)
+                .setParameter(4, giamGia == null ? BigDecimal.ZERO : giamGia)
+                .setParameter(5, thueVat == null ? BigDecimal.ZERO : thueVat)
+                .getSingleResult();
 
-            if (maKH == null) {
-                ps.setNull(2, Types.INTEGER);
-            } else {
-                ps.setInt(2, maKH);
-            }
-
-            ps.setBigDecimal(3, BigDecimal.ZERO);
-            ps.setBigDecimal(4, giamGia == null ? BigDecimal.ZERO : giamGia);
-            ps.setBigDecimal(5, thueVat == null ? BigDecimal.ZERO : thueVat);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
+        if (generated == null) {
+            throw new IllegalArgumentException("Khong tao duoc hoa don.");
         }
-
-        throw new SQLException("Khong tao duoc hoa don.");
+        return generated.intValue();
     }
 
-    private void updateInvoiceTotals(Connection conn, int maHD, BigDecimal tongTien, BigDecimal giamGia, BigDecimal thueVat)
-            throws SQLException {
-
+    private void updateInvoiceTotals(EntityManager em, int maHD, BigDecimal tongTien, BigDecimal giamGia, BigDecimal thueVat) {
         String sql = "UPDATE dbo.HoaDon SET TongTien = ?, GiamGia = ?, ThueVAT = ? WHERE MaHD = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBigDecimal(1, tongTien);
-            ps.setBigDecimal(2, giamGia);
-            ps.setBigDecimal(3, thueVat);
-            ps.setInt(4, maHD);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, tongTien)
+                .setParameter(2, giamGia)
+                .setParameter(3, thueVat)
+                .setParameter(4, maHD)
+                .executeUpdate();
     }
 
-    private StockInfo getStockInfoForUpdate(Connection conn, int maSach) throws SQLException {
+    private StockInfo getStockInfoForUpdate(EntityManager em, int maSach) {
         String sql = "SELECT DonGia, SoLuong FROM dbo.Sach WITH (UPDLOCK, ROWLOCK) WHERE MaSach = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maSach);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    BigDecimal donGia = rs.getBigDecimal("DonGia");
-                    if (donGia == null) {
-                        donGia = BigDecimal.ZERO;
-                    }
-
-                    int soLuong = rs.getInt("SoLuong");
-                    if (rs.wasNull()) {
-                        soLuong = 0;
-                    }
-
-                    return new StockInfo(donGia, soLuong);
-                }
-            }
+        List<Object[]> rows = em.createNativeQuery(sql)
+                .setParameter(1, maSach)
+                .getResultList();
+        if (rows.isEmpty()) {
+            return null;
         }
 
-        return null;
+        Object[] row = rows.get(0);
+        BigDecimal donGia = row[0] == null ? BigDecimal.ZERO : (BigDecimal) row[0];
+        int soLuong = row[1] == null ? 0 : ((Number) row[1]).intValue();
+        return new StockInfo(donGia, soLuong);
     }
 
-    private void insertInvoiceItem(Connection conn, int maHD, NewInvoiceItem item, BigDecimal donGia, BigDecimal thanhTien)
-            throws SQLException {
-
+    private void insertInvoiceItem(EntityManager em, int maHD, NewInvoiceItem item, BigDecimal donGia, BigDecimal thanhTien) {
         String sql = "INSERT INTO dbo.ChiTietHoaDon (MaHD, MaSach, SoLuong, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, maHD);
-            ps.setInt(2, item.getMaSach());
-            ps.setInt(3, item.getSoLuong());
-            ps.setBigDecimal(4, donGia);
-            ps.setBigDecimal(5, thanhTien);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, maHD)
+                .setParameter(2, item.getMaSach())
+                .setParameter(3, item.getSoLuong())
+                .setParameter(4, donGia)
+                .setParameter(5, thanhTien)
+                .executeUpdate();
     }
 
-    private void updateBookStock(Connection conn, int maSach, int newStock) throws SQLException {
+    private void updateBookStock(EntityManager em, int maSach, int newStock) {
         String sql = "UPDATE dbo.Sach SET SoLuong = ? WHERE MaSach = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, newStock);
-            ps.setInt(2, maSach);
-            ps.executeUpdate();
-        }
+        em.createNativeQuery(sql)
+                .setParameter(1, newStock)
+                .setParameter(2, maSach)
+                .executeUpdate();
     }
 
-    private Invoice mapInvoiceRow(ResultSet rs) throws SQLException {
+    private Invoice mapInvoiceRow(Object[] row) {
         Invoice invoice = new Invoice();
-        invoice.setMaHD(rs.getInt("MaHD"));
-        invoice.setMaNV(rs.getString("MaNV"));
+        invoice.setMaHD(toInt(row[0]));
+        invoice.setMaNV(toString(row[1]));
+        invoice.setMaKH(row[2] == null ? null : toInt(row[2]));
+        invoice.setNgayLap(row[3] == null ? null : (java.sql.Timestamp) row[3]);
+        invoice.setTongTien(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
+        invoice.setGiamGia(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
+        invoice.setThueVAT(row[6] == null ? BigDecimal.ZERO : (BigDecimal) row[6]);
+        invoice.setTenKH(toString(row[7]));
 
-        int maKH = rs.getInt("MaKH");
-        if (rs.wasNull()) {
-            invoice.setMaKH(null);
-        } else {
-            invoice.setMaKH(maKH);
+        if (row.length > 8) {
+            invoice.setDienThoaiKH(toString(row[8]));
         }
-
-        invoice.setNgayLap(rs.getTimestamp("NgayLap"));
-        invoice.setTongTien(rs.getBigDecimal("TongTien"));
-        invoice.setGiamGia(rs.getBigDecimal("GiamGia"));
-        invoice.setThueVAT(rs.getBigDecimal("ThueVAT"));
-        invoice.setTenKH(rs.getString("TenKH"));
-
-        try {
-            invoice.setDienThoaiKH(rs.getString("DienThoai"));
-        } catch (SQLException ignore) {
+        if (row.length > 9) {
+            invoice.setEmailKH(toString(row[9]));
         }
-        try {
-            invoice.setEmailKH(rs.getString("Email"));
-        } catch (SQLException ignore) {
-        }
-        try {
-            invoice.setDiaChiKH(rs.getString("DiaChi"));
-        } catch (SQLException ignore) {
+        if (row.length > 10) {
+            invoice.setDiaChiKH(toString(row[10]));
         }
 
         return invoice;
+    }
+
+    private InvoiceItem mapInvoiceItemRow(Object[] row) {
+        InvoiceItem item = new InvoiceItem();
+        item.setMaCT(toInt(row[0]));
+        item.setMaHD(toInt(row[1]));
+        item.setMaSach(toInt(row[2]));
+        item.setSoLuong(toInt(row[3]));
+        item.setDonGia(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
+        item.setThanhTien(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
+        item.setTenSach(toString(row[6]));
+        return item;
+    }
+
+    private int toInt(Object value) {
+        return value == null ? 0 : ((Number) value).intValue();
+    }
+
+    private String toString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 
     private static final class StockInfo {

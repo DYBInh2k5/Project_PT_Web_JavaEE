@@ -3,13 +3,13 @@ package com.project.web.shop;
 import com.project.dao.BookDAO;
 import com.project.model.Book;
 import com.project.model.dto.ShopCartItem;
-import java.sql.SQLException;
+// SQLException removed
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 public final class ShopCartSupport {
 
@@ -40,7 +40,7 @@ public final class ShopCartSupport {
         return count;
     }
 
-    public static List<ShopCartItem> buildCartItems(BookDAO bookDAO, Map<Integer, Integer> cart) throws SQLException {
+    public static List<ShopCartItem> buildCartItems(BookDAO bookDAO, Map<Integer, Integer> cart) {
         List<ShopCartItem> items = new ArrayList<ShopCartItem>();
         for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
             Integer maSach = entry.getKey();
@@ -49,7 +49,12 @@ public final class ShopCartSupport {
                 continue;
             }
 
-            Book book = bookDAO.findById(maSach);
+            Book book;
+            try {
+                book = bookDAO.findById(maSach);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             if (book == null) {
                 continue;
             }

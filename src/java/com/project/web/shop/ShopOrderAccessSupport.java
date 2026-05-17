@@ -3,7 +3,7 @@ package com.project.web.shop;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 public final class ShopOrderAccessSupport {
 

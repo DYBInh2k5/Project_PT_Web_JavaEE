@@ -11,16 +11,16 @@ import com.project.model.Promotion;
 import com.project.model.dto.ShopCartItem;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+// SQLException removed; use RuntimeException for validation errors after migration
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "ShopCheckoutServlet", urlPatterns = {"/shop/checkout"})
 public class ShopCheckoutServlet extends HttpServlet {
@@ -48,7 +48,7 @@ public class ShopCheckoutServlet extends HttpServlet {
         try {
             List<ShopCartItem> cartItems = ShopCartSupport.buildCartItems(bookDAO, cart);
             if (cartItems.isEmpty()) {
-                throw new SQLException("Gio hang dang trong. Vui long them sach truoc khi thanh toan.");
+                throw new RuntimeException("Gio hang dang trong. Vui long them sach truoc khi thanh toan.");
             }
 
             List<NewInvoiceItem> newInvoiceItems = buildInvoiceItems(cartItems);
@@ -63,7 +63,7 @@ public class ShopCheckoutServlet extends HttpServlet {
             ShopCartSupport.addOrderToHistory(request.getSession(true), maHD);
             String orderCode = ShopOrderCodeUtil.encode(maHD);
             response.sendRedirect(request.getContextPath() + "/shop/checkout?success=1&invoiceId=" + maHD + "&orderCode=" + orderCode);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Thanh toan that bai: " + ex.getMessage());
             request.setAttribute("fullName", valueOrEmpty(request.getParameter("fullName")));
             request.setAttribute("phone", valueOrEmpty(request.getParameter("phone")));
@@ -84,7 +84,7 @@ public class ShopCheckoutServlet extends HttpServlet {
             request.setAttribute("items", items);
             request.setAttribute("subtotal", calculateSubtotal(items));
             request.setAttribute("promotions", promotionDAO.findActivePromotions());
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("items", Collections.emptyList());
             request.setAttribute("subtotal", BigDecimal.ZERO);
             request.setAttribute("promotions", Collections.emptyList());
@@ -93,8 +93,7 @@ public class ShopCheckoutServlet extends HttpServlet {
             }
         }
     }
-
-    private List<NewInvoiceItem> buildInvoiceItems(List<ShopCartItem> cartItems) throws SQLException {
+    private List<NewInvoiceItem> buildInvoiceItems(List<ShopCartItem> cartItems) {
         List<NewInvoiceItem> items = new ArrayList<NewInvoiceItem>();
         for (ShopCartItem item : cartItems) {
             if (item.getSoLuong() == null || item.getSoLuong() <= 0) {
@@ -103,19 +102,19 @@ public class ShopCheckoutServlet extends HttpServlet {
 
             int tonKho = item.getTonKho() == null ? 0 : item.getTonKho();
             if (item.getSoLuong() > tonKho) {
-                throw new SQLException("Sach \"" + item.getTenSach() + "\" khong du ton kho.");
+                throw new RuntimeException("Sach \"" + item.getTenSach() + "\" khong du ton kho.");
             }
 
             items.add(new NewInvoiceItem(item.getMaSach(), item.getSoLuong()));
         }
 
         if (items.isEmpty()) {
-            throw new SQLException("Khong co dong sach hop le trong gio hang.");
+            throw new RuntimeException("Khong co dong sach hop le trong gio hang.");
         }
         return items;
     }
 
-    private Integer buildCustomerIfProvided(HttpServletRequest request) throws SQLException {
+    private Integer buildCustomerIfProvided(HttpServletRequest request) {
         String fullName = trimToNull(request.getParameter("fullName"));
         String phone = trimToNull(request.getParameter("phone"));
         String email = trimToNull(request.getParameter("email"));
@@ -149,14 +148,14 @@ public class ShopCheckoutServlet extends HttpServlet {
         return customerDAO.insertAndGetId(customer);
     }
 
-    private BigDecimal calculateCouponDiscount(String couponCode, List<ShopCartItem> items) throws SQLException {
+    private BigDecimal calculateCouponDiscount(String couponCode, List<ShopCartItem> items) {
         if (couponCode == null || couponCode.trim().isEmpty()) {
             return BigDecimal.ZERO;
         }
 
         Promotion promotion = promotionDAO.findByCode(couponCode.trim());
         if (promotion == null) {
-            throw new SQLException("Khong tim thay coupon hop le hoac coupon da het han.");
+            throw new RuntimeException("Khong tim thay coupon hop le hoac coupon da het han.");
         }
 
         BigDecimal subtotal = calculateSubtotal(items);

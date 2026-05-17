@@ -4,15 +4,15 @@ import com.project.dao.BookDAO;
 import com.project.model.dto.ShopCartItem;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "ShopCartServlet", urlPatterns = {"/shop/cart"})
 public class ShopCartServlet extends HttpServlet {
@@ -32,7 +32,7 @@ public class ShopCartServlet extends HttpServlet {
             for (ShopCartItem item : items) {
                 total = total.add(item.getThanhTien());
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             items = Collections.emptyList();
             request.setAttribute("errorMessage", "Khong tai duoc gio hang: " + ex.getMessage());
         }

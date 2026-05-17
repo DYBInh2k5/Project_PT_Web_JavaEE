@@ -4,12 +4,12 @@ import com.project.dao.DashboardDAO;
 import com.project.model.dto.DashboardStats;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException no longer used after JPA migration
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = {"/dashboard"})
 public class DashboardServlet extends HttpServlet {
@@ -23,7 +23,7 @@ public class DashboardServlet extends HttpServlet {
         try {
             DashboardStats stats = dashboardDAO.loadStats();
             request.setAttribute("stats", stats);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             DashboardStats empty = new DashboardStats();
             empty.setRevenue(BigDecimal.ZERO);
             request.setAttribute("stats", empty);

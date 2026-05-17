@@ -3,12 +3,12 @@ package com.project.web.customer;
 import com.project.dao.CustomerDAO;
 import com.project.model.Customer;
 import java.io.IOException;
-import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+// SQLException removed; DAOs throw unchecked exceptions
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "CustomerFormServlet", urlPatterns = {"/customers/new", "/customers/edit"})
 public class CustomerFormServlet extends HttpServlet {
@@ -34,7 +34,7 @@ public class CustomerFormServlet extends HttpServlet {
                     return;
                 }
                 request.setAttribute("customer", customer);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 request.setAttribute("errorMessage", "Khong tai duoc du lieu khach hang: " + ex.getMessage());
             }
         } else {
@@ -83,7 +83,7 @@ public class CustomerFormServlet extends HttpServlet {
                 customerDAO.insert(customer);
                 response.sendRedirect(request.getContextPath() + "/customers?msg=created");
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Luu khach hang that bai: " + ex.getMessage());
             request.setAttribute("customer", customer);
             request.setAttribute("isEdit", isEdit);

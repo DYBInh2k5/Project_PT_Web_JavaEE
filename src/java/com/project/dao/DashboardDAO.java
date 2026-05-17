@@ -1,46 +1,41 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.dto.DashboardStats;
+import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class DashboardDAO {
 
-    public DashboardStats loadStats() throws SQLException {
+    public DashboardStats loadStats() {
         DashboardStats stats = new DashboardStats();
-
-        try (Connection conn = SqlServerConnection.getConnection()) {
-            stats.setTotalBooks(queryInt(conn, "SELECT COUNT(*) FROM dbo.Sach"));
-            stats.setTotalCustomers(queryInt(conn, "SELECT COUNT(*) FROM dbo.KhachHang"));
-            stats.setTotalInvoices(queryInt(conn, "SELECT COUNT(*) FROM dbo.HoaDon"));
-            stats.setRevenue(queryDecimal(conn, "SELECT ISNULL(SUM(TongTien), 0) FROM dbo.HoaDon"));
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            stats.setTotalBooks(queryInt(em, "SELECT COUNT(*) FROM dbo.Sach"));
+            stats.setTotalCustomers(queryInt(em, "SELECT COUNT(*) FROM dbo.KhachHang"));
+            stats.setTotalInvoices(queryInt(em, "SELECT COUNT(*) FROM dbo.HoaDon"));
+            stats.setRevenue(queryDecimal(em, "SELECT ISNULL(SUM(TongTien), 0) FROM dbo.HoaDon"));
+            return stats;
+        } finally {
+            em.close();
         }
-
-        return stats;
     }
 
-    private int queryInt(Connection conn, String sql) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        }
-        return 0;
+    private int queryInt(EntityManager em, String sql) {
+        Number value = (Number) em.createNativeQuery(sql).getSingleResult();
+        return value == null ? 0 : value.intValue();
     }
 
-    private BigDecimal queryDecimal(Connection conn, String sql) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                BigDecimal value = rs.getBigDecimal(1);
-                return value == null ? BigDecimal.ZERO : value;
-            }
+    private BigDecimal queryDecimal(EntityManager em, String sql) {
+        Object value = em.createNativeQuery(sql).getSingleResult();
+        if (value == null) {
+            return BigDecimal.ZERO;
         }
-        return BigDecimal.ZERO;
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        }
+        if (value instanceof Number) {
+            return BigDecimal.valueOf(((Number) value).doubleValue());
+        }
+        return new BigDecimal(String.valueOf(value));
     }
 }

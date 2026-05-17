@@ -6,15 +6,15 @@ import com.project.model.InvoiceItem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "ShopOrderPdfServlet", urlPatterns = {"/shop/order/pdf"})
 public class ShopOrderPdfServlet extends HttpServlet {
@@ -25,7 +25,7 @@ public class ShopOrderPdfServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        javax.servlet.http.HttpSession session = request.getSession(true);
+        jakarta.servlet.http.HttpSession session = request.getSession(true);
         String code = request.getParameter("code");
         Integer maHD = ShopOrderCodeUtil.decode(code);
         if (maHD == null) {
@@ -46,7 +46,7 @@ public class ShopOrderPdfServlet extends HttpServlet {
                         ShopOrderAccessSupport.grantCode(session, code);
                         canAccess = true;
                     }
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot verify order");
                     return;
                 }
@@ -73,7 +73,7 @@ public class ShopOrderPdfServlet extends HttpServlet {
             response.setHeader("Content-Disposition", "attachment; filename=order-" + maHD + ".pdf");
             response.setContentLength(pdf.length);
             response.getOutputStream().write(pdf);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cannot generate PDF");
         }
     }

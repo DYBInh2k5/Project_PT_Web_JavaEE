@@ -8,15 +8,15 @@ import com.project.model.Book;
 import com.project.web.auth.AuthSession;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "PurchaseFormServlet", urlPatterns = {"/purchases/new"})
 public class PurchaseFormServlet extends HttpServlet {
@@ -71,7 +71,7 @@ public class PurchaseFormServlet extends HttpServlet {
         try {
             List<Book> books = bookDAO.findAll(null);
             request.setAttribute("books", books);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Khong tai duoc danh sach sach: " + ex.getMessage());
         }
     }

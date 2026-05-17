@@ -3,13 +3,13 @@ package com.project.web.promotion;
 import com.project.dao.PromotionDAO;
 import com.project.model.Promotion;
 import java.io.IOException;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PromotionListServlet", urlPatterns = {"/promotions"})
 public class PromotionListServlet extends HttpServlet {
@@ -25,7 +25,7 @@ public class PromotionListServlet extends HttpServlet {
             List<Promotion> promotions = promotionDAO.findAll(keyword);
             request.setAttribute("promotions", promotions);
             request.setAttribute("keyword", keyword);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Khong tai duoc danh sach khuyen mai: " + ex.getMessage());
         }
 

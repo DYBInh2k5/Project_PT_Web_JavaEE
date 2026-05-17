@@ -3,14 +3,14 @@ package com.project.web.invoice;
 import com.project.dao.InvoiceDAO;
 import com.project.model.Invoice;
 import java.io.IOException;
-import java.sql.SQLException;
+// SQLException removed; use generic exception handling after JPA migration
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "InvoiceListServlet", urlPatterns = {"/invoices"})
 public class InvoiceListServlet extends HttpServlet {
@@ -24,7 +24,7 @@ public class InvoiceListServlet extends HttpServlet {
         List<Invoice> invoices;
         try {
             invoices = invoiceDAO.findAll();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             invoices = Collections.emptyList();
             request.setAttribute("errorMessage", "Khong tai duoc danh sach hoa don: " + ex.getMessage());
         }

@@ -1,19 +1,14 @@
 package com.project.dao;
 
-import com.project.db.SqlServerConnection;
 import com.project.model.Customer;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAO {
 
-    public List<Customer> findAll(String keyword) throws SQLException {
-        List<Customer> customers = new ArrayList<Customer>();
+    public List<Customer> findAll(String keyword) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT MaKH, TenKH, DienThoai, Email, DiaChi FROM dbo.KhachHang ");
 
@@ -24,44 +19,42 @@ public class CustomerDAO {
 
         sql.append("ORDER BY MaKH DESC");
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql.toString());
             if (hasKeyword) {
                 String q = "%" + keyword.trim() + "%";
-                ps.setString(1, q);
-                ps.setString(2, q);
-                ps.setString(3, q);
+                query.setParameter(1, q);
+                query.setParameter(2, q);
+                query.setParameter(3, q);
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    customers.add(mapRow(rs));
-                }
+            List<Object[]> rows = query.getResultList();
+            List<Customer> customers = new ArrayList<Customer>(rows.size());
+            for (Object[] row : rows) {
+                customers.add(mapRow(row));
             }
+            return customers;
+        } finally {
+            em.close();
         }
-
-        return customers;
     }
 
-    public Customer findById(int maKH) throws SQLException {
+    public Customer findById(int maKH) {
         String sql = "SELECT MaKH, TenKH, DienThoai, Email, DiaChi FROM dbo.KhachHang WHERE MaKH = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maKH);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, maKH)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public Customer findByPhoneOrEmail(String phone, String email) throws SQLException {
+    public Customer findByPhoneOrEmail(String phone, String email) {
         boolean hasPhone = phone != null && !phone.trim().isEmpty();
         boolean hasEmail = email != null && !email.trim().isEmpty();
         if (!hasPhone && !hasEmail) {
@@ -79,95 +72,136 @@ public class CustomerDAO {
         }
         sql.append(" ORDER BY MaKH DESC");
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-            int idx = 1;
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql.toString());
             if (hasPhone && hasEmail) {
-                ps.setString(idx++, phone.trim());
-                ps.setString(idx, email.trim());
+                query.setParameter(1, phone.trim());
+                query.setParameter(2, email.trim());
             } else if (hasPhone) {
-                ps.setString(idx, phone.trim());
+                query.setParameter(1, phone.trim());
             } else {
-                ps.setString(idx, email.trim());
+                query.setParameter(1, email.trim());
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
+            List<Object[]> rows = query.getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
         }
-
-        return null;
     }
 
-    public void insert(Customer customer) throws SQLException {
+    public void insert(Customer customer) {
         String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            bindFields(ps, customer);
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, emptyToNull(customer.getTenKH()))
+                    .setParameter(2, emptyToNull(customer.getDienThoai()))
+                    .setParameter(3, emptyToNull(customer.getEmail()))
+                    .setParameter(4, emptyToNull(customer.getDiaChi()))
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    public int insertAndGetId(Customer customer) throws SQLException {
+    public int insertAndGetId(Customer customer) {
         String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi) OUTPUT INSERTED.MaKH VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            bindFields(ps, customer);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Number generatedId = (Number) em.createNativeQuery(sql)
+                    .setParameter(1, emptyToNull(customer.getTenKH()))
+                    .setParameter(2, emptyToNull(customer.getDienThoai()))
+                    .setParameter(3, emptyToNull(customer.getEmail()))
+                    .setParameter(4, emptyToNull(customer.getDiaChi()))
+                    .getSingleResult();
+            tx.commit();
+            return generatedId == null ? 0 : generatedId.intValue();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
             }
+            throw ex;
+        } finally {
+            em.close();
         }
-
-        throw new SQLException("Khong tao duoc khach hang moi.");
     }
 
-    public void update(Customer customer) throws SQLException {
+    public void update(Customer customer) {
         String sql = "UPDATE dbo.KhachHang SET TenKH = ?, DienThoai = ?, Email = ?, DiaChi = ? WHERE MaKH = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            bindFields(ps, customer);
-            ps.setInt(5, customer.getMaKH());
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, emptyToNull(customer.getTenKH()))
+                    .setParameter(2, emptyToNull(customer.getDienThoai()))
+                    .setParameter(3, emptyToNull(customer.getEmail()))
+                    .setParameter(4, emptyToNull(customer.getDiaChi()))
+                    .setParameter(5, customer.getMaKH())
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    public void delete(int maKH) throws SQLException {
+    public void delete(int maKH) {
         String sql = "DELETE FROM dbo.KhachHang WHERE MaKH = ?";
 
-        try (Connection conn = SqlServerConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, maKH);
-            ps.executeUpdate();
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, maKH)
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
         }
     }
 
-    private void bindFields(PreparedStatement ps, Customer customer) throws SQLException {
-        ps.setString(1, emptyToNull(customer.getTenKH()));
-        ps.setString(2, emptyToNull(customer.getDienThoai()));
-        ps.setString(3, emptyToNull(customer.getEmail()));
-        ps.setString(4, emptyToNull(customer.getDiaChi()));
+    private Customer mapRow(Object[] row) {
+        Customer customer = new Customer();
+        customer.setMaKH(toInt(row[0]));
+        customer.setTenKH(toString(row[1]));
+        customer.setDienThoai(toString(row[2]));
+        customer.setEmail(toString(row[3]));
+        customer.setDiaChi(toString(row[4]));
+        return customer;
     }
 
-    private Customer mapRow(ResultSet rs) throws SQLException {
-        Customer c = new Customer();
-        c.setMaKH(rs.getInt("MaKH"));
-        c.setTenKH(rs.getString("TenKH"));
-        c.setDienThoai(rs.getString("DienThoai"));
-        c.setEmail(rs.getString("Email"));
-        c.setDiaChi(rs.getString("DiaChi"));
-        return c;
+    private int toInt(Object value) {
+        return value == null ? 0 : ((Number) value).intValue();
+    }
+
+    private String toString(Object value) {
+        return value == null ? null : String.valueOf(value);
     }
 
     private String emptyToNull(String value) {

@@ -10,17 +10,17 @@ import com.project.model.Customer;
 import com.project.model.Promotion;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
+// SQLException removed; use RuntimeException for validation errors after migration
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "InvoiceCreateServlet", urlPatterns = {"/invoices/new"})
 public class InvoiceCreateServlet extends HttpServlet {
@@ -56,7 +56,7 @@ public class InvoiceCreateServlet extends HttpServlet {
 
             List<NewInvoiceItem> items = extractItems(maSachArr, soLuongArr);
             if (items.isEmpty()) {
-                throw new SQLException("Vui long them it nhat 1 dong sach hop le (so luong > 0).");
+                throw new RuntimeException("Vui long them it nhat 1 dong sach hop le (so luong > 0).");
             }
 
             BigDecimal couponDiscount = calculateCouponDiscount(couponCode, items);
@@ -64,7 +64,7 @@ public class InvoiceCreateServlet extends HttpServlet {
 
             int maHD = invoiceDAO.createInvoice(maKH, maNV, finalDiscount, thueVAT, items);
             response.sendRedirect(request.getContextPath() + "/invoices/detail?id=" + maHD + "&msg=created");
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Tao hoa don that bai: " + ex.getMessage());
             loadFormData(request);
             request.getRequestDispatcher("/invoices/new.jsp").forward(request, response);
@@ -103,7 +103,7 @@ public class InvoiceCreateServlet extends HttpServlet {
                 }
             }
             request.setAttribute("bookPriceMap", bookPriceMap);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("books", Collections.emptyList());
             request.setAttribute("errorMessage", "Khong tai duoc du lieu sach: " + ex.getMessage());
         }
@@ -111,7 +111,7 @@ public class InvoiceCreateServlet extends HttpServlet {
         try {
             List<Customer> customers = customerDAO.findAll(null);
             request.setAttribute("customers", customers);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("customers", Collections.emptyList());
             if (request.getAttribute("errorMessage") == null) {
                 request.setAttribute("errorMessage", "Khong tai duoc du lieu khach hang: " + ex.getMessage());
@@ -121,7 +121,7 @@ public class InvoiceCreateServlet extends HttpServlet {
         try {
             List<Promotion> promotions = promotionDAO.findActivePromotions();
             request.setAttribute("promotions", promotions);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("promotions", Collections.emptyList());
             if (request.getAttribute("errorMessage") == null) {
                 request.setAttribute("errorMessage", "Khong tai duoc du lieu khuyen mai: " + ex.getMessage());
@@ -129,7 +129,7 @@ public class InvoiceCreateServlet extends HttpServlet {
         }
     }
 
-    private BigDecimal calculateCouponDiscount(String couponCode, List<NewInvoiceItem> items) throws SQLException {
+    private BigDecimal calculateCouponDiscount(String couponCode, List<NewInvoiceItem> items) {
         if (couponCode == null || couponCode.trim().isEmpty()) {
             return BigDecimal.ZERO;
         }
@@ -139,7 +139,7 @@ public class InvoiceCreateServlet extends HttpServlet {
 
         Promotion promotion = promotionDAO.findByCode(couponCode.trim());
         if (promotion == null) {
-            throw new SQLException("Khong tim thay coupon hop le hoac coupon da het han.");
+            throw new RuntimeException("Khong tim thay coupon hop le hoac coupon da het han.");
         }
 
         BigDecimal discount;
@@ -160,7 +160,7 @@ public class InvoiceCreateServlet extends HttpServlet {
         return discount;
     }
 
-    private Map<Integer, BigDecimal> loadBookPriceMap() throws SQLException {
+    private Map<Integer, BigDecimal> loadBookPriceMap() {
         List<Book> books = bookDAO.findAll(null);
         Map<Integer, BigDecimal> priceMap = new HashMap<Integer, BigDecimal>();
         for (Book book : books) {
@@ -170,21 +170,18 @@ public class InvoiceCreateServlet extends HttpServlet {
         }
         return priceMap;
     }
-
-    private BigDecimal calculateSubtotal(List<NewInvoiceItem> items, Map<Integer, BigDecimal> priceMap) throws SQLException {
+    private BigDecimal calculateSubtotal(List<NewInvoiceItem> items, Map<Integer, BigDecimal> priceMap) {
         BigDecimal subtotal = BigDecimal.ZERO;
         for (NewInvoiceItem item : items) {
             BigDecimal unitPrice = priceMap.get(item.getMaSach());
             if (unitPrice == null) {
-                throw new SQLException("Khong tim thay gia sach ma " + item.getMaSach());
+                throw new RuntimeException("Khong tim thay gia sach ma " + item.getMaSach());
             }
             subtotal = subtotal.add(unitPrice.multiply(BigDecimal.valueOf(item.getSoLuong())));
         }
         return subtotal;
     }
-
-    private BigDecimal calculateTang1Discount(Promotion promotion, List<NewInvoiceItem> items, Map<Integer, BigDecimal> priceMap)
-            throws SQLException {
+    private BigDecimal calculateTang1Discount(Promotion promotion, List<NewInvoiceItem> items, Map<Integer, BigDecimal> priceMap) {
 
         int buyQty = getTang1BuyQty(promotion);
         int totalQty = 0;
@@ -193,7 +190,7 @@ public class InvoiceCreateServlet extends HttpServlet {
         for (NewInvoiceItem item : items) {
             BigDecimal unitPrice = priceMap.get(item.getMaSach());
             if (unitPrice == null) {
-                throw new SQLException("Khong tim thay gia sach ma " + item.getMaSach());
+                throw new RuntimeException("Khong tim thay gia sach ma " + item.getMaSach());
             }
 
             totalQty += item.getSoLuong();
