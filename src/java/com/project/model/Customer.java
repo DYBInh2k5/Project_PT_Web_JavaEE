@@ -7,6 +7,8 @@ public class Customer {
     private String dienThoai;
     private String email;
     private String diaChi;
+    private String taiKhoan;
+    private String matKhau;
 
     public Integer getMaKH() {
         return maKH;
@@ -46,5 +48,21 @@ public class Customer {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
+    }
+
+    public String getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    public void setTaiKhoan(String taiKhoan) {
+        this.taiKhoan = taiKhoan;
+    }
+
+    public String getMatKhau() {
+        return matKhau;
+    }
+
+    public void setMatKhau(String matKhau) {
+        this.matKhau = matKhau;
     }
 }

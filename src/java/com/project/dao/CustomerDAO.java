@@ -10,7 +10,7 @@ public class CustomerDAO {
 
     public List<Customer> findAll(String keyword) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT MaKH, TenKH, DienThoai, Email, DiaChi FROM dbo.KhachHang ");
+        sql.append("SELECT MaKH, TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau FROM dbo.KhachHang ");
 
         boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
         if (hasKeyword) {
@@ -41,7 +41,7 @@ public class CustomerDAO {
     }
 
     public Customer findById(int maKH) {
-        String sql = "SELECT MaKH, TenKH, DienThoai, Email, DiaChi FROM dbo.KhachHang WHERE MaKH = ?";
+        String sql = "SELECT MaKH, TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau FROM dbo.KhachHang WHERE MaKH = ?";
 
         EntityManager em = JpaSupport.createEntityManager();
         try {
@@ -62,7 +62,7 @@ public class CustomerDAO {
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT TOP 1 MaKH, TenKH, DienThoai, Email, DiaChi FROM dbo.KhachHang WHERE ");
+        sql.append("SELECT TOP 1 MaKH, TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau FROM dbo.KhachHang WHERE ");
         if (hasPhone && hasEmail) {
             sql.append("DienThoai = ? OR Email = ?");
         } else if (hasPhone) {
@@ -92,7 +92,7 @@ public class CustomerDAO {
     }
 
     public void insert(Customer customer) {
-        String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau) VALUES (?, ?, ?, ?, ?, ?)";
 
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -103,6 +103,8 @@ public class CustomerDAO {
                     .setParameter(2, emptyToNull(customer.getDienThoai()))
                     .setParameter(3, emptyToNull(customer.getEmail()))
                     .setParameter(4, emptyToNull(customer.getDiaChi()))
+                    .setParameter(5, emptyToNull(customer.getTaiKhoan()))
+                    .setParameter(6, emptyToNull(customer.getMatKhau()))
                     .executeUpdate();
             tx.commit();
         } catch (RuntimeException ex) {
@@ -116,7 +118,7 @@ public class CustomerDAO {
     }
 
     public int insertAndGetId(Customer customer) {
-        String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi) OUTPUT INSERTED.MaKH VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO dbo.KhachHang (TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau) OUTPUT INSERTED.MaKH VALUES (?, ?, ?, ?, ?, ?)";
 
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -127,6 +129,8 @@ public class CustomerDAO {
                     .setParameter(2, emptyToNull(customer.getDienThoai()))
                     .setParameter(3, emptyToNull(customer.getEmail()))
                     .setParameter(4, emptyToNull(customer.getDiaChi()))
+                    .setParameter(5, emptyToNull(customer.getTaiKhoan()))
+                    .setParameter(6, emptyToNull(customer.getMatKhau()))
                     .getSingleResult();
             tx.commit();
             return generatedId == null ? 0 : generatedId.intValue();
@@ -141,7 +145,7 @@ public class CustomerDAO {
     }
 
     public void update(Customer customer) {
-        String sql = "UPDATE dbo.KhachHang SET TenKH = ?, DienThoai = ?, Email = ?, DiaChi = ? WHERE MaKH = ?";
+        String sql = "UPDATE dbo.KhachHang SET TenKH = ?, DienThoai = ?, Email = ?, DiaChi = ?, TaiKhoan = ?, MatKhau = ? WHERE MaKH = ?";
 
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -152,7 +156,9 @@ public class CustomerDAO {
                     .setParameter(2, emptyToNull(customer.getDienThoai()))
                     .setParameter(3, emptyToNull(customer.getEmail()))
                     .setParameter(4, emptyToNull(customer.getDiaChi()))
-                    .setParameter(5, customer.getMaKH())
+                    .setParameter(5, emptyToNull(customer.getTaiKhoan()))
+                    .setParameter(6, emptyToNull(customer.getMatKhau()))
+                    .setParameter(7, customer.getMaKH())
                     .executeUpdate();
             tx.commit();
         } catch (RuntimeException ex) {
@@ -193,7 +199,55 @@ public class CustomerDAO {
         customer.setDienThoai(toString(row[2]));
         customer.setEmail(toString(row[3]));
         customer.setDiaChi(toString(row[4]));
+        customer.setTaiKhoan(row.length > 5 ? toString(row[5]) : null);
+        customer.setMatKhau(row.length > 6 ? toString(row[6]) : null);
         return customer;
+    }
+
+    public Customer loginCustomer(String username, String password) {
+        boolean hasUsername = username != null && !username.trim().isEmpty();
+        boolean hasPassword = password != null && !password.trim().isEmpty();
+        if (!hasUsername || !hasPassword) {
+            return null;
+        }
+
+        String sql = "SELECT TOP 1 MaKH, TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau FROM dbo.KhachHang "
+                + "WHERE (TaiKhoan = ? OR Email = ? OR DienThoai = ?) AND MatKhau = ?";
+
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, username.trim())
+                    .setParameter(2, username.trim())
+                    .setParameter(3, username.trim())
+                    .setParameter(4, password)
+                    .getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
+        }
+    }
+
+    public Customer findByAccount(String username) {
+        boolean hasUsername = username != null && !username.trim().isEmpty();
+        if (!hasUsername) {
+            return null;
+        }
+
+        String sql = "SELECT TOP 1 MaKH, TenKH, DienThoai, Email, DiaChi, TaiKhoan, MatKhau FROM dbo.KhachHang "
+                + "WHERE TaiKhoan = ? OR Email = ? OR DienThoai = ? ORDER BY MaKH DESC";
+
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            List<Object[]> rows = em.createNativeQuery(sql)
+                    .setParameter(1, username.trim())
+                    .setParameter(2, username.trim())
+                    .setParameter(3, username.trim())
+                    .getResultList();
+            return rows.isEmpty() ? null : mapRow(rows.get(0));
+        } finally {
+            em.close();
+        }
     }
 
     private int toInt(Object value) {

@@ -26,9 +26,35 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         ensureInvoiceStatusColumn();
+        ensureCustomerAccountColumns();
         ensureAdminAccount();
         ensureCustomers();
         ensureBooks();
+    }
+
+    private void ensureCustomerAccountColumns() {
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Object usernameCol = em.createNativeQuery("SELECT COL_LENGTH('dbo.KhachHang', 'TaiKhoan')").getSingleResult();
+            Object passwordCol = em.createNativeQuery("SELECT COL_LENGTH('dbo.KhachHang', 'MatKhau')").getSingleResult();
+            if (usernameCol == null) {
+                em.createNativeQuery("ALTER TABLE dbo.KhachHang ADD TaiKhoan NVARCHAR(100) NULL")
+                        .executeUpdate();
+            }
+            if (passwordCol == null) {
+                em.createNativeQuery("ALTER TABLE dbo.KhachHang ADD MatKhau NVARCHAR(100) NULL")
+                        .executeUpdate();
+            }
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 
     private void ensureInvoiceStatusColumn() {
@@ -82,11 +108,11 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void ensureCustomers() {
-        seedCustomer("Nguyen Van A", "0909000001", "a@example.com", "Ha Noi");
-        seedCustomer("Tran Thi B", "0909000002", "b@example.com", "Ho Chi Minh");
+        seedCustomer("Nguyen Van A", "0909000001", "a@example.com", "Ha Noi", "customer1", "123456");
+        seedCustomer("Tran Thi B", "0909000002", "b@example.com", "Ho Chi Minh", "customer2", "123456");
     }
 
-    private void seedCustomer(String tenKH, String dienThoai, String email, String diaChi) {
+    private void seedCustomer(String tenKH, String dienThoai, String email, String diaChi, String taiKhoan, String matKhau) {
         if (customerDAO.findByPhoneOrEmail(dienThoai, email) != null) {
             return;
         }
@@ -96,6 +122,8 @@ public class DataInitializer implements CommandLineRunner {
         customer.setDienThoai(dienThoai);
         customer.setEmail(email);
         customer.setDiaChi(diaChi);
+        customer.setTaiKhoan(taiKhoan);
+        customer.setMatKhau(matKhau);
         customerDAO.insertAndGetId(customer);
     }
 
