@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 // SQLException removed; use unchecked exceptions for validation errors
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,11 +51,28 @@ public class ShopController {
     private final PromotionDAO promotionDAO = new PromotionDAO();
 
     @GetMapping("/books")
-    public ResponseEntity<?> books(@RequestParam(value = "q", required = false) String q, HttpSession session) {
+    public ResponseEntity<?> books(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "12") int size,
+            @RequestParam(value = "sort", required = false, defaultValue = "newest") String sort,
+            HttpSession session) {
         try {
-            List<Book> books = bookDAO.findAll(q);
+            List<Book> books = sortBooks(bookDAO.findAll(q), sort);
+            int safeSize = size <= 0 ? 12 : Math.min(size, 60);
+            int totalItems = books.size();
+            int totalPages = totalItems == 0 ? 0 : (int) Math.ceil(totalItems / (double) safeSize);
+            int safePage = page <= 0 ? 1 : Math.min(page, Math.max(totalPages, 1));
+            int fromIndex = Math.max(0, (safePage - 1) * safeSize);
+            int toIndex = Math.min(totalItems, fromIndex + safeSize);
+            List<Book> pageItems = fromIndex >= toIndex ? Collections.<Book>emptyList() : books.subList(fromIndex, toIndex);
             Map<String, Object> body = new LinkedHashMap<String, Object>();
-            body.put("books", books);
+            body.put("books", pageItems);
+            body.put("page", Integer.valueOf(safePage));
+            body.put("size", Integer.valueOf(safeSize));
+            body.put("totalItems", Integer.valueOf(totalItems));
+            body.put("totalPages", Integer.valueOf(totalPages));
+            body.put("sort", sort);
             body.put("cartCount", Integer.valueOf(ShopCartSupport.getCartCount(ShopCartSupport.getCart(session))));
             return ResponseEntity.ok(body);
         } catch (Exception ex) {
@@ -652,5 +670,25 @@ public class ShopController {
         public void setCouponCode(String couponCode) {
             this.couponCode = couponCode;
         }
+    }
+
+    private List<Book> sortBooks(List<Book> books, String sort) {
+        List<Book> sorted = new ArrayList<Book>(books);
+        if (sort == null) {
+            sort = "newest";
+        }
+        String normalized = sort.trim().toLowerCase();
+        if ("price_asc".equals(normalized)) {
+            sorted.sort(Comparator.comparing(Book::getDonGia, Comparator.nullsLast(Comparator.naturalOrder())));
+        } else if ("price_desc".equals(normalized)) {
+            sorted.sort(Comparator.comparing(Book::getDonGia, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+        } else if ("title_asc".equals(normalized)) {
+            sorted.sort(Comparator.comparing(Book::getTenSach, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+        } else if ("title_desc".equals(normalized)) {
+            sorted.sort(Comparator.comparing(Book::getTenSach, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)).reversed());
+        } else {
+            sorted.sort(Comparator.comparing(Book::getMaSach, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+        }
+        return sorted;
     }
 }

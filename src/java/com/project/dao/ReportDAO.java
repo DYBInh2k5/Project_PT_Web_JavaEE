@@ -5,6 +5,7 @@ import com.project.model.dto.TopBookReportItem;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,36 @@ public class ReportDAO {
                 result.add(item);
             }
             return result;
+        } finally {
+            em.close();
+        }
+    }
+
+    public BigDecimal sumRevenueOnDate(Date date) {
+        String sql = "SELECT ISNULL(SUM(hd.TongTien), 0) FROM dbo.HoaDon hd WHERE CAST(hd.NgayLap AS date) = ?";
+        return sumRevenue(sql, date);
+    }
+
+    public BigDecimal sumRevenueForMonth(Date date) {
+        String sql = "SELECT ISNULL(SUM(hd.TongTien), 0) FROM dbo.HoaDon hd "
+                + "WHERE YEAR(hd.NgayLap) = YEAR(?) AND MONTH(hd.NgayLap) = MONTH(?)";
+        return sumRevenue(sql, date, date);
+    }
+
+    public BigDecimal sumRevenueForYear(Date date) {
+        String sql = "SELECT ISNULL(SUM(hd.TongTien), 0) FROM dbo.HoaDon hd WHERE YEAR(hd.NgayLap) = YEAR(?)";
+        return sumRevenue(sql, date);
+    }
+
+    private BigDecimal sumRevenue(String sql, Object... params) {
+        EntityManager em = JpaSupport.createEntityManager();
+        try {
+            var query = em.createNativeQuery(sql);
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i + 1, params[i]);
+            }
+            Object value = query.getSingleResult();
+            return value == null ? BigDecimal.ZERO : toBigDecimal(value);
         } finally {
             em.close();
         }
@@ -74,5 +105,15 @@ public class ReportDAO {
         } finally {
             em.close();
         }
+    }
+
+    private BigDecimal toBigDecimal(Object value) {
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        }
+        if (value instanceof Number) {
+            return BigDecimal.valueOf(((Number) value).doubleValue());
+        }
+        return new BigDecimal(String.valueOf(value));
     }
 }
