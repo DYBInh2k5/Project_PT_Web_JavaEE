@@ -2,7 +2,6 @@ package com.project.dao;
 
 import com.project.model.Book;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.EntityManager;
@@ -22,7 +21,7 @@ public class BookDAO {
         }));
     }
 
-    public List<Book> findAll(String keyword) throws SQLException {
+    public List<Book> findAll(String keyword) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
             StringBuilder jpql = new StringBuilder("SELECT b FROM Book b");
@@ -43,7 +42,7 @@ public class BookDAO {
         }
     }
 
-    public Book findById(int maSach) throws SQLException {
+    public Book findById(int maSach) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
             return entityManager.find(Book.class, Integer.valueOf(maSach));
@@ -52,7 +51,7 @@ public class BookDAO {
         }
     }
 
-    public void insert(Book book) throws SQLException {
+    public void insert(Book book) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -62,13 +61,13 @@ public class BookDAO {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            throw new SQLException("Khong them duoc sach: " + ex.getMessage(), ex);
+            throw new RuntimeException("Khong them duoc sach: " + ex.getMessage(), ex);
         } finally {
             entityManager.close();
         }
     }
 
-    public void update(Book book) throws SQLException {
+    public void update(Book book) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -78,13 +77,13 @@ public class BookDAO {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            throw new SQLException("Khong cap nhat duoc sach: " + ex.getMessage(), ex);
+            throw new RuntimeException("Khong cap nhat duoc sach: " + ex.getMessage(), ex);
         } finally {
             entityManager.close();
         }
     }
 
-    public void delete(int maSach) throws SQLException {
+    public void delete(int maSach) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -97,7 +96,7 @@ public class BookDAO {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
-            throw new SQLException("Khong xoa duoc sach: " + ex.getMessage(), ex);
+            throw new RuntimeException("Khong xoa duoc sach: " + ex.getMessage(), ex);
         } finally {
             entityManager.close();
         }
