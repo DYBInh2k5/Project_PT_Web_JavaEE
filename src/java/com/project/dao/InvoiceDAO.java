@@ -32,7 +32,7 @@ public class InvoiceDAO {
     }
 
     public List<Invoice> findAll() {
-        String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, kh.TenKH "
+        String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "ORDER BY hd.MaHD DESC";
@@ -51,7 +51,7 @@ public class InvoiceDAO {
     }
 
     public Invoice findById(int maHD) {
-        String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, kh.TenKH "
+        String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
                 + "LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH "
                 + "WHERE hd.MaHD = ?";
@@ -75,7 +75,7 @@ public class InvoiceDAO {
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, ");
+        sql.append("SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, ");
         sql.append("kh.TenKH, kh.DienThoai, kh.Email, kh.DiaChi ");
         sql.append("FROM dbo.HoaDon hd ");
         sql.append("LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH ");
@@ -115,7 +115,7 @@ public class InvoiceDAO {
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, ");
+        sql.append("SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, ");
         sql.append("kh.TenKH, kh.DienThoai, kh.Email, kh.DiaChi ");
         sql.append("FROM dbo.HoaDon hd ");
         sql.append("LEFT JOIN dbo.KhachHang kh ON hd.MaKH = kh.MaKH ");
@@ -186,7 +186,7 @@ public class InvoiceDAO {
         try {
             tx.begin();
 
-            int maHD = insertInvoiceHeader(em, maKH, maNV, giamGia, thueVat);
+            int maHD = insertInvoiceHeader(em, maKH, maNV, giamGia, thueVat, "NEW");
             BigDecimal subTotal = BigDecimal.ZERO;
 
             for (NewInvoiceItem item : items) {
@@ -232,9 +232,9 @@ public class InvoiceDAO {
         }
     }
 
-    private int insertInvoiceHeader(EntityManager em, Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat) {
-        String sql = "INSERT INTO dbo.HoaDon (MaNV, MaKH, NgayLap, TongTien, GiamGia, ThueVAT) "
-                + "OUTPUT INSERTED.MaHD VALUES (?, ?, GETDATE(), ?, ?, ?)";
+    private int insertInvoiceHeader(EntityManager em, Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat, String trangThai) {
+        String sql = "INSERT INTO dbo.HoaDon (MaNV, MaKH, NgayLap, TongTien, GiamGia, ThueVAT, TrangThai) "
+                + "OUTPUT INSERTED.MaHD VALUES (?, ?, GETDATE(), ?, ?, ?, ?)";
 
         Number generated = (Number) em.createNativeQuery(sql)
                 .setParameter(1, maNV == null || maNV.trim().isEmpty() ? null : maNV.trim())
@@ -242,6 +242,7 @@ public class InvoiceDAO {
                 .setParameter(3, BigDecimal.ZERO)
                 .setParameter(4, giamGia == null ? BigDecimal.ZERO : giamGia)
                 .setParameter(5, thueVat == null ? BigDecimal.ZERO : thueVat)
+                .setParameter(6, trangThai == null || trangThai.trim().isEmpty() ? "NEW" : trangThai.trim())
                 .getSingleResult();
 
         if (generated == null) {
@@ -258,6 +259,44 @@ public class InvoiceDAO {
                 .setParameter(3, thueVat)
                 .setParameter(4, maHD)
                 .executeUpdate();
+    }
+
+    public void updateStatus(int maHD, String trangThai) {
+        String normalized = normalizeStatus(trangThai);
+        String sql = "UPDATE dbo.HoaDon SET TrangThai = ? WHERE MaHD = ?";
+
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery(sql)
+                    .setParameter(1, normalized)
+                    .setParameter(2, maHD)
+                    .executeUpdate();
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    public String normalizeStatus(String trangThai) {
+        if (trangThai == null) {
+            return "NEW";
+        }
+
+        String normalized = trangThai.trim().toUpperCase();
+        if (normalized.isEmpty()) {
+            return "NEW";
+        }
+        if ("NEW".equals(normalized) || "SHIPPED".equals(normalized) || "PAID".equals(normalized)) {
+            return normalized;
+        }
+        throw new IllegalArgumentException("Trang thai khong hop le. Chi chap nhan: NEW, SHIPPED, PAID.");
     }
 
     private StockInfo getStockInfoForUpdate(EntityManager em, int maSach) {
@@ -303,16 +342,17 @@ public class InvoiceDAO {
         invoice.setTongTien(row[4] == null ? BigDecimal.ZERO : (BigDecimal) row[4]);
         invoice.setGiamGia(row[5] == null ? BigDecimal.ZERO : (BigDecimal) row[5]);
         invoice.setThueVAT(row[6] == null ? BigDecimal.ZERO : (BigDecimal) row[6]);
-        invoice.setTenKH(toString(row[7]));
+        invoice.setTrangThai(row[7] == null ? "NEW" : toString(row[7]));
+        invoice.setTenKH(toString(row[8]));
 
-        if (row.length > 8) {
-            invoice.setDienThoaiKH(toString(row[8]));
-        }
         if (row.length > 9) {
-            invoice.setEmailKH(toString(row[9]));
+            invoice.setDienThoaiKH(toString(row[9]));
         }
         if (row.length > 10) {
-            invoice.setDiaChiKH(toString(row[10]));
+            invoice.setEmailKH(toString(row[10]));
+        }
+        if (row.length > 11) {
+            invoice.setDiaChiKH(toString(row[11]));
         }
 
         return invoice;

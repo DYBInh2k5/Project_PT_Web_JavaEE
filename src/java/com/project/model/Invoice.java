@@ -12,6 +12,7 @@ public class Invoice {
     private BigDecimal tongTien;
     private BigDecimal giamGia;
     private BigDecimal thueVAT;
+    private String trangThai;
     private String tenKH;
     private String dienThoaiKH;
     private String emailKH;
@@ -71,6 +72,14 @@ public class Invoice {
 
     public void setThueVAT(BigDecimal thueVAT) {
         this.thueVAT = thueVAT;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     public String getTenKH() {

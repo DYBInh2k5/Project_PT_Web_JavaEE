@@ -62,6 +62,19 @@ public class InvoiceController {
         }
     }
 
+    @PostMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") int id, @RequestBody InvoiceStatusRequest request) {
+        try {
+            invoiceDAO.updateStatus(id, request == null ? null : request.getStatus());
+            Map<String, Object> body = new LinkedHashMap<String, Object>();
+            body.put("maHD", Integer.valueOf(id));
+            body.put("status", invoiceDAO.normalizeStatus(request == null ? null : request.getStatus()));
+            return ResponseEntity.ok(body);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(error(ex.getMessage()));
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody InvoiceCreateRequest request) {
         try {
@@ -306,6 +319,18 @@ public class InvoiceController {
 
         public void setSoLuong(Integer soLuong) {
             this.soLuong = soLuong;
+        }
+    }
+
+    public static class InvoiceStatusRequest {
+        private String status;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
     }
 }

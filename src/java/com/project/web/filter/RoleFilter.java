@@ -66,6 +66,21 @@ public class RoleFilter implements Filter {
                 || "/promotions/new".equals(path)
                 || "/promotions/edit".equals(path)
                 || "/promotions/delete".equals(path)
+                || "/api/books".equals(path)
+                || path.startsWith("/api/books/")
+                || "/api/customers".equals(path)
+                || path.startsWith("/api/customers/")
+                || "/api/invoices".equals(path)
+                || path.startsWith("/api/invoices/")
+                || "/api/promotions".equals(path)
+                || path.startsWith("/api/promotions/")
+                || "/api/purchases".equals(path)
+                || path.startsWith("/api/purchases/")
+                || "/api/returns".equals(path)
+                || path.startsWith("/api/returns/")
+                || "/api/dashboard".equals(path)
+                || "/api/reports".equals(path)
+                || path.startsWith("/api/reports/")
                 || path.startsWith("/reports/");
     }
 

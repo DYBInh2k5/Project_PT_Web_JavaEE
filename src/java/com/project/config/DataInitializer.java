@@ -25,9 +25,35 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        ensureInvoiceStatusColumn();
         ensureAdminAccount();
         ensureCustomers();
         ensureBooks();
+    }
+
+    private void ensureInvoiceStatusColumn() {
+        EntityManager em = JpaSupport.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Object result = em.createNativeQuery("SELECT COL_LENGTH('dbo.HoaDon', 'TrangThai')")
+                    .getSingleResult();
+            if (result == null) {
+                em.createNativeQuery("ALTER TABLE dbo.HoaDon ADD TrangThai NVARCHAR(30) NULL")
+                        .executeUpdate();
+                em.createNativeQuery("UPDATE dbo.HoaDon SET TrangThai = 'NEW' WHERE TrangThai IS NULL")
+                        .executeUpdate();
+                em.createNativeQuery("ALTER TABLE dbo.HoaDon ADD CONSTRAINT DF_HoaDon_TrangThai DEFAULT 'NEW' FOR TrangThai")
+                        .executeUpdate();
+            }
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 
     private void ensureAdminAccount() {
