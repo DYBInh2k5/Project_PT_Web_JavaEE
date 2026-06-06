@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{shop/fragments :: head('Bookora - Home')}"></head>
+<body>
+<div th:replace="~{shop/fragments :: header}"></div>
+
+<main class="main-content">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Bookora</h1>
+            <p>Discover your next great read.</p>
+            <form action="/store/" method="get" class="search-form">
+                <input type="text" name="keyword" placeholder="Search books..." th:value="${param.keyword}">
+                <select name="category" th:value="${param.category}">
+                    <option value="">All Categories</option>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
+                            th:selected="${param.category != null and param.category[0] eq cat}"></option>
+                </select>
+                <select name="sort" th:value="${param.sort}">
+                    <option value="">Default</option>
+                    <option value="asc" th:selected="${param.sort != null and param.sort[0] eq 'asc'}">Price: Low to High</option>
+                    <option value="desc" th:selected="${param.sort != null and param.sort[0] eq 'desc'}">Price: High to Low</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="products-grid">
+        <div class="book-card" th:each="book : ${books}">
+            <a th:href="@{/store/detail(id=${book.maSach})}">
+                <div class="book-image">
+                    <img th:src="${book.anhBia != null and !book.anhBia.isEmpty()} ? ${book.anhBia} : '/assets/no-image.png'"
+                         th:alt="${book.tenSach}">
+                </div>
+                <div class="book-info">
+                    <h3 th:text="${book.tenSach}">Book Title</h3>
+                    <p class="book-author" th:text="${book.tacGia}">Author</p>
+                    <p class="book-price" th:text="'$' + ${#numbers.formatDecimal(book.donGia, 1, 2)}">$0.00</p>
+                </div>
+            </a>
+            <form action="/store/cart/add" method="post">
+                <input type="hidden" name="id" th:value="${book.maSach}">
+                <button type="submit" class="btn btn-add-cart">Add to Cart</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+        <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=0)}"
+           th:classappend="${currentPage == 0} ? 'disabled' : ''">First</a>
+        <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${currentPage - 1})}"
+           th:classappend="${currentPage == 0} ? 'disabled' : ''">&laquo;</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${i})}"
+               th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i + 1}">1</a>
+        </span>
+        <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${currentPage + 1})}"
+           th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">&raquo;</a>
+        <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${totalPages - 1})}"
+           th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">Last</a>
+    </div>
+</main>
+
+<div th:replace="~{shop/fragments :: footer}"></div>
+</body>
+</html>

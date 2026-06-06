@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{shop/fragments :: head('Bookora - Order Detail')}"></head>
+<body>
+<div th:replace="~{shop/fragments :: header}"></div>
+
+<main class="main-content">
+    <p th:if="${errorMessage != null}" class="error-message" th:text="${errorMessage}">Error</p>
+    <div th:unless="${errorMessage != null}">
+        <h1>Order #[[${invoice.maHD}]]</h1>
+        <p><strong>Date:</strong> [[${#dates.format(invoice.ngayLap, 'yyyy-MM-dd HH:mm')}]]</p>
+        <p><strong>Status:</strong> [[${invoice.trangThai}]]</p>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td th:text="${item.tenSach}">Title</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
+                    <td th:text="${item.soLuong}">1</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.thanhTien, 1, 2)}">$0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong th:text="'$' + ${#numbers.formatDecimal(invoice.tongTien, 1, 2)}">$0.00</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+        <a href="/store/my-orders" class="btn btn-secondary">Back to Orders</a>
+    </div>
+</main>
+
+<div th:replace="~{shop/fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Products</title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <h2>Bookora Admin</h2>
+        <nav>
+            <a href="/admin/">Dashboard</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/revenue">Revenue</a>
+            <a href="/admin/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="admin-content">
+        <h1>Products</h1>
+        <a href="/admin/products/add" class="btn btn-primary">Add Product</a>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${books}">
+                    <td th:text="${p.maSach}">1</td>
+                    <td><img th:src="${p.anhBia}" width="50"></td>
+                    <td th:text="${p.tenSach}">Title</td>
+                    <td th:text="${p.tacGia}">Author</td>
+                    <td th:text="${p.theLoai}">Category</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(p.donGia, 1, 2)}">$0.00</td>
+                    <td th:text="${p.soLuong}">0</td>
+                    <td>
+                        <a th:href="@{/admin/products/edit/{id}(id=${p.maSach})}" class="btn btn-sm">Edit</a>
+                        <form th:action="@{/admin/products/delete/{id}(id=${p.maSach})}" method="post" style="display:inline"
+                              onsubmit="return confirm('Delete this product?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

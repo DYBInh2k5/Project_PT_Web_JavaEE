@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{shop/fragments :: head('Bookora - Checkout')}"></head>
+<body>
+<div th:replace="~{shop/fragments :: header}"></div>
+
+<main class="main-content">
+    <h1>Checkout</h1>
+    <p th:if="${emptyCart != null}" class="info-message" th:text="${emptyCart}">Your cart is empty</p>
+    <div th:unless="${emptyCart != null}">
+        <p>Welcome, <strong th:text="${session.STORE_CUSTOMER.tenKH}">Customer</strong></p>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.tenSach}">Title</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
+                    <td th:text="${item.soLuong}">1</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.donGia * item.soLuong, 1, 2)}">$0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$0.00</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+        <form action="/store/checkout" method="post">
+            <div class="form-group">
+                <label for="diaChi">Delivery Address:</label>
+                <textarea id="diaChi" name="diaChi" required th:text="${session.STORE_CUSTOMER.diaChi}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ghiChu">Note:</label>
+                <textarea id="ghiChu" name="ghiChu"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+            <a href="/store/cart" class="btn btn-secondary">Back to Cart</a>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{shop/fragments :: footer}"></div>
+</body>
+</html>

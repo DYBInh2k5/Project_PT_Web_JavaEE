@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Orders</title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <h2>Bookora Admin</h2>
+        <nav>
+            <a href="/admin/">Dashboard</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/revenue">Revenue</a>
+            <a href="/admin/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="admin-content">
+        <h1>Orders</h1>
+        <form action="/admin/orders" method="get" style="margin-bottom:1rem">
+            <select name="status" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="New" th:selected="${selectedStatus == 'New'}">New</option>
+                <option value="Shipped" th:selected="${selectedStatus == 'Shipped'}">Shipped</option>
+                <option value="Paid" th:selected="${selectedStatus == 'Paid'}">Paid</option>
+            </select>
+        </form>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="o : ${invoices}">
+                    <td th:text="${o.maHD}">1</td>
+                    <td th:text="${o.tenKH}">Customer</td>
+                    <td th:text="${#dates.format(o.ngayLap, 'yyyy-MM-dd')}">2025-01-01</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(o.tongTien, 1, 2)}">$0.00</td>
+                    <td th:text="${o.trangThai}">New</td>
+                    <td><a th:href="@{/admin/orders/{id}(id=${o.maHD})}" class="btn btn-sm">View</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

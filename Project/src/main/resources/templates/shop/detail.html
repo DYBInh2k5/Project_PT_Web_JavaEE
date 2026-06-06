@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{shop/fragments :: head(${book.tenSach})}"></head>
+<body>
+<div th:replace="~{shop/fragments :: header}"></div>
+
+<main class="main-content">
+    <div class="book-detail">
+        <div class="book-detail-image">
+            <img th:src="${book.anhBia != null and !book.anhBia.isEmpty()} ? ${book.anhBia} : '/assets/no-image.png'"
+                 th:alt="${book.tenSach}">
+        </div>
+        <div class="book-detail-info">
+            <h1 th:text="${book.tenSach}">Title</h1>
+            <p class="book-author" th:text="'by ' + ${book.tacGia}">Author</p>
+            <p class="book-category" th:text="'Category: ' + ${book.theLoai}">Category</p>
+            <p class="book-price" th:text="'$' + ${#numbers.formatDecimal(book.donGia, 1, 2)}">$0.00</p>
+            <form action="/store/cart/add" method="post" style="display:inline">
+                <input type="hidden" name="id" th:value="${book.maSach}">
+                <button type="submit" class="btn btn-add-cart">Add to Cart</button>
+            </form>
+            <a href="/store/" class="btn btn-secondary">Back to Shop</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{shop/fragments :: footer}"></div>
+</body>
+</html>

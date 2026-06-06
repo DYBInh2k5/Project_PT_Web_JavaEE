@@ -1,0 +1,17 @@
+target/
+build/
+*.iml
+.idea/
+.vscode/
+out/
+.DS_Store
+*.class
+*.jar
+*.war
+*.log
+stitch_exports/
+stitch_*
+mcp_*.json
+shop_cookies.txt
+.junie/
+nbproject/

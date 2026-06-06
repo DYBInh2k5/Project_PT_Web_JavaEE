@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Order #[[${invoice.maHD}]]</title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <h2>Bookora Admin</h2>
+        <nav>
+            <a href="/admin/">Dashboard</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/revenue">Revenue</a>
+            <a href="/admin/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="admin-content">
+        <h1>Order #[[${invoice.maHD}]]</h1>
+        <p><strong>Customer:</strong> [[${invoice.tenKH}]]</p>
+        <p><strong>Date:</strong> [[${#dates.format(invoice.ngayLap, 'yyyy-MM-dd HH:mm')}]]</p>
+        <p><strong>Address:</strong> [[${invoice.diaChiKH}]]</p>
+        <p><strong>Note:</strong> -</p>
+        <p><strong>Current Status:</strong> [[${invoice.trangThai}]]</p>
+
+        <form th:action="@{/admin/orders/{id}/status(id=${invoice.maHD})}" method="post" style="margin-bottom:1rem">
+            <select name="status">
+                <option value="New" th:selected="${invoice.trangThai == 'New'}">New</option>
+                <option value="Shipped" th:selected="${invoice.trangThai == 'Shipped'}">Shipped</option>
+                <option value="Paid" th:selected="${invoice.trangThai == 'Paid'}">Paid</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Update Status</button>
+        </form>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td th:text="${item.tenSach}">Title</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
+                    <td th:text="${item.soLuong}">1</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.thanhTien, 1, 2)}">$0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong th:text="'$' + ${#numbers.formatDecimal(invoice.tongTien, 1, 2)}">$0.00</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+        <a href="/admin/orders" class="btn btn-secondary">Back to Orders</a>
+    </main>
+</div>
+</body>
+</html>

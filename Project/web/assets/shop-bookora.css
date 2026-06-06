@@ -1,0 +1,100 @@
+:root {
+  --surface: #faf9f5;
+  --surface-container: #efeeea;
+  --surface-container-high: #e9e8e4;
+  --surface-container-low: #f4f4f0;
+  --primary: #473700;
+  --primary-soft: #624e00;
+  --primary-container: #624e00;
+  --secondary: #3b6934;
+  --on-surface: #1b1c1a;
+  --on-surface-variant: #42493e;
+  --on-primary: #ffffff;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #3f6d38;
+  --secondary-container: #b9eeab;
+  --outline-variant: #c2c9bb;
+  --outline: #72796e;
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --secondary-fixed: #bcf0ae;
+  --secondary-fixed-dim: #a1d494;
+  --primary-fixed: #ffe088;
+  --primary-fixed-dim: #e9c349;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  color: var(--on-surface);
+  background-color: var(--surface);
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3, .font-notoSerif, .brand {
+  font-family: 'Noto Serif', serif;
+  color: var(--primary);
+}
+
+.shop-bg-home {
+  background:
+    radial-gradient(circle at 8% 18%, rgba(233, 195, 73, 0.18) 0%, rgba(250, 249, 245, 0) 42%),
+    radial-gradient(circle at 90% 82%, rgba(161, 212, 148, 0.16) 0%, rgba(250, 249, 245, 0) 40%),
+    var(--surface);
+}
+
+.shop-bg-detail {
+  background:
+    radial-gradient(circle at 80% 16%, rgba(233, 195, 73, 0.16) 0%, rgba(250, 249, 245, 0) 38%),
+    var(--surface);
+}
+
+.shop-bg-cart {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(194, 201, 187, 0.2) 0%, rgba(250, 249, 245, 0) 32%),
+    var(--surface);
+}
+
+.shop-bg-checkout {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(161, 212, 148, 0.14) 0%, rgba(250, 249, 245, 0) 36%),
+    var(--surface);
+}
+
+.shop-bg-orders {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(161, 212, 148, 0.2) 0%, rgba(250, 249, 245, 0) 38%),
+    var(--surface);
+}
+
+.shop-bg-lookup {
+  background:
+    radial-gradient(circle at 84% 20%, rgba(233, 195, 73, 0.12) 0%, rgba(250, 249, 245, 0) 35%),
+    var(--surface);
+}
+
+.shop-bg-order {
+  background:
+    radial-gradient(circle at 88% 14%, rgba(233, 195, 73, 0.16) 0%, rgba(250, 249, 245, 0) 36%),
+    var(--surface);
+}
+
+.editorial-shadow {
+  box-shadow: 0 20px 40px -15px rgba(27, 28, 26, 0.05);
+}
+
+.glass-card {
+  background: rgba(250, 249, 245, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(194, 201, 187, 0.3);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  .shop-page > main {
+    padding-top: 6.25rem;
+  }
+}

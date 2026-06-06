@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Dashboard</title>
+    <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <h2>Bookora Admin</h2>
+        <nav>
+            <a href="/admin/">Dashboard</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/revenue">Revenue</a>
+            <a href="/admin/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="admin-content">
+        <h1>Dashboard</h1>
+        <div class="stats-grid" th:if="${stats != null}">
+            <div class="stat-card">
+                <h3>Total Orders</h3>
+                <p th:text="${stats.totalInvoices}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Products</h3>
+                <p th:text="${stats.totalBooks}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Customers</h3>
+                <p th:text="${stats.totalCustomers}">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Revenue</h3>
+                <p th:text="'$' + ${#numbers.formatDecimal(stats.revenue, 1, 2)}">$0.00</p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

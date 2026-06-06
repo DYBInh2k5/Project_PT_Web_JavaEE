@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Revenue</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <h2>Bookora Admin</h2>
+        <nav>
+            <a href="/admin/">Dashboard</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/revenue">Revenue</a>
+            <a href="/admin/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="admin-content">
+        <h1>Revenue</h1>
+        <form action="/admin/revenue" method="get" class="admin-form" style="max-width:400px">
+            <div class="form-group">
+                <label for="date">Select Date:</label>
+                <input type="date" id="date" name="date" th:value="${selectedDate}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">View</button>
+        </form>
+
+        <div th:if="${dayRevenue != null}" class="stats-grid" style="margin-top:2rem">
+            <div class="stat-card">
+                <h3>Day Revenue</h3>
+                <p th:text="'$' + ${#numbers.formatDecimal(dayRevenue, 1, 2)}">$0.00</p>
+            </div>
+            <div class="stat-card">
+                <h3>Month Revenue</h3>
+                <p th:text="'$' + ${#numbers.formatDecimal(monthRevenue, 1, 2)}">$0.00</p>
+            </div>
+            <div class="stat-card">
+                <h3>Year Revenue</h3>
+                <p th:text="'$' + ${#numbers.formatDecimal(yearRevenue, 1, 2)}">$0.00</p>
+            </div>
+        </div>
+
+        <div th:if="${chartLabels != null}" style="margin-top:2rem; max-width:800px">
+            <h2>Revenue - Last 7 Days</h2>
+            <canvas id="revenueChart" width="800" height="400"></canvas>
+            <script>
+                const labels = [[${chartLabels}]];
+                const data = [[${chartValues}]];
+                new Chart(document.getElementById('revenueChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Revenue ($)',
+                            data: data,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </main>
+</div>
+</body>
+</html>

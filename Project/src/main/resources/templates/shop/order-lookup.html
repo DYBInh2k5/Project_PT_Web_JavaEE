@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{shop/fragments :: head('Bookora - Lookup Order')}"></head>
+<body>
+<div th:replace="~{shop/fragments :: header}"></div>
+
+<main class="main-content">
+    <h1>Lookup Order</h1>
+    <p>Enter your order code to look up your order details.</p>
+    <form action="/store/order-lookup" method="get">
+        <div class="form-group">
+            <label for="code">Order Code:</label>
+            <input type="text" id="code" name="code" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <p th:if="${notFound != null}" class="error-message" th:text="${notFound}">Order not found.</p>
+</main>
+
+<div th:replace="~{shop/fragments :: footer}"></div>
+</body>
+</html>
