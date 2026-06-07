@@ -11,6 +11,9 @@
 <main class="main-content">
     <h1>Checkout</h1>
 
+    <!-- HIỂN THỊ LỖI: Nếu có lỗi (từ redirectAttributes), hiển thị thông báo -->
+    <p th:if="${error != null}" class="error-message" th:text="${error}" style="color:#8B0000;background:rgba(139,0,0,0.1);padding:12px 16px;border:1px solid #8B0000;margin-bottom:20px;border-radius:4px"></p>
+
     <!-- THÔNG BÁO GIỎ TRỐNG: Nếu emptyCart != null, giỏ rỗng không thể checkout -->
     <p th:if="${emptyCart != null}" class="info-message" th:text="${emptyCart}">Your cart is empty</p>
 

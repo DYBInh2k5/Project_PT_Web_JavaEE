@@ -99,20 +99,25 @@ public class DataInitializer implements CommandLineRunner {
      * Tạo tài khoản admin mặc định (admin / 123456) nếu chưa tồn tại trong bảng NhanVien.
      */
     private void ensureAdminAccount() {
-        if (countRows("SELECT COUNT(*) FROM dbo.NhanVien WHERE TaiKhoan = ?", "admin") > 0) {
-            return;
-        }
-
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            em.createNativeQuery("INSERT INTO dbo.NhanVien (HoTen, TaiKhoan, MatKhau, VaiTro) VALUES (?, ?, ?, ?)")
-                    .setParameter(1, "Administrator")
-                    .setParameter(2, "admin")
-                    .setParameter(3, "123456")
-                    .setParameter(4, "Admin")
-                    .executeUpdate();
+            if (countRows("SELECT COUNT(*) FROM dbo.NhanVien WHERE TaiKhoan = ?", "admin") > 0) {
+                // Cập nhật mật khẩu admin về 123456 nếu tài khoản đã tồn tại
+                em.createNativeQuery("UPDATE dbo.NhanVien SET MatKhau = ?, VaiTro = ? WHERE TaiKhoan = ?")
+                        .setParameter(1, "123456")
+                        .setParameter(2, "Admin")
+                        .setParameter(3, "admin")
+                        .executeUpdate();
+            } else {
+                em.createNativeQuery("INSERT INTO dbo.NhanVien (HoTen, TaiKhoan, MatKhau, VaiTro) VALUES (?, ?, ?, ?)")
+                        .setParameter(1, "Administrator")
+                        .setParameter(2, "admin")
+                        .setParameter(3, "123456")
+                        .setParameter(4, "Admin")
+                        .executeUpdate();
+            }
             tx.commit();
         } catch (RuntimeException ex) {
             if (tx.isActive()) {

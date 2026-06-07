@@ -369,14 +369,14 @@ public class InvoiceDAO {
     }
 
     // === insertInvoiceItem: Chèn một dòng chi tiết vào bảng ChiTietHoaDon ===
+    // ThanhTien là cột computed (tự động tính = DonGia * SoLuong) nên không INSERT
     private void insertInvoiceItem(EntityManager em, int maHD, NewInvoiceItem item, BigDecimal donGia, BigDecimal thanhTien) {
-        String sql = "INSERT INTO dbo.ChiTietHoaDon (MaHD, MaSach, SoLuong, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO dbo.ChiTietHoaDon (MaHD, MaSach, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
         em.createNativeQuery(sql)
                 .setParameter(1, maHD)
                 .setParameter(2, item.getMaSach())
                 .setParameter(3, item.getSoLuong())
                 .setParameter(4, donGia)
-                .setParameter(5, thanhTien)
                 .executeUpdate();
     }
 
