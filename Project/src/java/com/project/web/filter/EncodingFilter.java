@@ -8,6 +8,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
+/**
+ * EncodingFilter — Bộ lọc thiết lập mã hóa UTF-8 cho tất cả request và response.
+ * Đảm bảo dữ liệu tiếng Việt (Unicode) được xử lý đúng xuyên suốt ứng dụng.
+ */
 public class EncodingFilter implements Filter {
 
     @Override

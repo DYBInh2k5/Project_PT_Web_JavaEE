@@ -1,16 +1,19 @@
+// ===== Model Chi tiết hóa đơn (InvoiceItem) — từng dòng sản phẩm trong đơn =====
+// Mỗi InvoiceItem là một sản phẩm được mua trong hóa đơn
 package com.project.model;
 
 import java.math.BigDecimal;
 
 public class InvoiceItem {
 
-    private Integer maCT;
-    private Integer maHD;
-    private Integer maSach;
-    private Integer soLuong;
-    private BigDecimal donGia;
-    private BigDecimal thanhTien;
-    private String tenSach;
+    // ===== Các thuộc tính chi tiết =====
+    private Integer maCT;       // Mã chi tiết (PK, tự động tăng)
+    private Integer maHD;       // Mã hóa đơn (FK → Invoice.maHD)
+    private Integer maSach;     // Mã sách (FK → Book.maSach)
+    private Integer soLuong;    // Số lượng mua
+    private BigDecimal donGia;  // Đơn giá tại thời điểm mua
+    private BigDecimal thanhTien; // Thành tiền = số lượng * đơn giá
+    private String tenSach;     // Tên sách (lưu để tra cứu nhanh)
 
     public Integer getMaCT() {
         return maCT;

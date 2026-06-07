@@ -1,54 +1,79 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: revenue.html (Admin - Báo cáo doanh thu)
+     Mô tả: Trang xem báo cáo doanh thu theo ngày, tháng, năm.
+     Cho phép chọn ngày và hiển thị biểu đồ doanh thu 7 ngày gần nhất
+     bằng thư viện Chart.js.
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin - Revenue</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
+    <!-- Thư viện Chart.js để vẽ biểu đồ doanh thu -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
         <h1>Revenue</h1>
-        <form action="/admin/revenue" method="get" class="admin-form" style="max-width:400px">
+
+        <!-- Form chọn ngày xem doanh thu, gửi GET để tải lại trang với tham số "date" -->
+        <form th:action="@{/admin/revenue}" method="get" class="admin-form" style="max-width:400px">
             <div class="form-group">
                 <label for="date">Select Date:</label>
+                <!-- Ô nhập ngày, giá trị mặc định từ biến selectedDate -->
                 <input type="date" id="date" name="date" th:value="${selectedDate}" required>
             </div>
+            <!-- Nút xem báo cáo -->
             <button type="submit" class="btn btn-primary">View</button>
         </form>
 
+        <!-- Khu vực hiển thị thống kê doanh thu: chỉ hiện khi dayRevenue khác null -->
         <div th:if="${dayRevenue != null}" class="stats-grid" style="margin-top:2rem">
+            <!-- Doanh thu trong ngày -->
             <div class="stat-card">
                 <h3>Day Revenue</h3>
                 <p th:text="'$' + ${#numbers.formatDecimal(dayRevenue, 1, 2)}">$0.00</p>
             </div>
+            <!-- Doanh thu trong tháng -->
             <div class="stat-card">
                 <h3>Month Revenue</h3>
                 <p th:text="'$' + ${#numbers.formatDecimal(monthRevenue, 1, 2)}">$0.00</p>
             </div>
+            <!-- Doanh thu trong năm -->
             <div class="stat-card">
                 <h3>Year Revenue</h3>
                 <p th:text="'$' + ${#numbers.formatDecimal(yearRevenue, 1, 2)}">$0.00</p>
             </div>
         </div>
 
+        <!-- Biểu đồ doanh thu 7 ngày gần nhất: chỉ hiện khi chartLabels khác null -->
         <div th:if="${chartLabels != null}" style="margin-top:2rem; max-width:800px">
             <h2>Revenue - Last 7 Days</h2>
+            <!-- Canvas để Chart.js vẽ biểu đồ cột -->
             <canvas id="revenueChart" width="800" height="400"></canvas>
             <script>
+                // Mảng nhãn (ngày) từ server, render trực tiếp bằng [[...]]
                 const labels = [[${chartLabels}]];
+                // Mảng giá trị doanh thu tương ứng từ server
                 const data = [[${chartValues}]];
+                // Khởi tạo biểu đồ cột Chart.js
                 new Chart(document.getElementById('revenueChart'), {
                     type: 'bar',
                     data: {

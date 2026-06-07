@@ -1,28 +1,41 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: products.html (Admin - Quản lý sản phẩm)
+     Mô tả: Trang danh sách sản phẩm, cho phép xem, thêm mới,
+     sửa và xóa sản phẩm. Dữ liệu được lấy từ biến "books".
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin - Products</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
         <h1>Products</h1>
-        <a href="/admin/products/add" class="btn btn-primary">Add Product</a>
+        <!-- Nút điều hướng tới form thêm sản phẩm mới -->
+        <a th:href="@{/admin/products/add}" class="btn btn-primary">Add Product</a>
+        <!-- Bảng danh sách sản phẩm -->
         <table class="admin-table">
             <thead>
                 <tr>
+                    <!-- Các cột: ID, Ảnh bìa, Tên sách, Tác giả, Thể loại, Giá, Số lượng, Hành động -->
                     <th>ID</th>
                     <th>Image</th>
                     <th>Name</th>
@@ -34,16 +47,27 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Duyệt qua từng sản phẩm (p) trong danh sách "books" bằng th:each -->
                 <tr th:each="p : ${books}">
+                    <!-- Mã sách -->
                     <td th:text="${p.maSach}">1</td>
+                    <!-- Ảnh bìa sách -->
                     <td><img th:src="${p.anhBia}" width="50"></td>
+                    <!-- Tên sách -->
                     <td th:text="${p.tenSach}">Title</td>
+                    <!-- Tác giả -->
                     <td th:text="${p.tacGia}">Author</td>
+                    <!-- Thể loại -->
                     <td th:text="${p.theLoai}">Category</td>
+                    <!-- Đơn giá, định dạng số thập phân với ký hiệu $ -->
                     <td th:text="'$' + ${#numbers.formatDecimal(p.donGia, 1, 2)}">$0.00</td>
+                    <!-- Số lượng tồn kho -->
                     <td th:text="${p.soLuong}">0</td>
+                    <!-- Cột hành động: nút Sửa và Xóa -->
                     <td>
+                        <!-- Liên kết sửa sản phẩm, truyền mã sách (maSach) qua đường dẫn -->
                         <a th:href="@{/admin/products/edit/{id}(id=${p.maSach})}" class="btn btn-sm">Edit</a>
+                        <!-- Form xóa sản phẩm, gửi POST, có xác nhận trước khi xóa -->
                         <form th:action="@{/admin/products/delete/{id}(id=${p.maSach})}" method="post" style="display:inline"
                               onsubmit="return confirm('Delete this product?')">
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>

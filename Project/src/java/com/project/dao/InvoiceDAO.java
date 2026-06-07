@@ -1,3 +1,5 @@
+// ===== DAO Hóa đơn (InvoiceDAO) — CRUD cho HoaDon và ChiTietHoaDon =====
+// Quan trọng: có xử lý kho (trừ số lượng tồn) và tính tổng tiền
 package com.project.dao;
 
 import com.project.model.Invoice;
@@ -13,6 +15,8 @@ import java.util.Map;
 
 public class InvoiceDAO {
 
+    // === Lớp NewInvoiceItem: đại diện cho một dòng sản phẩm sẽ thêm vào hóa đơn mới ===
+    // Mỗi đối tượng giữ mã sách (maSach) và số lượng mua (soLuong)
     public static class NewInvoiceItem {
         private final int maSach;
         private final int soLuong;
@@ -31,6 +35,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === findAll: Lấy danh sách tất cả hóa đơn (JOIN với KhachHang để lấy tên khách) ===
+    // Sắp xếp theo MaHD giảm dần (hóa đơn mới nhất lên đầu)
     public List<Invoice> findAll() {
         String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
@@ -50,6 +56,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === findById: Tìm một hóa đơn theo mã (MaHD) ===
+    // Trả về null nếu không tìm thấy
     public Invoice findById(int maHD) {
         String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
@@ -67,6 +75,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === findByCustomerId: Lấy danh sách hóa đơn theo mã khách hàng (MaKH) ===
+    // Sắp xếp giảm dần theo MaHD
     public List<Invoice> findByCustomerId(int maKH) {
         String sql = "SELECT hd.MaHD, hd.MaNV, hd.MaKH, hd.NgayLap, hd.TongTien, hd.GiamGia, hd.ThueVAT, hd.TrangThai, kh.TenKH "
                 + "FROM dbo.HoaDon hd "
@@ -89,6 +99,9 @@ public class InvoiceDAO {
         }
     }
 
+    // === findByIdForCustomerLookup: Tra cứu hóa đơn an toàn có xác thực SĐT/Email ===
+    // Chỉ trả về hóa đơn nếu SĐT hoặc Email khớp với thông tin khách hàng
+    // Dùng để ngăn người lạ xem hóa đơn của người khác
     public Invoice findByIdForCustomerLookup(int maHD, String phone, String email) {
         boolean hasPhone = phone != null && !phone.trim().isEmpty();
         boolean hasEmail = email != null && !email.trim().isEmpty();
@@ -131,6 +144,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === findByIds: Lấy nhiều hóa đơn cùng lúc theo danh sách mã (IN query) ===
+    // Giữ nguyên thứ tự theo danh sách đầu vào (dùng LinkedHashMap)
     public List<Invoice> findByIds(List<Integer> invoiceIds) {
         if (invoiceIds == null || invoiceIds.isEmpty()) {
             return Collections.emptyList();
@@ -177,6 +192,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === findItemsByInvoiceId: Lấy danh sách chi tiết (dòng) của một hóa đơn ===
+    // JOIN với Sach để lấy tên sách, sắp xếp theo MaCT
     public List<InvoiceItem> findItemsByInvoiceId(int maHD) {
         List<InvoiceItem> items = new ArrayList<InvoiceItem>();
         String sql = "SELECT ct.MaCT, ct.MaHD, ct.MaSach, ct.SoLuong, ct.DonGia, ct.ThanhTien, s.TenSach "
@@ -198,6 +215,11 @@ public class InvoiceDAO {
         }
     }
 
+    // === createInvoice: Phương thức chính tạo hóa đơn trong một transaction ===
+    // 1. Chèn header hóa đơn -> lấy MaHD
+    // 2. Với mỗi dòng: kiểm tra tồn kho, chèn chi tiết, cập nhật số lượng tồn
+    // 3. Tính tổng tiền (subTotal - discount + VAT) và cập nhật vào hóa đơn
+    // Nếu lỗi -> rollback toàn bộ
     public int createInvoice(Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat, List<NewInvoiceItem> items) {
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Hoa don phai co it nhat 1 dong chi tiet.");
@@ -254,6 +276,8 @@ public class InvoiceDAO {
         }
     }
 
+    // === insertInvoiceHeader: Chèn dòng header vào bảng HoaDon, trả về MaHD tự sinh ===
+    // Dùng OUTPUT INSERTED.MaHD để lấy ID vừa tạo từ SQL Server
     private int insertInvoiceHeader(EntityManager em, Integer maKH, String maNV, BigDecimal giamGia, BigDecimal thueVat, String trangThai) {
         String sql = "INSERT INTO dbo.HoaDon (MaNV, MaKH, NgayLap, TongTien, GiamGia, ThueVAT, TrangThai) "
                 + "OUTPUT INSERTED.MaHD VALUES (?, ?, GETDATE(), ?, ?, ?, ?)";
@@ -273,6 +297,7 @@ public class InvoiceDAO {
         return generated.intValue();
     }
 
+    // === updateInvoiceTotals: Cập nhật tổng tiền, giảm giá và thuế sau khi đã tính toán ===
     private void updateInvoiceTotals(EntityManager em, int maHD, BigDecimal tongTien, BigDecimal giamGia, BigDecimal thueVat) {
         String sql = "UPDATE dbo.HoaDon SET TongTien = ?, GiamGia = ?, ThueVAT = ? WHERE MaHD = ?";
         em.createNativeQuery(sql)
@@ -283,6 +308,8 @@ public class InvoiceDAO {
                 .executeUpdate();
     }
 
+    // === updateStatus: Cập nhật trạng thái đơn hàng (NEW / SHIPPED / PAID) ===
+    // Chuẩn hóa trạng thái trước khi ghi vào DB
     public void updateStatus(int maHD, String trangThai) {
         String normalized = normalizeStatus(trangThai);
         String sql = "UPDATE dbo.HoaDon SET TrangThai = ? WHERE MaHD = ?";
@@ -306,6 +333,9 @@ public class InvoiceDAO {
         }
     }
 
+    // === normalizeStatus: Chuẩn hóa và kiểm tra trạng thái hóa đơn ===
+    // Chỉ chấp nhận: NEW (mới), SHIPPED (đã giao), PAID (đã thanh toán)
+    // Mặc định là "NEW" nếu giá trị null hoặc rỗng
     public String normalizeStatus(String trangThai) {
         if (trangThai == null) {
             return "NEW";
@@ -321,6 +351,8 @@ public class InvoiceDAO {
         throw new IllegalArgumentException("Trang thai khong hop le. Chi chap nhan: NEW, SHIPPED, PAID.");
     }
 
+    // === getStockInfoForUpdate: Lấy đơn giá và số lượng tồn của sách (có khóa bi lạc quan) ===
+    // Dùng UPDLOCK + ROWLOCK để tránh tranh chấp dữ liệu khi nhiều giao dịch cùng lúc
     private StockInfo getStockInfoForUpdate(EntityManager em, int maSach) {
         String sql = "SELECT DonGia, SoLuong FROM dbo.Sach WITH (UPDLOCK, ROWLOCK) WHERE MaSach = ?";
         List<Object[]> rows = em.createNativeQuery(sql)
@@ -336,6 +368,7 @@ public class InvoiceDAO {
         return new StockInfo(donGia, soLuong);
     }
 
+    // === insertInvoiceItem: Chèn một dòng chi tiết vào bảng ChiTietHoaDon ===
     private void insertInvoiceItem(EntityManager em, int maHD, NewInvoiceItem item, BigDecimal donGia, BigDecimal thanhTien) {
         String sql = "INSERT INTO dbo.ChiTietHoaDon (MaHD, MaSach, SoLuong, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
         em.createNativeQuery(sql)
@@ -347,6 +380,7 @@ public class InvoiceDAO {
                 .executeUpdate();
     }
 
+    // === updateBookStock: Cập nhật số lượng tồn kho sau khi bán hàng ===
     private void updateBookStock(EntityManager em, int maSach, int newStock) {
         String sql = "UPDATE dbo.Sach SET SoLuong = ? WHERE MaSach = ?";
         em.createNativeQuery(sql)
@@ -355,6 +389,8 @@ public class InvoiceDAO {
                 .executeUpdate();
     }
 
+    // === mapInvoiceRow: Ánh xạ một dòng kết quả truy vấn (Object[]) thành đối tượng Invoice ===
+    // Hỗ trợ cả truy vấn ngắn (9 cột) và truy vấn dài (12 cột có thêm SĐT, Email, Địa chỉ)
     private Invoice mapInvoiceRow(Object[] row) {
         Invoice invoice = new Invoice();
         invoice.setMaHD(toInt(row[0]));
@@ -380,6 +416,8 @@ public class InvoiceDAO {
         return invoice;
     }
 
+    // === mapInvoiceItemRow: Ánh xạ một dòng kết quả thành đối tượng InvoiceItem ===
+    // Gồm: MaCT, MaHD, MaSach, SoLuong, DonGia, ThanhTien, TenSach
     private InvoiceItem mapInvoiceItemRow(Object[] row) {
         InvoiceItem item = new InvoiceItem();
         item.setMaCT(toInt(row[0]));
@@ -392,14 +430,18 @@ public class InvoiceDAO {
         return item;
     }
 
+    // === toInt: Chuyển Object thành int (nếu null thì trả về 0) ===
     private int toInt(Object value) {
         return value == null ? 0 : ((Number) value).intValue();
     }
 
+    // === toString: Chuyển Object thành String (nếu null thì trả về null) ===
     private String toString(Object value) {
         return value == null ? null : String.valueOf(value);
     }
 
+    // === Lớp StockInfo: Lưu thông tin đơn giá và số lượng tồn của một cuốn sách ===
+    // Dùng nội bộ để truyền dữ liệu giữa getStockInfoForUpdate và các bước xử lý khác
     private static final class StockInfo {
         private final BigDecimal donGia;
         private final int soLuongTon;

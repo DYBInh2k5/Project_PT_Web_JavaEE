@@ -1,3 +1,5 @@
+// ===== DAO Báo cáo (ReportDAO) — thống kê doanh thu và top sách bán chạy =====
+// Các truy vấn tổng hợp (aggregate) theo ngày/tháng/năm
 package com.project.dao;
 
 import com.project.model.dto.RevenueByDate;

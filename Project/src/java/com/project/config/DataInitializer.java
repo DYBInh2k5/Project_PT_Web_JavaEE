@@ -15,9 +15,14 @@ import java.util.Set;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * DataInitializer — Khởi tạo dữ liệu mặc định cho ứng dụng khi chạy lần đầu.
+ * Tự động thêm các cột cần thiết, tạo tài khoản admin, khách hàng mẫu và 30 cuốn sách mẫu.
+ */
 @Component
 public class DataInitializer implements CommandLineRunner {
 
+    /** Đường dẫn ảnh bìa mặc định cho sách */
     private static final String DEFAULT_BOOK_IMAGE = "/assets/seed/book-placeholder.svg";
 
     private final BookDAO bookDAO = new BookDAO();
@@ -32,6 +37,10 @@ public class DataInitializer implements CommandLineRunner {
         ensureBooks();
     }
 
+    /**
+     * Thêm cột TaiKhoan và MatKhau vào bảng KhachHang nếu chưa tồn tại.
+     * Cho phép khách hàng đăng nhập bằng tài khoản/mật khẩu.
+     */
     private void ensureCustomerAccountColumns() {
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -57,6 +66,10 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    /**
+     * Thêm cột TrangThai vào bảng HoaDon nếu chưa tồn tại.
+     * Gán giá trị mặc định 'NEW' cho các hóa đơn hiện có và đặt DEFAULT là 'NEW'.
+     */
     private void ensureInvoiceStatusColumn() {
         EntityManager em = JpaSupport.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -82,6 +95,9 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    /**
+     * Tạo tài khoản admin mặc định (admin / 123456) nếu chưa tồn tại trong bảng NhanVien.
+     */
     private void ensureAdminAccount() {
         if (countRows("SELECT COUNT(*) FROM dbo.NhanVien WHERE TaiKhoan = ?", "admin") > 0) {
             return;
@@ -107,11 +123,17 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    /**
+     * Tạo hai khách hàng mẫu để test: Nguyen Van A và Tran Thi B.
+     */
     private void ensureCustomers() {
         seedCustomer("Nguyen Van A", "0909000001", "a@example.com", "Ha Noi", "customer1", "123456");
         seedCustomer("Tran Thi B", "0909000002", "b@example.com", "Ho Chi Minh", "customer2", "123456");
     }
 
+    /**
+     * Thêm một khách hàng mới nếu số điện thoại hoặc email chưa tồn tại.
+     */
     private void seedCustomer(String tenKH, String dienThoai, String email, String diaChi, String taiKhoan, String matKhau) {
         if (customerDAO.findByPhoneOrEmail(dienThoai, email) != null) {
             return;
@@ -127,6 +149,10 @@ public class DataInitializer implements CommandLineRunner {
         customerDAO.insertAndGetId(customer);
     }
 
+    /**
+     * Tạo 30 cuốn sách mẫu từ danh sách BookSeed.
+     * Chỉ thêm các sách chưa có trong database (so sánh theo tên, không phân biệt hoa thường).
+     */
     private void ensureBooks() {
         List<Book> existing = bookDAO.findAll(null);
         if (existing.size() >= 30) {
@@ -159,6 +185,10 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    /**
+     * Đếm số dòng trong bảng với điều kiện tham số.
+     * Dùng để kiểm tra dữ liệu đã tồn tại chưa (ví dụ: tài khoản admin).
+     */
     private int countRows(String sql, Object param) {
         EntityManager em = JpaSupport.createEntityManager();
         try {
@@ -171,6 +201,10 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
+    /**
+     * Tạo danh sách 30 cuốn sách mẫu thuộc nhiều thể loại khác nhau
+     * (Lập trình, Cơ sở dữ liệu, Web, An ninh, ...).
+     */
     private List<BookSeed> createBookSeeds() {
         List<BookSeed> seeds = new ArrayList<BookSeed>();
         seeds.add(new BookSeed("Java Co Ban", "Nguyen Van A", "Lap trinh", new BigDecimal("89000"), 50));
@@ -206,6 +240,9 @@ public class DataInitializer implements CommandLineRunner {
         return seeds;
     }
 
+    /**
+     * BookSeed — Lớp nội bộ chứa thông tin một cuốn sách mẫu (tên, tác giả, thể loại, giá, tồn kho).
+     */
     private static final class BookSeed {
         private final String title;
         private final String author;

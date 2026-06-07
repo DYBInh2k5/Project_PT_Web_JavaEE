@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- MY-ORDERS.HTML - Trang danh sách đơn hàng của khách hàng (yêu cầu đã đăng nhập).
+     Hiển thị bảng các đơn hàng đã đặt với mã, ngày, tổng tiền, trạng thái và link xem chi tiết. -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - My Orders')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
     <h1>My Orders</h1>
+
+    <!-- KIỂM TRA DANH SÁCH RỖNG: #lists.isEmpty(orders) là hàm tiện ích Thymeleaf kiểm tra
+         nếu danh sách orders rỗng hoặc null thì hiển thị thông báo -->
     <p th:if="${#lists.isEmpty(orders)}" class="info-message">You haven't placed any orders yet.</p>
+
+    <!-- BẢNG ĐƠN HÀNG: Chỉ hiển thị khi danh sách orders không rỗng -->
     <table class="cart-table" th:unless="${#lists.isEmpty(orders)}">
         <thead>
             <tr>
-                <th>Order #</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Order #</th>      <!-- Mã đơn hàng -->
+                <th>Date</th>          <!-- Ngày lập -->
+                <th>Total</th>         <!-- Tổng tiền -->
+                <th>Status</th>        <!-- Trạng thái -->
+                <th>Actions</th>       <!-- Link xem chi tiết -->
             </tr>
         </thead>
         <tbody>
+            <!-- VÒNG LẶP: th:each="order : ${orders}" duyệt qua từng đơn hàng -->
             <tr th:each="order : ${orders}">
+                <!-- Mã đơn hàng -->
                 <td th:text="${order.maHD}">1</td>
+                <!-- Ngày lập đơn, định dạng theo pattern 'yyyy-MM-dd HH:mm' -->
                 <td th:text="${#dates.format(order.ngayLap, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
+                <!-- Tổng tiền, định dạng số -->
                 <td th:text="'$' + ${#numbers.formatDecimal(order.tongTien, 1, 2)}">$0.00</td>
+                <!-- Trạng thái đơn hàng (vd: Pending, Confirmed, Delivered...) -->
                 <td th:text="${order.trangThai}">Pending</td>
+                <!-- Link xem chi tiết đơn hàng: truyền mã đơn hàng qua tham số code -->
                 <td><a th:href="@{/store/order(code=${order.maHD})}" class="btn btn-sm">View</a></td>
             </tr>
         </tbody>

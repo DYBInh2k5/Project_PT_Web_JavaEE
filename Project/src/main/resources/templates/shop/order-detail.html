@@ -1,40 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ORDER-DETAIL.HTML - Trang chi tiết đơn hàng. Hiển thị thông tin đơn hàng cụ thể:
+     mã đơn, ngày lập, trạng thái, danh sách sản phẩm đã mua và tổng tiền.
+     Dùng cho cả khách đã đăng nhập (my-orders -> view) và tra cứu (order-lookup). -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - Order Detail')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
+
+    <!-- THÔNG BÁO LỖI: Nếu có errorMessage (vd: mã đơn không tồn tại), hiển thị lỗi -->
     <p th:if="${errorMessage != null}" class="error-message" th:text="${errorMessage}">Error</p>
+
+    <!-- NỘI DUNG CHI TIẾT ĐƠN HÀNG: Chỉ hiển thị khi không có lỗi -->
     <div th:unless="${errorMessage != null}">
+        <!-- Tiêu đề: Mã đơn hàng. Sử dụng cú pháp [[...]] (inline Thymeleaf) để hiển thị biến trong text -->
         <h1>Order #[[${invoice.maHD}]]</h1>
+        <!-- Ngày lập đơn -->
         <p><strong>Date:</strong> [[${#dates.format(invoice.ngayLap, 'yyyy-MM-dd HH:mm')}]]</p>
+        <!-- Trạng thái đơn hàng -->
         <p><strong>Status:</strong> [[${invoice.trangThai}]]</p>
+
+        <!-- BẢNG CHI TIẾT SẢN PHẨM TRONG ĐƠN HÀNG -->
         <table class="cart-table">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+                    <th>Product</th>    <!-- Tên sản phẩm -->
+                    <th>Price</th>       <!-- Đơn giá -->
+                    <th>Quantity</th>    <!-- Số lượng -->
+                    <th>Total</th>       <!-- Thành tiền -->
                 </tr>
             </thead>
             <tbody>
+                <!-- VÒNG LẶP: th:each="item : ${items}" duyệt các dòng chi tiết hóa đơn -->
                 <tr th:each="item : ${items}">
                     <td th:text="${item.tenSach}">Title</td>
                     <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
                     <td th:text="${item.soLuong}">1</td>
+                    <!-- thanhTien = đơn giá * số lượng (đã tính sẵn từ server) -->
                     <td th:text="'$' + ${#numbers.formatDecimal(item.thanhTien, 1, 2)}">$0.00</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="3"><strong>Total</strong></td>
+                    <!-- Tổng tiền toàn đơn hàng (tongTien từ đối tượng invoice) -->
                     <td><strong th:text="'$' + ${#numbers.formatDecimal(invoice.tongTien, 1, 2)}">$0.00</strong></td>
                 </tr>
             </tfoot>
         </table>
-        <a href="/store/my-orders" class="btn btn-secondary">Back to Orders</a>
+
+        <!-- Nút quay lại danh sách đơn hàng -->
+        <a th:href="@{/store/my-orders}" class="btn btn-secondary">Back to Orders</a>
     </div>
 </main>
 

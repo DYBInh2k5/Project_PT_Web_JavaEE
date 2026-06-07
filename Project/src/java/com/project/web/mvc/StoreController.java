@@ -25,17 +25,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * StoreController — Controller chính cho khu vực khách hàng (cửa hàng).
+ * Xử lý các chức năng: hiển thị sách, giỏ hàng, đăng nhập/đăng ký, thanh toán và tra cứu đơn hàng.
+ */
 @Controller
 @RequestMapping("/store")
 public class StoreController {
 
+    /** Khóa lưu thông tin khách hàng đã đăng nhập trong Session */
     public static final String CUSTOMER_SESSION_KEY = "STORE_CUSTOMER";
+    /** Khóa lưu giỏ hàng (Map<Mã sách, Số lượng>) trong Session */
     public static final String CART_SESSION_KEY = "STORE_CART";
 
     private final BookDAO bookDAO = new BookDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
     private final InvoiceDAO invoiceDAO = new InvoiceDAO();
 
+    /**
+     * GET /store — Trang chủ cửa hàng.
+     * Hỗ trợ: tìm kiếm theo từ khóa (keyword), lọc theo thể loại (category),
+     * sắp xếp theo giá tăng/giảm (sort=asc/desc), phân trang (page).
+     * Mỗi trang hiển thị tối đa 12 sách.
+     */
     @GetMapping({"", "/"})
     public String index(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -43,6 +55,7 @@ public class StoreController {
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             Model model) {
+        // Lấy toàn bộ sách theo từ khóa, sau đó lọc theo thể loại nếu có
         List<Book> all = bookDAO.findAll(keyword);
         if (category != null && !category.isEmpty()) {
             List<Book> filtered = new ArrayList<>();
@@ -51,11 +64,13 @@ public class StoreController {
             }
             all = filtered;
         }
+        // Sắp xếp theo giá: asc = tăng dần, desc = giảm dần
         if ("asc".equalsIgnoreCase(sort)) {
             all.sort(Comparator.comparing(Book::getDonGia, Comparator.nullsLast(Comparator.naturalOrder())));
         } else if ("desc".equalsIgnoreCase(sort)) {
             all.sort(Comparator.comparing(Book::getDonGia, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         }
+        // Phân trang: 12 sản phẩm / trang, tính toán trang an toàn
         int size = 12;
         int totalItems = all.size();
         int totalPages = Math.max(1, (int) Math.ceil(totalItems / (double) size));
@@ -64,6 +79,7 @@ public class StoreController {
         int to = Math.min(totalItems, from + size);
         List<Book> pageItems = from >= to ? Collections.emptyList() : all.subList(from, to);
 
+        // Gom danh sách thể loại để hiển thị bộ lọc
         List<String> categories = new ArrayList<>();
         for (Book b : bookDAO.findAll(null)) {
             if (b.getTheLoai() != null && !categories.contains(b.getTheLoai())) {
@@ -79,6 +95,9 @@ public class StoreController {
         return "shop/index";
     }
 
+    /**
+     * GET /store/detail?id= — Xem chi tiết một cuốn sách.
+     */
     @GetMapping("/detail")
     public String detail(@RequestParam("id") int id, Model model) {
         Book book = bookDAO.findById(id);
@@ -86,11 +105,18 @@ public class StoreController {
         return "shop/detail";
     }
 
+    /**
+     * GET /store/login — Hiển thị form đăng nhập khách hàng.
+     */
     @GetMapping("/login")
     public String loginForm() {
         return "shop/login";
     }
 
+    /**
+     * POST /store/login — Xử lý đăng nhập.
+     * Nếu thành công, lưu Customer vào session và chuyển hướng đến trang đã lưu (LOGIN_REDIRECT) hoặc trang chủ.
+     */
     @PostMapping("/login")
     public String login(@RequestParam("account") String account,
                         @RequestParam("password") String password,
@@ -100,6 +126,7 @@ public class StoreController {
             return "redirect:/store/login?error=1";
         }
         session.setAttribute(CUSTOMER_SESSION_KEY, customer);
+        // Nếu có redirect sau đăng nhập (ví dụ: checkout), chuyển hướng đến đó
         String redirect = (String) session.getAttribute("LOGIN_REDIRECT");
         if (redirect != null) {
             session.removeAttribute("LOGIN_REDIRECT");
@@ -108,11 +135,18 @@ public class StoreController {
         return "redirect:/store/";
     }
 
+    /**
+     * GET /store/register — Hiển thị form đăng ký tài khoản.
+     */
     @GetMapping("/register")
     public String registerForm() {
         return "shop/register";
     }
 
+    /**
+     * POST /store/register — Xử lý đăng ký tài khoản mới.
+     * Kiểm tra tài khoản đã tồn tại chưa, nếu chưa thì tạo mới và tự động đăng nhập.
+     */
     @PostMapping("/register")
     public String register(@RequestParam("hoTen") String hoTen,
                            @RequestParam("account") String account,
@@ -135,6 +169,7 @@ public class StoreController {
         customer.setMatKhau(password);
         try {
             customerDAO.insert(customer);
+            // Đăng nhập ngay sau khi đăng ký thành công
             Customer loggedIn = customerDAO.loginCustomer(account, password);
             if (loggedIn != null) {
                 session.setAttribute(CUSTOMER_SESSION_KEY, loggedIn);
@@ -146,12 +181,19 @@ public class StoreController {
         }
     }
 
+    /**
+     * GET /store/logout — Đăng xuất: xóa Customer khỏi session.
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute(CUSTOMER_SESSION_KEY);
         return "redirect:/store/";
     }
 
+    /**
+     * POST /store/cart/add — Thêm sách vào giỏ hàng.
+     * Nếu sách đã có trong giỏ, tăng số lượng lên.
+     */
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam("id") int id,
                             @RequestParam(value = "qty", defaultValue = "1") int qty,
@@ -161,6 +203,10 @@ public class StoreController {
         return "redirect:/store/cart";
     }
 
+    /**
+     * POST /store/cart/update — Cập nhật số lượng của một sách trong giỏ.
+     * Nếu số lượng <= 0 thì xóa sách đó khỏi giỏ.
+     */
     @PostMapping("/cart/update")
     public String updateCart(@RequestParam("id") int id,
                              @RequestParam("quantity") int quantity,
@@ -174,6 +220,9 @@ public class StoreController {
         return "redirect:/store/cart";
     }
 
+    /**
+     * GET /store/cart/remove — Xóa một sách khỏi giỏ hàng.
+     */
     @GetMapping("/cart/remove")
     public String removeFromCart(@RequestParam("id") int id, HttpSession session) {
         Map<Integer, Integer> cart = getCart(session);
@@ -181,6 +230,10 @@ public class StoreController {
         return "redirect:/store/cart";
     }
 
+    /**
+     * GET /store/cart — Xem giỏ hàng.
+     * Chuyển dữ liệu giỏ (Map<Mã sách, Số lượng>) thành danh sách ShopCartItem và tính tổng tiền.
+     */
     @GetMapping("/cart")
     public String cart(HttpSession session, Model model) {
         Map<Integer, Integer> cart = getCart(session);
@@ -197,6 +250,10 @@ public class StoreController {
         return "shop/cart";
     }
 
+    /**
+     * GET /store/checkout — Hiển thị trang thanh toán.
+     * Yêu cầu khách hàng phải đăng nhập; nếu chưa đăng nhập thì lưu redirect và chuyển đến trang login.
+     */
     @GetMapping("/checkout")
     public String checkoutForm(HttpSession session, Model model, RedirectAttributes ra) {
         Customer customer = (Customer) session.getAttribute(CUSTOMER_SESSION_KEY);
@@ -219,6 +276,10 @@ public class StoreController {
         return "shop/checkout";
     }
 
+    /**
+     * POST /store/checkout — Xử lý thanh toán: tạo hóa đơn mới từ giỏ hàng.
+     * Sau khi tạo thành công, xóa giỏ hàng khỏi session và chuyển đến trang chi tiết đơn hàng.
+     */
     @PostMapping("/checkout")
     public String checkout(@RequestParam("diaChi") String diaChi,
                            @RequestParam(value = "ghiChu", required = false) String ghiChu,
@@ -232,13 +293,14 @@ public class StoreController {
             ra.addFlashAttribute("error", "Cart is empty");
             return "redirect:/store/cart";
         }
+        // Chuyển giỏ hàng thành danh sách NewInvoiceItem để tạo hóa đơn
         List<NewInvoiceItem> invoiceItems = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : cart.entrySet()) {
             invoiceItems.add(new NewInvoiceItem(e.getKey(), e.getValue()));
         }
         try {
             int maHD = invoiceDAO.createInvoice(customer.getMaKH(), null, BigDecimal.ZERO, BigDecimal.ZERO, invoiceItems);
-            session.removeAttribute(CART_SESSION_KEY);
+            session.removeAttribute(CART_SESSION_KEY); // Xóa giỏ hàng sau khi thanh toán thành công
             return "redirect:/store/order?code=" + maHD;
         } catch (Exception ex) {
             ra.addFlashAttribute("error", "Checkout failed: " + ex.getMessage());
@@ -246,6 +308,9 @@ public class StoreController {
         }
     }
 
+    /**
+     * GET /store/my-orders — Xem danh sách đơn hàng của khách hàng đã đăng nhập.
+     */
     @GetMapping("/my-orders")
     public String myOrders(HttpSession session, Model model, RedirectAttributes ra) {
         Customer customer = (Customer) session.getAttribute(CUSTOMER_SESSION_KEY);
@@ -257,6 +322,10 @@ public class StoreController {
         return "shop/my-orders";
     }
 
+    /**
+     * GET /store/order?code= — Xem chi tiết một đơn hàng.
+     * Chỉ cho phép khách hàng sở hữu đơn hàng đó mới được xem.
+     */
     @GetMapping("/order")
     public String orderDetail(@RequestParam("code") int code,
                               HttpSession session, Model model) {
@@ -266,6 +335,7 @@ public class StoreController {
             model.addAttribute("errorMessage", "Order not found");
             return "shop/order-detail";
         }
+        // Kiểm tra quyền sở hữu: chỉ chủ đơn hàng mới được xem
         boolean isOwner = customer != null && invoice.getMaKH() != null
                 && invoice.getMaKH().equals(customer.getMaKH());
         if (!isOwner) {
@@ -278,11 +348,18 @@ public class StoreController {
         return "shop/order-detail";
     }
 
+    /**
+     * GET /store/order-lookup — Trang tra cứu đơn hàng (dành cho khách vãng lai).
+     */
     @GetMapping("/order-lookup")
     public String orderLookup() {
         return "shop/order-lookup";
     }
 
+    /**
+     * Lấy giỏ hàng từ session.
+     * Nếu chưa có giỏ hàng, tạo mới một LinkedHashMap (giữ thứ tự thêm vào) và lưu vào session.
+     */
     @SuppressWarnings("unchecked")
     private Map<Integer, Integer> getCart(HttpSession session) {
         Object raw = session.getAttribute(CART_SESSION_KEY);
@@ -294,6 +371,11 @@ public class StoreController {
         return cart;
     }
 
+    /**
+     * Chuyển đổi dữ liệu giỏ hàng (Map<Mã sách, Số lượng>) thành danh sách ShopCartItem
+     * bằng cách tra cứu thông tin sách từ BookDAO.
+     * Bỏ qua các sách không tồn tại hoặc số lượng <= 0.
+     */
     private List<ShopCartItem> buildCartItems(Map<Integer, Integer> cart) {
         List<ShopCartItem> items = new ArrayList<>();
         for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {

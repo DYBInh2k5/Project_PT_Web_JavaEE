@@ -1,67 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- INDEX.HTML - Trang chủ của Bookora. Hiển thị danh sách sách kèm tìm kiếm, lọc theo thể loại,
+     sắp xếp theo giá và phân trang. -->
+
+<!-- GỌI FRAGMENT head: truyền tiêu đề 'Bookora - Home' làm tham số cho <title> -->
 <head th:replace="~{shop/fragments :: head('Bookora - Home')}"></head>
 <body>
+<!-- GỌI FRAGMENT header: chèn thanh điều hướng dùng chung -->
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
+
+    <!-- KHU VỰC HERO: Thanh tìm kiếm, lọc danh mục và sắp xếp -->
     <section class="hero">
         <div class="hero-content">
             <h1>Welcome to Bookora</h1>
             <p>Discover your next great read.</p>
-            <form action="/store/" method="get" class="search-form">
+
+            <!-- FORM TÌM KIẾM: Gửi phương thức GET để giữ nguyên các tham số trên URL.
+                 th:action="@{/store/}" gửi về chính trang index với các tham số keyword, category, sort. -->
+            <form th:action="@{/store/}" method="get" class="search-form">
+                <!-- Ô nhập từ khóa tìm kiếm. th:value="${param.keyword}" giữ lại giá trị đã nhập sau khi submit -->
                 <input type="text" name="keyword" placeholder="Search books..." th:value="${param.keyword}">
+
+                <!-- COMBOBOX LỌC THỂ LOẠI: Duyệt qua danh sách categories từ model.
+                     th:selected tự động chọn đúng thể loại người dùng đã chọn dựa trên tham số URL. -->
                 <select name="category" th:value="${param.category}">
                     <option value="">All Categories</option>
                     <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
                             th:selected="${param.category != null and param.category[0] eq cat}"></option>
                 </select>
+
+                <!-- COMBOBOX SẮP XẾP THEO GIÁ: asc = giá tăng dần, desc = giá giảm dần -->
                 <select name="sort" th:value="${param.sort}">
                     <option value="">Default</option>
                     <option value="asc" th:selected="${param.sort != null and param.sort[0] eq 'asc'}">Price: Low to High</option>
                     <option value="desc" th:selected="${param.sort != null and param.sort[0] eq 'desc'}">Price: High to Low</option>
                 </select>
+
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
     </section>
 
+    <!-- LƯỚI SẢN PHẨM: Duyệt qua danh sách books và hiển thị từng cuốn sách dạng thẻ -->
     <section class="products-grid">
+        <!-- th:each="book : ${books}" lặp qua từng phần tử trong danh sách books do Controller trả về -->
         <div class="book-card" th:each="book : ${books}">
+            <!-- Link đến trang chi tiết sách, truyền tham số id = maSach -->
             <a th:href="@{/store/detail(id=${book.maSach})}">
                 <div class="book-image">
+                    <!-- HIỂN THỊ ẢNH BÌA: Nếu có ảnh (anhBia != null và không rỗng) thì hiển thị,
+                         ngược lại dùng ảnh mặc định 'no-image.png' -->
                     <img th:src="${book.anhBia != null and !book.anhBia.isEmpty()} ? ${book.anhBia} : '/assets/no-image.png'"
                          th:alt="${book.tenSach}">
                 </div>
                 <div class="book-info">
+                    <!-- Tên sách, tác giả, đơn giá (định dạng số thập phân với 2 chữ số sau dấu phẩy) -->
                     <h3 th:text="${book.tenSach}">Book Title</h3>
                     <p class="book-author" th:text="${book.tacGia}">Author</p>
                     <p class="book-price" th:text="'$' + ${#numbers.formatDecimal(book.donGia, 1, 2)}">$0.00</p>
                 </div>
             </a>
-            <form action="/store/cart/add" method="post">
+            <!-- FORM THÊM VÀO GIỎ HÀNG: Gửi POST đến /store/cart/add với mã sách ẩn -->
+            <form th:action="@{/store/cart/add}" method="post">
                 <input type="hidden" name="id" th:value="${book.maSach}">
                 <button type="submit" class="btn btn-add-cart">Add to Cart</button>
             </form>
         </div>
     </section>
 
+    <!-- PHÂN TRANG: Chỉ hiển thị khi tổng số trang (totalPages) lớn hơn 1 -->
     <div class="pagination" th:if="${totalPages > 1}">
+        <!-- Nút First - về trang đầu tiên (page=0). th:classappend thêm class 'disabled' nếu đang ở trang đầu -->
         <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=0)}"
            th:classappend="${currentPage == 0} ? 'disabled' : ''">First</a>
+        <!-- Nút Previous ( « ) - lùi về trang trước -->
         <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${currentPage - 1})}"
            th:classappend="${currentPage == 0} ? 'disabled' : ''">&laquo;</a>
+        <!-- VÒNG LẶP SỐ TRANG: #numbers.sequence(0, totalPages - 1) tạo dãy số từ 0 đến totalPages-1 -->
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
             <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${i})}"
                th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i + 1}">1</a>
         </span>
+        <!-- Nút Next ( » ) - tiến tới trang tiếp theo -->
         <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${currentPage + 1})}"
            th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">&raquo;</a>
+        <!-- Nút Last - về trang cuối cùng (page = totalPages - 1) -->
         <a th:href="@{/(keyword=${param.keyword}, category=${param.category}, sort=${param.sort}, page=${totalPages - 1})}"
            th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">Last</a>
     </div>
 </main>
 
+<!-- GỌI FRAGMENT footer: chèn chân trang -->
 <div th:replace="~{shop/fragments :: footer}"></div>
 </body>
 </html>

@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- DETAIL.HTML - Trang chi tiết sách. Hiển thị đầy đủ thông tin của một cuốn sách cụ thể
+     và nút thêm vào giỏ hàng. -->
+
+<!-- GỌI FRAGMENT head: tiêu đề động lấy từ tên sách (book.tenSach) do Controller trả về -->
 <head th:replace="~{shop/fragments :: head(${book.tenSach})}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
     <div class="book-detail">
+        <!-- CỘT TRÁI: Ảnh bìa sách. Kiểm tra nếu có ảnh thì hiển thị, không thì dùng ảnh mặc định -->
         <div class="book-detail-image">
             <img th:src="${book.anhBia != null and !book.anhBia.isEmpty()} ? ${book.anhBia} : '/assets/no-image.png'"
                  th:alt="${book.tenSach}">
         </div>
+
+        <!-- CỘT PHẢI: Thông tin chi tiết sách -->
         <div class="book-detail-info">
+            <!-- Tên sách -->
             <h1 th:text="${book.tenSach}">Title</h1>
+            <!-- Tác giả, thêm tiền tố "by " -->
             <p class="book-author" th:text="'by ' + ${book.tacGia}">Author</p>
+            <!-- Thể loại -->
             <p class="book-category" th:text="'Category: ' + ${book.theLoai}">Category</p>
+            <!-- Đơn giá, định dạng số với $ và 2 chữ số thập phân -->
             <p class="book-price" th:text="'$' + ${#numbers.formatDecimal(book.donGia, 1, 2)}">$0.00</p>
-            <form action="/store/cart/add" method="post" style="display:inline">
+
+            <!-- FORM THÊM VÀO GIỎ: POST đến /store/cart/add với mã sách là input ẩn -->
+            <form th:action="@{/store/cart/add}" method="post" style="display:inline">
                 <input type="hidden" name="id" th:value="${book.maSach}">
                 <button type="submit" class="btn btn-add-cart">Add to Cart</button>
             </form>
-            <a href="/store/" class="btn btn-secondary">Back to Shop</a>
+
+            <!-- Link quay lại trang chủ -->
+            <a th:href="@{/store/}" class="btn btn-secondary">Back to Shop</a>
         </div>
     </div>
 </main>

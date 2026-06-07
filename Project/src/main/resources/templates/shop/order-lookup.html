@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ORDER-LOOKUP.HTML - Trang tra cứu đơn hàng dành cho khách CHƯA đăng nhập.
+     Cho phép nhập mã đơn hàng (order code) để xem thông tin đơn hàng mà không cần đăng nhập. -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - Lookup Order')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
@@ -7,13 +11,20 @@
 <main class="main-content">
     <h1>Lookup Order</h1>
     <p>Enter your order code to look up your order details.</p>
-    <form action="/store/order-lookup" method="get">
+
+    <!-- FORM TRA CỨU: Gửi phương thức GET đến /store/order-lookup với tham số code.
+         Dùng GET để kết quả có thể bookmark được URL tra cứu. -->
+    <form th:action="@{/store/order-lookup}" method="get">
         <div class="form-group">
             <label for="code">Order Code:</label>
+            <!-- Ô nhập mã đơn hàng -->
             <input type="text" id="code" name="code" required>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
+
+    <!-- THÔNG BÁO KHÔNG TÌM THẤY: Nếu biến notFound != null (do Controller set khi không tìm thấy đơn),
+         hiển thị thông báo lỗi động. -->
     <p th:if="${notFound != null}" class="error-message" th:text="${notFound}">Order not found.</p>
 </main>
 

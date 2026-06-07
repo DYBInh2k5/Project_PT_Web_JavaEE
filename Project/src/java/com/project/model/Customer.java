@@ -1,14 +1,17 @@
+// ===== Model Khách hàng (Customer) — lưu thông tin người dùng mua sách =====
+// Dùng để đăng nhập, đặt hàng, và quản lý thông tin cá nhân
 package com.project.model;
 
 public class Customer {
 
-    private Integer maKH;
-    private String tenKH;
-    private String dienThoai;
-    private String email;
-    private String diaChi;
-    private String taiKhoan;
-    private String matKhau;
+    // ===== Các thuộc tính của khách hàng =====
+    private Integer maKH;      // Mã khách hàng (PK, do DB tự sinh)
+    private String tenKH;      // Tên khách hàng
+    private String dienThoai;  // Số điện thoại
+    private String email;      // Địa chỉ email
+    private String diaChi;     // Địa chỉ giao hàng
+    private String taiKhoan;   // Tên đăng nhập (username)
+    private String matKhau;    // Mật khẩu (lưu dạng plain text — cần cải thiện bảo mật)
 
     public Integer getMaKH() {
         return maKH;

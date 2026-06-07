@@ -1,13 +1,16 @@
+// ===== Model Người dùng (AuthUser) — dùng cho xác thực admin/nhân viên =====
+// Serializable để lưu vào session (đăng nhập)
 package com.project.model;
 
 import java.io.Serializable;
 
 public class AuthUser implements Serializable {
 
-    private String maNV;
-    private String hoTen;
-    private String taiKhoan;
-    private String vaiTro;
+    // ===== Các thuộc tính của người dùng hệ thống =====
+    private String maNV;      // Mã nhân viên (PK)
+    private String hoTen;     // Họ và tên nhân viên
+    private String taiKhoan;  // Tên đăng nhập
+    private String vaiTro;    // Vai trò: "admin" hoặc "nhanvien"
 
     public String getMaNV() {
         return maNV;

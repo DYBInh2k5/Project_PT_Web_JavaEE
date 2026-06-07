@@ -3,9 +3,15 @@ package com.project.model.dto;
 import java.math.BigDecimal;
 import java.sql.Date;
 
+/**
+ * RevenueByDate — DTO lưu doanh thu theo từng ngày.
+ * Dùng cho biểu đồ doanh thu 7 ngày và các báo cáo thống kê theo ngày.
+ */
 public class RevenueByDate {
 
+    /** Ngày thống kê */
     private Date ngay;
+    /** Doanh thu trong ngày đó */
     private BigDecimal doanhThu;
 
     public Date getNgay() {

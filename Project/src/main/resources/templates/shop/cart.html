@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- CART.HTML - Trang giỏ hàng. Hiển thị danh sách sản phẩm đã thêm vào giỏ, cho phép
+     cập nhật số lượng, xóa sản phẩm, và xem tổng tiền. -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - Cart')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
     <h1>Your Cart</h1>
+
+    <!-- THÔNG BÁO GIỎ HÀNG TRỐNG: Nếu biến emptyCart != null (do Controller set), hiển thị thông báo -->
     <p th:if="${emptyCart != null}" class="info-message" th:text="${emptyCart}">Your cart is empty</p>
+
+    <!-- KHU VỰC GIỎ HÀNG CÓ SẢN PHẨM: Chỉ hiển thị khi emptyCart == null (giỏ có hàng) -->
     <div th:unless="${emptyCart != null}">
         <table class="cart-table">
+            <!-- TIÊU ĐỀ BẢNG: Các cột Sản phẩm, Đơn giá, Số lượng, Thành tiền, Thao tác -->
             <thead>
                 <tr>
                     <th>Product</th>
@@ -19,35 +28,44 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- VÒNG LẶP GIỎ HÀNG: th:each="item : ${cartItems}" duyệt qua từng mục trong giỏ -->
                 <tr th:each="item : ${cartItems}">
                     <td>
+                        <!-- Ảnh bìa nhỏ và tên sách (có link đến trang chi tiết) -->
                         <img th:src="${item.anhBia}" th:alt="${item.tenSach}" class="cart-img" width="60">
                         <a th:href="@{/store/detail(id=${item.maSach})}" th:text="${item.tenSach}">Title</a>
                     </td>
+                    <!-- Đơn giá sách -->
                     <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
                     <td>
-                        <form action="/store/cart/update" method="post" class="qty-form">
+                        <!-- FORM CẬP NHẬT SỐ LƯỢNG: POST đến /store/cart/update với mã sách và số lượng mới -->
+                        <form th:action="@{/store/cart/update}" method="post" class="qty-form">
                             <input type="hidden" name="id" th:value="${item.maSach}">
                             <input type="number" name="quantity" th:value="${item.soLuong}" min="1" class="qty-input">
                             <button type="submit" class="btn btn-sm">Update</button>
                         </form>
                     </td>
+                    <!-- Thành tiền = đơn giá * số lượng -->
                     <td th:text="'$' + ${#numbers.formatDecimal(item.donGia * item.soLuong, 1, 2)}">$0.00</td>
                     <td>
+                        <!-- Link XÓA sản phẩm khỏi giỏ: GET /store/cart/remove?id=... -->
                         <a th:href="@{/store/cart/remove(id=${item.maSach})}" class="btn btn-sm btn-danger">Remove</a>
                     </td>
                 </tr>
             </tbody>
             <tfoot>
+                <!-- HÀNG TỔNG CỘNG: colspan="3" cho nhãn "Total", colspan="2" cho giá trị tổng -->
                 <tr>
                     <td colspan="3"><strong>Total</strong></td>
                     <td colspan="2"><strong th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$0.00</strong></td>
                 </tr>
             </tfoot>
         </table>
+
+        <!-- NÚT HÀNH ĐỘNG: Tiếp tục mua hàng hoặc tiến hành thanh toán -->
         <div class="cart-actions">
-            <a href="/store/" class="btn btn-secondary">Continue Shopping</a>
-            <a href="/store/checkout" class="btn btn-primary">Checkout</a>
+            <a th:href="@{/store/}" class="btn btn-secondary">Continue Shopping</a>
+            <a th:href="@{/store/checkout}" class="btn btn-primary">Checkout</a>
         </div>
     </div>
 </main>

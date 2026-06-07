@@ -1,3 +1,5 @@
+// ===== Model Hóa đơn (Invoice) — lưu thông tin đơn hàng =====
+// Mỗi hóa đơn bao gồm thông tin khách hàng, tổng tiền, giảm giá, thuế
 package com.project.model;
 
 import java.math.BigDecimal;
@@ -5,18 +7,20 @@ import java.sql.Timestamp;
 
 public class Invoice {
 
-    private Integer maHD;
-    private String maNV;
-    private Integer maKH;
-    private Timestamp ngayLap;
-    private BigDecimal tongTien;
-    private BigDecimal giamGia;
-    private BigDecimal thueVAT;
-    private String trangThai;
-    private String tenKH;
-    private String dienThoaiKH;
-    private String emailKH;
-    private String diaChiKH;
+    // ===== Các thuộc tính của hóa đơn =====
+    private Integer maHD;          // Mã hóa đơn (PK, tự động tăng)
+    private String maNV;           // Mã nhân viên xử lý (nếu có)
+    private Integer maKH;          // Mã khách hàng
+    private Timestamp ngayLap;     // Ngày lập hóa đơn (datetime)
+    private BigDecimal tongTien;   // Tổng tiền trước giảm giá
+    private BigDecimal giamGia;    // Số tiền giảm giá
+    private BigDecimal thueVAT;    // Thuế VAT
+    private String trangThai;      // Trạng thái: "Chờ xử lý", "Đã xác nhận", "Đã hủy"
+    // Thông tin khách hàng (lưu trực tiếp để tra cứu nhanh, không cần JOIN)
+    private String tenKH;          // Tên khách hàng
+    private String dienThoaiKH;    // Số điện thoại khách hàng
+    private String emailKH;        // Email khách hàng
+    private String diaChiKH;       // Địa chỉ khách hàng
 
     public Integer getMaHD() {
         return maHD;

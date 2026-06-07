@@ -1,42 +1,66 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: order-detail.html (Admin - Chi tiết đơn hàng)
+     Mô tả: Trang hiển thị chi tiết một hóa đơn, bao gồm thông tin
+     khách hàng, danh sách sản phẩm, tổng tiền và form cập nhật
+     trạng thái. Dữ liệu từ biến "invoice" và "items".
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <!-- Tiêu đề trang chứa mã hóa đơn (inline expression: [[...]]) -->
     <title>Admin - Order #[[${invoice.maHD}]]</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
+        <!-- Tiêu đề chi tiết đơn hàng với mã hóa đơn -->
         <h1>Order #[[${invoice.maHD}]]</h1>
+
+        <!-- Thông tin khách hàng và đơn hàng -->
         <p><strong>Customer:</strong> [[${invoice.tenKH}]]</p>
+        <!-- Ngày lập, định dạng yyyy-MM-dd HH:mm -->
         <p><strong>Date:</strong> [[${#dates.format(invoice.ngayLap, 'yyyy-MM-dd HH:mm')}]]</p>
+        <!-- Địa chỉ khách hàng -->
         <p><strong>Address:</strong> [[${invoice.diaChiKH}]]</p>
+        <!-- Ghi chú (hiện tại để dấu gạch ngang, chưa có dữ liệu động) -->
         <p><strong>Note:</strong> -</p>
+        <!-- Trạng thái hiện tại của đơn hàng -->
         <p><strong>Current Status:</strong> [[${invoice.trangThai}]]</p>
 
+        <!-- Form cập nhật trạng thái đơn hàng, gửi POST tới /admin/orders/{id}/status -->
         <form th:action="@{/admin/orders/{id}/status(id=${invoice.maHD})}" method="post" style="margin-bottom:1rem">
             <select name="status">
+                <!-- Các tùy chọn trạng thái, tự động chọn option hiện tại -->
                 <option value="New" th:selected="${invoice.trangThai == 'New'}">New</option>
                 <option value="Shipped" th:selected="${invoice.trangThai == 'Shipped'}">Shipped</option>
                 <option value="Paid" th:selected="${invoice.trangThai == 'Paid'}">Paid</option>
             </select>
+            <!-- Nút gửi cập nhật -->
             <button type="submit" class="btn btn-primary">Update Status</button>
         </form>
 
+        <!-- Bảng chi tiết sản phẩm trong đơn hàng -->
         <table class="admin-table">
             <thead>
                 <tr>
+                    <!-- Các cột: Sản phẩm, Đơn giá, Số lượng, Thành tiền -->
                     <th>Product</th>
                     <th>Price</th>
                     <th>Quantity</th>
@@ -44,21 +68,29 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Duyệt qua từng mục (item) trong danh sách "items" -->
                 <tr th:each="item : ${items}">
+                    <!-- Tên sách -->
                     <td th:text="${item.tenSach}">Title</td>
+                    <!-- Đơn giá -->
                     <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
+                    <!-- Số lượng -->
                     <td th:text="${item.soLuong}">1</td>
+                    <!-- Thành tiền = đơn giá * số lượng -->
                     <td th:text="'$' + ${#numbers.formatDecimal(item.thanhTien, 1, 2)}">$0.00</td>
                 </tr>
             </tbody>
+            <!-- Chân bảng: hiển thị tổng tiền toàn đơn hàng -->
             <tfoot>
                 <tr>
                     <td colspan="3"><strong>Total</strong></td>
+                    <!-- Tổng tiền từ biến invoice.tongTien -->
                     <td><strong th:text="'$' + ${#numbers.formatDecimal(invoice.tongTien, 1, 2)}">$0.00</strong></td>
                 </tr>
             </tfoot>
         </table>
-        <a href="/admin/orders" class="btn btn-secondary">Back to Orders</a>
+        <!-- Nút quay lại danh sách đơn hàng -->
+        <a th:href="@{/admin/orders}" class="btn btn-secondary">Back to Orders</a>
     </main>
 </div>
 </body>

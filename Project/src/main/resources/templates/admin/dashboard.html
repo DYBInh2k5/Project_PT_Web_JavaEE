@@ -1,37 +1,52 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: dashboard.html (Admin - Bảng điều khiển)
+     Mô tả: Trang tổng quan hiển thị các thống kê chính:
+     số đơn hàng, sản phẩm, khách hàng và doanh thu.
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin - Dashboard</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
         <h1>Dashboard</h1>
+        <!-- Lưới thống kê: chỉ hiển thị khi biến "stats" không null -->
         <div class="stats-grid" th:if="${stats != null}">
+            <!-- Thẻ thống kê: Tổng số đơn hàng (totalInvoices) -->
             <div class="stat-card">
                 <h3>Total Orders</h3>
                 <p th:text="${stats.totalInvoices}">0</p>
             </div>
+            <!-- Thẻ thống kê: Tổng số sản phẩm (totalBooks) -->
             <div class="stat-card">
                 <h3>Total Products</h3>
                 <p th:text="${stats.totalBooks}">0</p>
             </div>
+            <!-- Thẻ thống kê: Tổng số khách hàng (totalCustomers) -->
             <div class="stat-card">
                 <h3>Total Customers</h3>
                 <p th:text="${stats.totalCustomers}">0</p>
             </div>
+            <!-- Thẻ thống kê: Doanh thu (revenue), định dạng số thập phân với 2 chữ số sau dấu phẩy -->
             <div class="stat-card">
                 <h3>Revenue</h3>
                 <p th:text="'$' + ${#numbers.formatDecimal(stats.revenue, 1, 2)}">$0.00</p>

@@ -1,3 +1,5 @@
+// ===== DAO Sách (BookDAO) — xử lý truy vấn CRUD cho bảng Sach =====
+// Dùng JPA (Hibernate) với EntityManager để thao tác dữ liệu
 package com.project.dao;
 
 import com.project.model.Book;
@@ -9,9 +11,11 @@ import jakarta.persistence.TypedQuery;
 
 public class BookDAO {
 
+    // Tìm tất cả sách, có hỗ trợ tìm kiếm theo từ khóa (tên, tác giả, thể loại)
     public List<Book> findAll(String keyword) {
         EntityManager entityManager = JpaSupport.createEntityManager();
         try {
+            // Xây dựng câu JPQL động — nếu có keyword thì thêm WHERE với LIKE
             StringBuilder jpql = new StringBuilder("SELECT b FROM Book b");
             boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
             if (hasKeyword) {
@@ -26,10 +30,11 @@ public class BookDAO {
 
             return new ArrayList<Book>(query.getResultList());
         } finally {
-            entityManager.close();
+            entityManager.close(); // Luôn đóng EntityManager để tránh rò rỉ kết nối
         }
     }
 
+    // Tìm sách theo mã (khóa chính)
     public Book findById(int maSach) {
         EntityManager entityManager = JpaSupport.createEntityManager();
         try {
@@ -39,15 +44,16 @@ public class BookDAO {
         }
     }
 
+    // Thêm sách mới
     public void insert(Book book) {
         EntityManager entityManager = JpaSupport.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(book);
+            entityManager.persist(book); // persist = INSERT vào DB
             entityManager.getTransaction().commit();
         } catch (RuntimeException ex) {
             if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
+                entityManager.getTransaction().rollback(); // Rollback nếu có lỗi
             }
             throw new RuntimeException("Khong them duoc sach: " + ex.getMessage(), ex);
         } finally {
@@ -55,11 +61,12 @@ public class BookDAO {
         }
     }
 
+    // Cập nhật thông tin sách
     public void update(Book book) {
         EntityManager entityManager = JpaSupport.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(book);
+            entityManager.merge(book); // merge = UPDATE nếu đã tồn tại
             entityManager.getTransaction().commit();
         } catch (RuntimeException ex) {
             if (entityManager.getTransaction().isActive()) {
@@ -71,13 +78,14 @@ public class BookDAO {
         }
     }
 
+    // Xóa sách theo mã
     public void delete(int maSach) {
         EntityManager entityManager = JpaSupport.createEntityManager();
         try {
             entityManager.getTransaction().begin();
             Book existing = entityManager.find(Book.class, Integer.valueOf(maSach));
             if (existing != null) {
-                entityManager.remove(existing);
+                entityManager.remove(existing); // remove = DELETE
             }
             entityManager.getTransaction().commit();
         } catch (RuntimeException ex) {

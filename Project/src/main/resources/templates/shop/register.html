@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- REGISTER.HTML - Trang đăng ký tài khoản cho khách hàng mới. Thu thập các thông tin:
+     họ tên, tài khoản, mật khẩu, email, địa chỉ, số điện thoại. -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - Register')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
@@ -7,8 +11,13 @@
 <main class="main-content">
     <div class="form-container">
         <h1>Create Account</h1>
+
+        <!-- THÔNG BÁO LỖI: Nếu có biến error trong model (do server trả về sau validate thất bại),
+             hiển thị nội dung lỗi động th:text="${error}" -->
         <p th:if="${error != null}" class="error-message" th:text="${error}">Error</p>
-        <form action="/store/register" method="post">
+
+        <!-- FORM ĐĂNG KÝ: POST đến /store/register với các trường thông tin khách hàng -->
+        <form th:action="@{/store/register}" method="post">
             <div class="form-group">
                 <label for="hoTen">Full Name:</label>
                 <input type="text" id="hoTen" name="hoTen" required>
@@ -35,7 +44,9 @@
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
-        <p class="form-footer">Already have an account? <a href="/store/login">Sign in here</a></p>
+
+        <!-- Link dẫn đến trang đăng nhập nếu đã có tài khoản -->
+        <p class="form-footer">Already have an account? <a th:href="@{/store/login}">Sign in here</a></p>
     </div>
 </main>
 

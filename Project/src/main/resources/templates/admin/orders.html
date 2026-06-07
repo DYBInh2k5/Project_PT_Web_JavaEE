@@ -1,35 +1,50 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: orders.html (Admin - Quản lý đơn hàng)
+     Mô tả: Trang danh sách đơn hàng (hóa đơn), có bộ lọc theo
+     trạng thái. Dữ liệu được lấy từ biến "invoices".
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin - Orders</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
         <h1>Orders</h1>
-        <form action="/admin/orders" method="get" style="margin-bottom:1rem">
+        <!-- Form lọc đơn hàng theo trạng thái, gửi GET để tải lại trang với tham số "status" -->
+        <form th:action="@{/admin/orders}" method="get" style="margin-bottom:1rem">
             <select name="status" onchange="this.form.submit()">
+                <!-- Tùy chọn mặc định: xem tất cả -->
                 <option value="">All Status</option>
+                <!-- Các tùy chọn trạng thái, tự động chọn option tương ứng với selectedStatus -->
                 <option value="New" th:selected="${selectedStatus == 'New'}">New</option>
                 <option value="Shipped" th:selected="${selectedStatus == 'Shipped'}">Shipped</option>
                 <option value="Paid" th:selected="${selectedStatus == 'Paid'}">Paid</option>
             </select>
         </form>
+        <!-- Bảng danh sách đơn hàng -->
         <table class="admin-table">
             <thead>
                 <tr>
+                    <!-- Các cột: ID, Khách hàng, Ngày lập, Tổng tiền, Trạng thái, Hành động -->
                     <th>ID</th>
                     <th>Customer</th>
                     <th>Date</th>
@@ -39,12 +54,19 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Duyệt qua từng hóa đơn (o) trong danh sách "invoices" bằng th:each -->
                 <tr th:each="o : ${invoices}">
+                    <!-- Mã hóa đơn -->
                     <td th:text="${o.maHD}">1</td>
+                    <!-- Tên khách hàng -->
                     <td th:text="${o.tenKH}">Customer</td>
+                    <!-- Ngày lập hóa đơn, định dạng yyyy-MM-dd -->
                     <td th:text="${#dates.format(o.ngayLap, 'yyyy-MM-dd')}">2025-01-01</td>
+                    <!-- Tổng tiền, định dạng số thập phân với ký hiệu $ -->
                     <td th:text="'$' + ${#numbers.formatDecimal(o.tongTien, 1, 2)}">$0.00</td>
+                    <!-- Trạng thái đơn hàng -->
                     <td th:text="${o.trangThai}">New</td>
+                    <!-- Liên kết xem chi tiết đơn hàng -->
                     <td><a th:href="@{/admin/orders/{id}(id=${o.maHD})}" class="btn btn-sm">View</a></td>
                 </tr>
             </tbody>

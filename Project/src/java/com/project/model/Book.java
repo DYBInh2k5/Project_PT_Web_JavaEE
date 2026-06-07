@@ -1,3 +1,5 @@
+// ===== Entity Sách (Book) — ánh xạ với bảng Sach trong CSDL =====
+// Mỗi instance của Book tương ứng với một dòng trong bảng Sach
 package com.project.model;
 
 import java.math.BigDecimal;
@@ -9,33 +11,39 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// @Entity: class này là một thực thể JPA, được quản lý bởi Hibernate
+// @Table(name = "Sach"): ánh xạ tới bảng "Sach" trong SQL Server
 @Entity
 @Table(name = "Sach")
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // ===== Các trường (cột) trong bảng Sach =====
+
+    // @Id: khóa chính của bảng
+    // @GeneratedValue: tự động tăng (IDENTITY trong SQL Server)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MaSach")
+    @Column(name = "MaSach")     // Mã sách (int, PK)
     private Integer maSach;
 
-    @Column(name = "TenSach")
+    @Column(name = "TenSach")    // Tên sách (nvarchar)
     private String tenSach;
 
-    @Column(name = "TacGia")
+    @Column(name = "TacGia")     // Tác giả (nvarchar)
     private String tacGia;
 
-    @Column(name = "TheLoai")
+    @Column(name = "TheLoai")    // Thể loại (nvarchar)
     private String theLoai;
 
-    @Column(name = "DonGia")
+    @Column(name = "DonGia")     // Đơn giá (decimal/money)
     private BigDecimal donGia;
 
-    @Column(name = "SoLuong")
+    @Column(name = "SoLuong")    // Số lượng tồn kho (int)
     private Integer soLuong;
 
-    @Column(name = "AnhBia")
+    @Column(name = "AnhBia")     // Đường dẫn ảnh bìa (nvarchar)
     private String anhBia;
 
     public Integer getMaSach() {

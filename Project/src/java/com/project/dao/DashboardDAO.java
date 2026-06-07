@@ -1,3 +1,5 @@
+// ===== DAO Thống kê Dashboard (DashboardDAO) — lấy số liệu tổng quan =====
+// Đếm số lượng sách, khách hàng, hóa đơn và tổng doanh thu
 package com.project.dao;
 
 import com.project.model.dto.DashboardStats;

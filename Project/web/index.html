@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadowveil — Modern Gothic Design Studio</title>
+<meta name="description" content="Shadowveil crafts premium dark, elegant digital experiences with a modern gothic edge. Intricate line art, blackletter typography, and architectural design.">
+<meta property="og:title" content="Shadowveil — Modern Gothic Design Studio">
+<meta property="og:description" content="Crafting dark, elegant digital experiences with a modern gothic edge.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/assets/og-shadowveil.jpg">
+<meta name="theme-color" content="#1A1A1A">
+<meta name="keywords" content="gothic design, dark UI, modern gothic, web design, premium studio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --onyx-black-gothic: #1A1A1A;
+  --blood-red-gothic: #8B0000;
+  --silver-gothic: #C0C0C0;
+  --off-white-gothic: #F5F5F5;
+  --deep-purple-gothic: #480048;
+  --forest-green-gothic: #228B22;
+  --white-gothic: #FFFFFF;
+  --line-art-thickness: 1px;
+  --font-gothic: 'UnifrakturMaguntia', cursive;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--onyx-black-gothic);
+  color: var(--off-white-gothic);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+::selection { background: var(--blood-red-gothic); color: var(--off-white-gothic); }
+a { color: inherit; text-decoration: none; transition: all 0.3s ease; cursor: pointer; }
+a:hover { color: var(--silver-gothic); }
+img { max-width: 100%; height: auto; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 100px 0; position: relative; }
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blood-red-gothic);
+  margin-bottom: 16px;
+  display: block;
+}
+.section-title {
+  font-family: var(--font-gothic);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  color: var(--off-white-gothic);
+  text-shadow: 0 0 8px rgba(139,0,0,0.4);
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+.section-subtitle {
+  font-size: 1.05rem;
+  color: rgba(245,245,245,0.65);
+  max-width: 600px;
+  line-height: 1.8;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  border: var(--line-art-thickness) solid var(--silver-gothic);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary {
+  background: var(--blood-red-gothic);
+  color: var(--off-white-gothic);
+  border-color: var(--blood-red-gothic);
+  box-shadow: 0 0 20px rgba(139,0,0,0.3);
+}
+.btn-primary:hover {
+  background: #A00000;
+  box-shadow: 0 0 35px rgba(139,0,0,0.5);
+  color: var(--off-white-gothic);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--silver-gothic);
+}
+.btn-secondary:hover {
+  background: rgba(192,192,192,0.08);
+  color: var(--off-white-gothic);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--off-white-gothic);
+  border-color: var(--blood-red-gothic);
+}
+.btn-outline:hover {
+  background: var(--blood-red-gothic);
+  color: var(--off-white-gothic);
+}
+.card {
+  background: rgba(26,26,26,0.8);
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.15);
+  padding: 40px 32px;
+  transition: all 0.4s ease;
+  position: relative;
+  backdrop-filter: blur(4px);
+}
+.card:hover {
+  border-color: var(--blood-red-gothic);
+  box-shadow: 0 0 30px rgba(139,0,0,0.15);
+  transform: translateY(-6px);
+}
+.card-highlight {
+  border-color: var(--blood-red-gothic);
+  box-shadow: 0 0 30px rgba(139,0,0,0.2);
+  transform: translateY(-8px);
+  background: rgba(26,26,26,0.95);
+}
+/* Gothic ornamental divider */
+.gothic-divider {
+  width: 80px;
+  height: var(--line-art-thickness);
+  background: var(--blood-red-gothic);
+  margin: 24px 0 32px;
+  position: relative;
+}
+.gothic-divider::before,
+.gothic-divider::after {
+  content: "\276C";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--blood-red-gothic);
+  font-size: 12px;
+}
+.gothic-divider::before { left: -20px; }
+.gothic-divider::after { right: -20px; }
+/* Smoke effect */
+.smoke-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(139,0,0,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(72,0,72,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(192,192,192,0.02) 0%, transparent 40%);
+}
+/* Hero 3D abstract geometric element */
+.hero-geometric {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-geometric::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    conic-gradient(from 45deg, var(--blood-red-gothic), transparent 30%, var(--silver-gothic) 50%, transparent 70%, var(--blood-red-gothic));
+  mask: repeating-linear-gradient(45deg, transparent, transparent 8px, black 8px, black 9px);
+  -webkit-mask: repeating-linear-gradient(45deg, transparent, transparent 8px, black 8px, black 9px);
+  animation: rotate-geometric 20s linear infinite;
+  filter: contrast(1.3) brightness(0.5);
+}
+.hero-geometric::after {
+  content: "";
+  position: absolute;
+  inset: 30px;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 12px,
+    rgba(192,192,192,0.08) 12px, rgba(192,192,192,0.08) 13px
+  );
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.1);
+}
+@keyframes rotate-geometric {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+/* Floral ornamental elements */
+.floral-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--blood-red-gothic);
+  font-size: 14px;
+  opacity: 0.6;
+  margin: 40px 0 24px;
+}
+.floral-ornament svg { width: 20px; height: 20px; }
+.floral-ornament .line {
+  width: 60px;
+  height: var(--line-art-thickness);
+  background: linear-gradient(90deg, transparent, var(--blood-red-gothic), transparent);
+}
+/* Pricing badge */
+.pricing-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: var(--blood-red-gothic);
+  color: var(--off-white-gothic);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  text-transform: uppercase;
+}
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 18px 0;
+  background: rgba(26,26,26,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+  transition: all 0.3s ease;
+}
+.navbar.scrolled { background: rgba(26,26,26,0.97); }
+.navbar .container { display: flex; align-items: center; justify-content: space-between; }
+.navbar-logo {
+  font-family: var(--font-gothic);
+  font-size: 1.6rem;
+  color: var(--off-white-gothic);
+  text-shadow: 0 0 10px rgba(139,0,0,0.3);
+  letter-spacing: 2px;
+}
+.navbar-logo:hover { color: var(--blood-red-gothic); }
+.navbar-links { display: flex; gap: 32px; align-items: center; }
+.navbar-links a {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(245,245,245,0.7);
+  position: relative;
+}
+.navbar-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: var(--line-art-thickness);
+  background: var(--blood-red-gothic);
+  transition: width 0.3s ease;
+}
+.navbar-links a:hover::after { width: 100%; }
+.navbar-links a:hover { color: var(--off-white-gothic); }
+.navbar-toggle { display: none; background: none; border: none; color: var(--off-white-gothic); cursor: pointer; padding: 8px; }
+/* Hero */
+.hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; }
+.hero .container { position: relative; z-index: 1; width: 100%; }
+.hero h1 {
+  font-family: var(--font-gothic);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 1.1;
+  text-shadow: 0 0 20px rgba(139,0,0,0.5);
+  max-width: 700px;
+}
+.hero h1 .highlight { color: var(--blood-red-gothic); }
+.hero p {
+  font-size: 1.1rem;
+  color: rgba(245,245,245,0.65);
+  max-width: 500px;
+  line-height: 1.8;
+  margin: 24px 0 40px;
+}
+.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+/* Features grid */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.feature-icon {
+  width: 52px;
+  height: 52px;
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--blood-red-gothic);
+}
+.feature-icon svg { width: 24px; height: 24px; }
+.feature-icon:hover { border-color: var(--blood-red-gothic); box-shadow: 0 0 20px rgba(139,0,0,0.2); }
+.card h3 {
+  font-family: var(--font-gothic);
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: var(--off-white-gothic);
+}
+.card p { font-size: 0.9rem; color: rgba(245,245,245,0.6); line-height: 1.7; }
+/* Testimonials */
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.testimonial-card {
+  background: rgba(26,26,26,0.8);
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.1);
+  padding: 36px 28px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.testimonial-card:hover { border-color: var(--blood-red-gothic); }
+.testimonial-card::before {
+  content: "\275D";
+  font-family: var(--font-gothic);
+  font-size: 3rem;
+  color: var(--blood-red-gothic);
+  opacity: 0.3;
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  line-height: 1;
+}
+.testimonial-text { font-size: 0.95rem; color: rgba(245,245,245,0.7); line-height: 1.8; margin-bottom: 24px; font-style: italic; padding-top: 20px; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; border-top: var(--line-art-thickness) solid rgba(192,192,192,0.08); padding-top: 20px; }
+.testimonial-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: var(--line-art-thickness) solid var(--silver-gothic);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-gothic);
+  font-size: 1rem;
+  color: var(--blood-red-gothic);
+  background: rgba(139,0,0,0.1);
+  flex-shrink: 0;
+}
+.testimonial-name { font-weight: 600; font-size: 0.9rem; color: var(--off-white-gothic); }
+.testimonial-role { font-size: 0.75rem; color: rgba(245,245,245,0.5); font-family: var(--font-mono); }
+/* Testimonial star quotes */
+.star-quote { display: flex; gap: 2px; margin-bottom: 12px; }
+.star-quote svg { width: 14px; height: 14px; color: var(--blood-red-gothic); }
+/* Pricing */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; align-items: start; }
+.pricing-card {
+  background: rgba(26,26,26,0.8);
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.12);
+  padding: 44px 32px;
+  text-align: center;
+  transition: all 0.4s ease;
+  position: relative;
+}
+.pricing-card:hover { transform: translateY(-8px); border-color: var(--silver-gothic); }
+.pricing-card.featured {
+  border-color: var(--blood-red-gothic);
+  box-shadow: 0 0 40px rgba(139,0,0,0.15);
+  background: rgba(26,26,26,0.95);
+  transform: translateY(-12px);
+}
+.pricing-card.featured:hover { transform: translateY(-16px); }
+.pricing-name { font-family: var(--font-gothic); font-size: 1.5rem; color: var(--off-white-gothic); margin-bottom: 16px; }
+.pricing-price { font-size: 3rem; font-weight: 800; color: var(--off-white-gothic); margin-bottom: 4px; }
+.pricing-price span { font-size: 1rem; font-weight: 400; color: rgba(245,245,245,0.5); }
+.pricing-desc { font-size: 0.85rem; color: rgba(245,245,245,0.5); margin-bottom: 32px; }
+.pricing-features { list-style: none; margin-bottom: 36px; }
+.pricing-features li {
+  padding: 12px 0;
+  font-size: 0.9rem;
+  color: rgba(245,245,245,0.7);
+  border-bottom: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.pricing-features li svg { width: 16px; height: 16px; color: var(--blood-red-gothic); flex-shrink: 0; }
+.pricing-features li:last-child { border-bottom: none; }
+/* CTA */
+.cta-section {
+  background: linear-gradient(135deg, rgba(139,0,0,0.08) 0%, transparent 50%, rgba(72,0,72,0.08) 100%);
+  border-top: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+  border-bottom: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+  text-align: center;
+}
+.cta-section h2 { font-family: var(--font-gothic); font-size: clamp(2rem, 5vw, 3.5rem); text-shadow: 0 0 15px rgba(139,0,0,0.3); margin-bottom: 20px; }
+.cta-section p { color: rgba(245,245,245,0.6); max-width: 550px; margin: 0 auto 36px; }
+.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+/* Footer */
+.footer {
+  padding: 60px 0 32px;
+  border-top: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand .navbar-logo { margin-bottom: 16px; display: inline-block; }
+.footer-brand p { font-size: 0.85rem; color: rgba(245,245,245,0.5); max-width: 300px; line-height: 1.7; }
+.footer-col h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--blood-red-gothic); margin-bottom: 20px; font-family: var(--font-mono); }
+.footer-col a {
+  display: block;
+  padding: 6px 0;
+  font-size: 0.85rem;
+  color: rgba(245,245,245,0.55);
+}
+.footer-col a:hover { color: var(--silver-gothic); padding-left: 4px; }
+.footer-social { display: flex; gap: 16px; margin-top: 24px; }
+.footer-social a {
+  width: 40px; height: 40px;
+  border: var(--line-art-thickness) solid rgba(192,192,192,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.footer-social a:hover { border-color: var(--blood-red-gothic); color: var(--blood-red-gothic); }
+.footer-social svg { width: 18px; height: 18px; }
+.footer-bottom {
+  padding-top: 24px;
+  border-top: var(--line-art-thickness) solid rgba(192,192,192,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.8rem;
+  color: rgba(245,245,245,0.4);
+}
+.footer-bottom-links { display: flex; gap: 24px; }
+.footer-bottom-links a { color: rgba(245,245,245,0.4); }
+.footer-bottom-links a:hover { color: var(--silver-gothic); }
+/* Architectural line decorations */
+.arch-line-left,
+.arch-line-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--line-art-thickness);
+  background: linear-gradient(180deg, transparent, rgba(192,192,192,0.08), transparent);
+  pointer-events: none;
+}
+.arch-line-left { left: 0; }
+.arch-line-right { right: 0; }
+/* Mobile */
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  .pricing-card.featured { transform: none; }
+  .pricing-card.featured:hover { transform: translateY(-6px); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .hero-geometric { width: 340px; height: 340px; opacity: 0.4; }
+}
+@media (max-width: 640px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .hero-geometric { display: none; }
+  .navbar-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(26,26,26,0.98); backdrop-filter: blur(16px); flex-direction: column; padding: 20px 24px; border-bottom: var(--line-art-thickness) solid rgba(192,192,192,0.1); }
+  .navbar-links.open { display: flex; }
+  .navbar-toggle { display: block; }
+  .hero h1 { font-size: clamp(2.2rem, 10vw, 3rem); }
+}
+</style>
+</head>
+<body>
+
+<div class="smoke-overlay"></div>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="#" class="navbar-logo">Shadowveil</a>
+    <div class="navbar-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+      <a href="#" class="btn btn-primary" style="padding:10px 24px;font-size:0.8rem">Get Started</a>
+    </div>
+    <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-geometric"></div>
+  <div class="container">
+    <span class="section-tag">Modern Gothic Design</span>
+    <h1>Where <span class="highlight">Darkness</span><br>Meets Design</h1>
+    <p>We craft premium digital experiences for those who dare to embrace the dark. Modern gothic design, reborn for the contemporary web.</p>
+    <div class="hero-buttons">
+      <a href="#pricing" class="btn btn-primary">
+        View Plans
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#features" class="btn btn-secondary">
+        Learn More
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="arch-line-left"></div>
+  <div class="arch-line-right"></div>
+  <div class="container">
+    <span class="section-tag">Our Craft</span>
+    <h2 class="section-title">Crafted in Shadow</h2>
+    <p class="section-subtitle">Every detail meticulously designed to evoke emotion, power, and elegance. We build interfaces that feel like sacred architecture.</p>
+    <div class="gothic-divider"></div>
+
+    <div class="features-grid">
+      <div class="card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Dark Architecture</h3>
+        <p>Structural layouts built on sacred geometry and sharp architectural lines. Every grid tells a story of precision and intent.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6c0 4 6 10 6 10s6-6 6-10a6 6 0 0 0-6-6z"/><circle cx="12" cy="8" r="2"/></svg>
+        </div>
+        <h3>Elegant Motion</h3>
+        <p>Subtle animations that feel weighted and intentional. Spring physics meet gothic grace in every transition.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+        </div>
+        <h3>Romantic Core</h3>
+        <p>Floral ornaments meet modern UI. A delicate balance between edge and elegance, darkness and beauty.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="floral-ornament">
+      <span class="line"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M12 4a5 5 0 0 0-5 5c0 4 5 9 5 9s5-5 5-9a5 5 0 0 0-5-5z"/><circle cx="12" cy="8" r="2"/></svg>
+      <span class="line"></span>
+    </div>
+    <span class="section-tag" style="text-align:center;display:block">Voices from the Dark</span>
+    <h2 class="section-title" style="text-align:center">Trusted by Visionaries</h2>
+    <p class="section-subtitle" style="text-align:center;margin:0 auto 48px">Visionaries who refuse to follow the light choose Shadowveil to bring their darkest visions to life.</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="star-quote">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+        </div>
+        <p class="testimonial-text">"Shadowveil transformed our brand identity. The gothic aesthetic combined with modern UX is unlike anything we've seen. Absolute mastery."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">VM</div>
+          <div>
+            <div class="testimonial-name">Victoria Marchetti</div>
+            <div class="testimonial-role">Creative Director, Ravenclad</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="star-quote">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+        </div>
+        <p class="testimonial-text">"The attention to detail is extraordinary. Every animation, every border, every shadow — crafted with purpose. A true work of art."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">DM</div>
+          <div>
+            <div class="testimonial-name">Dorian Mordecai</div>
+            <div class="testimonial-role">Founder, Obsidian Labs</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="star-quote">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+        </div>
+        <p class="testimonial-text">"Finally, a design team that understands dark doesn't mean boring. This is gothic elegance at its finest. Absolutely hauntingly beautiful."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SN</div>
+          <div>
+            <div class="testimonial-name">Selene Nacht</div>
+            <div class="testimonial-role">CEO, Midnight Collective</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="arch-line-left"></div>
+  <div class="arch-line-right"></div>
+  <div class="container">
+    <span class="section-tag">Investment</span>
+    <h2 class="section-title">Choose Your Path</h2>
+    <p class="section-subtitle">Three tiers of darkness. Each crafted for a different journey. One fits your soul.</p>
+    <div class="gothic-divider"></div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Shadow</div>
+        <div class="pricing-price">$29 <span>/mo</span></div>
+        <div class="pricing-desc">For solo creators and freelancers</div>
+        <ul class="pricing-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 1 project</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gothic UI components</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Basic support</li>
+        </ul>
+        <a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Choose Shadow</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-name">Nightfall</div>
+        <div class="pricing-price">$79 <span>/mo</span></div>
+        <div class="pricing-desc">For growing studios and teams</div>
+        <ul class="pricing-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 5 projects</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full component library</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Custom animations</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%;justify-content:center">Choose Nightfall</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Eternal</div>
+        <div class="pricing-price">$199 <span>/mo</span></div>
+        <div class="pricing-desc">For enterprises and agencies</div>
+        <ul class="pricing-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited projects</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full source access</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Dedicated designer</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> White-label rights</li>
+        </ul>
+        <a href="#" class="btn btn-outline" style="width:100%;justify-content:center">Choose Eternal</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="section cta-section" id="contact">
+  <div class="container">
+    <div class="floral-ornament">
+      <span class="line"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span class="line"></span>
+    </div>
+    <h2>Embrace the Dark</h2>
+    <p>Step into a world where design meets darkness. Let us craft something hauntingly beautiful for your brand.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn btn-primary">
+        Start Your Journey
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn btn-secondary">
+        View Case Studies
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="navbar-logo">Shadowveil</a>
+        <p>Crafting dark, elegant digital experiences since 2026. Modern gothic design for those who dare.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="#" aria-label="Dribbble">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm9.96 12c0 1.056-.164 2.076-.468 3.036-.156-.024-.336-.048-.528-.072-1.98-.276-4.248-.492-6.792-.624.276-1.152.504-2.34.672-3.552 2.952-.132 5.668-.528 7.116-1.176.024.456 0 .912 0 1.392zm-1.008-3.012c-1.536.684-4.368 1.116-7.404 1.236.42-2.136.96-4.02 1.632-5.496 1.8.564 3.36 1.584 4.524 2.976.564.72.996 1.464 1.248 2.244v.024zm-6.96-4.74c-.684 1.488-1.212 3.384-1.62 5.52-2.412.072-4.776.24-7.008.492.624-3.156 2.436-5.844 4.908-7.392.756-.468 1.548-.828 2.364-1.02.528.804 1.02 1.656 1.356 2.4v-.024zm-8.304 8.352c2.232-.252 4.572-.42 6.96-.48.18 1.344.42 2.64.708 3.888-2.628.12-5.064.312-7.104.6a10.068 10.068 0 0 1-.564-4.008v.024zm.72 6.036c2.004-.276 4.38-.468 6.96-.6.288 1.068.624 2.088 1.008 3.036-.456.12-.924.204-1.392.264-1.764.252-3.564.18-5.256-.444-.504-.24-.972-.528-1.32-.792v.504zm9.948-1.656c-.408-1.008-.744-2.052-1.02-3.132 2.496.12 4.728.312 6.672.588-.78 2.268-2.316 4.116-4.308 5.388-.876.528-1.8.876-2.772 1.068.504-.96.912-1.992 1.224-3.072.024-.12.048-.216.072-.312l.036-.048v.048z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">GDPR</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="#">hello@shadowveil.io</a>
+        <a href="#">@shadowveil</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Shadowveil. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+if (navToggle) {
+  navToggle.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+  });
+}
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 60) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+document.querySelectorAll('.navbar-links a[href^="#"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    if (navLinks) { navLinks.classList.remove('open'); }
+  });
+});
+document.querySelectorAll('.hero-buttons a[href^="#"], .cta-buttons a[href^="#"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

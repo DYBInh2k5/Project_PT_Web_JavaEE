@@ -1,24 +1,37 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: login.html (Admin - Đăng nhập)
+     Mô tả: Trang đăng nhập dành cho quản trị viên.
+     Sử dụng Thymeleaf để kiểm tra lỗi đăng nhập và gửi form.
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin - Login</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Wrapper căn giữa toàn bộ khung đăng nhập -->
 <div class="admin-login-wrapper">
+    <!-- Hộp đăng nhập (login box) chứa form -->
     <div class="admin-login-box">
         <h1>Admin Login</h1>
+        <!-- Hiển thị thông báo lỗi nếu có tham số "error" trên URL (sai tài khoản/mật khẩu) -->
         <p th:if="${param.error != null}" class="error-message">Invalid credentials</p>
-        <form action="/admin/login" method="post">
+        <!-- Form đăng nhập gửi POST tới /admin/login -->
+        <form th:action="@{/admin/login}" method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
+                <!-- Ô nhập tên người dùng -->
                 <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
+                <!-- Ô nhập mật khẩu -->
                 <input type="password" id="password" name="password" required>
             </div>
+            <!-- Nút gửi form đăng nhập -->
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>

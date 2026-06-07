@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- CHECKOUT.HTML - Trang thanh toán / đặt hàng. Hiển thị tóm tắt đơn hàng (giỏ hàng),
+     thông tin khách hàng (từ session), và form nhập địa chỉ giao hàng + ghi chú. -->
+
 <head th:replace="~{shop/fragments :: head('Bookora - Checkout')}"></head>
 <body>
 <div th:replace="~{shop/fragments :: header}"></div>
 
 <main class="main-content">
     <h1>Checkout</h1>
+
+    <!-- THÔNG BÁO GIỎ TRỐNG: Nếu emptyCart != null, giỏ rỗng không thể checkout -->
     <p th:if="${emptyCart != null}" class="info-message" th:text="${emptyCart}">Your cart is empty</p>
+
+    <!-- KHU VỰC THANH TOÁN: Chỉ hiển thị khi giỏ có hàng -->
     <div th:unless="${emptyCart != null}">
+        <!-- Chào khách hàng: Lấy tên từ session.STORE_CUSTOMER.tenKH -->
         <p>Welcome, <strong th:text="${session.STORE_CUSTOMER.tenKH}">Customer</strong></p>
+
+        <!-- BẢNG TÓM TẮT GIỎ HÀNG: Danh sách sản phẩm, đơn giá, số lượng, thành tiền (chỉ đọc, không cho sửa) -->
         <table class="cart-table">
             <thead>
                 <tr>
@@ -19,6 +30,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- VÒNG LẶP: Duyệt qua cartItems tương tự trang cart nhưng không có nút cập nhật/xóa -->
                 <tr th:each="item : ${cartItems}">
                     <td th:text="${item.tenSach}">Title</td>
                     <td th:text="'$' + ${#numbers.formatDecimal(item.donGia, 1, 2)}">$0.00</td>
@@ -33,17 +45,22 @@
                 </tr>
             </tfoot>
         </table>
-        <form action="/store/checkout" method="post">
+
+        <!-- FORM ĐẶT HÀNG: POST đến /store/checkout với địa chỉ giao hàng và ghi chú -->
+        <form th:action="@{/store/checkout}" method="post">
             <div class="form-group">
                 <label for="diaChi">Delivery Address:</label>
+                <!-- textarea địa chỉ giao hàng. th:text="${session.STORE_CUSTOMER.diaChi}" điền sẵn
+                     địa chỉ của khách hàng từ session, có thể sửa lại -->
                 <textarea id="diaChi" name="diaChi" required th:text="${session.STORE_CUSTOMER.diaChi}"></textarea>
             </div>
             <div class="form-group">
                 <label for="ghiChu">Note:</label>
+                <!-- textarea ghi chú thêm cho đơn hàng (không bắt buộc) -->
                 <textarea id="ghiChu" name="ghiChu"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Place Order</button>
-            <a href="/store/cart" class="btn btn-secondary">Back to Cart</a>
+            <a th:href="@{/store/cart}" class="btn btn-secondary">Back to Cart</a>
         </form>
     </div>
 </main>

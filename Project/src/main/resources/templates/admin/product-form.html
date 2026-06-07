@@ -1,51 +1,76 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     TEMPLATE: product-form.html (Admin - Thêm/Sửa sản phẩm)
+     Mô tả: Form dùng chung cho cả thêm mới và chỉnh sửa sản phẩm.
+     Chế độ được xác định dựa trên "book.maSach" (null = thêm, != null = sửa).
+     ============================================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <!-- Tiêu đề động: "Edit Product" nếu có maSach, ngược lại "Add Product" -->
     <title th:text="${book.maSach != null} ? 'Edit Product' : 'Add Product'">Product Form</title>
+    <!-- Liên kết file CSS chính của ứng dụng -->
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
+<!-- Container chính: chia bố cục sidebar + nội dung -->
 <div class="admin-container">
+    <!-- Sidebar (thanh bên) chứa menu điều hướng chính -->
     <aside class="admin-sidebar">
         <h2>Bookora Admin</h2>
         <nav>
-            <a href="/admin/">Dashboard</a>
-            <a href="/admin/products">Products</a>
-            <a href="/admin/orders">Orders</a>
-            <a href="/admin/revenue">Revenue</a>
-            <a href="/admin/logout">Logout</a>
+            <!-- Các liên kết điều hướng tới các trang quản trị -->
+            <a th:href="@{/admin/}">Dashboard</a>
+            <a th:href="@{/admin/products}">Products</a>
+            <a th:href="@{/admin/orders}">Orders</a>
+            <a th:href="@{/admin/revenue}">Revenue</a>
+            <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+    <!-- Khu vực nội dung chính -->
     <main class="admin-content">
+        <!-- Tiêu đề động: giống với tiêu đề trang -->
         <h1 th:text="${book.maSach != null} ? 'Edit Product' : 'Add Product'">Product Form</h1>
+        <!--
+             Form gửi POST:
+             - Nếu sửa (maSach != null): action = /admin/products/edit/{id}
+             - Nếu thêm mới:               action = /admin/products/add
+        -->
         <form th:action="${book.maSach != null} ? @{/admin/products/edit/{id}(id=${book.maSach})} : @{/admin/products/add}" method="post" class="admin-form">
+            <!-- Trường: Tên sách -->
             <div class="form-group">
                 <label for="tenSach">Name:</label>
                 <input type="text" id="tenSach" name="tenSach" th:value="${book.tenSach}" required>
             </div>
+            <!-- Trường: Tác giả -->
             <div class="form-group">
                 <label for="tacGia">Author:</label>
                 <input type="text" id="tacGia" name="tacGia" th:value="${book.tacGia}" required>
             </div>
+            <!-- Trường: Thể loại -->
             <div class="form-group">
                 <label for="theLoai">Category:</label>
                 <input type="text" id="theLoai" name="theLoai" th:value="${book.theLoai}" required>
             </div>
+            <!-- Trường: Đơn giá -->
             <div class="form-group">
                 <label for="donGia">Price:</label>
                 <input type="number" id="donGia" name="donGia" th:value="${book.donGia}" step="0.01" required>
             </div>
+            <!-- Trường: Số lượng tồn kho -->
             <div class="form-group">
                 <label for="soLuong">Stock:</label>
                 <input type="number" id="soLuong" name="soLuong" th:value="${book.soLuong}" required>
             </div>
+            <!-- Trường: URL ảnh bìa -->
             <div class="form-group">
                 <label for="anhBia">Image URL:</label>
                 <input type="text" id="anhBia" name="anhBia" th:value="${book.anhBia}">
             </div>
+            <!-- Nút lưu (gửi form) -->
             <button type="submit" class="btn btn-primary">Save</button>
-            <a href="/admin/products" class="btn btn-secondary">Cancel</a>
+            <!-- Nút hủy, quay lại danh sách sản phẩm -->
+            <a th:href="@{/admin/products}" class="btn btn-secondary">Cancel</a>
         </form>
     </main>
 </div>

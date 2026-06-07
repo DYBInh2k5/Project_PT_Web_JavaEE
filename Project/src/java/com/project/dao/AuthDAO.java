@@ -1,3 +1,5 @@
+// ===== DAO Xác thực (AuthDAO) — đăng nhập cho Admin/Nhân viên =====
+// Tra cứu bảng NhanVien với tài khoản và mật khẩu
 package com.project.dao;
 
 import com.project.model.AuthUser;
@@ -5,6 +7,7 @@ import jakarta.persistence.EntityManager;
 
 public class AuthDAO {
 
+    // Kiểm tra đăng nhập: so khớp username + password trong bảng NhanVien
     public AuthUser login(String username, String password) {
         String sql = "SELECT TOP 1 MaNV, HoTen, TaiKhoan, VaiTro "
                 + "FROM dbo.NhanVien "

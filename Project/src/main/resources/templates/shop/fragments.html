@@ -1,38 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<!-- FRAGMENTS.HTML - File chứa các đoạn HTML dùng chung (header, footer) cho toàn bộ trang shop.
+     Các fragment được gọi lại bằng th:replace="~{shop/fragments :: tenFragment}" ở các template khác. -->
+
+<!-- FRAGMENT: head(title) - Định nghĩa thẻ <head> với một tham số title động.
+     Tham số 'title' được truyền vào từ mỗi template để đặt tiêu đề cho từng trang. -->
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 'title' là biến được truyền từ template gọi, hiển thị tiêu đề tab trình duyệt -->
     <title th:text="${title}">Bookora</title>
-    <link rel="stylesheet" href="/assets/shop-bookora.css">
+    <!-- Đường dẫn tĩnh tới file CSS, dùng th:href="@{...}" để tạo URL đúng với context path -->
+    <link rel="stylesheet" th:href="@{/assets/shop-bookora.css}">
 </head>
 <body>
+
+<!-- FRAGMENT: header - Thanh điều hướng trên cùng (navbar) dùng chung cho mọi trang -->
 <div th:fragment="header">
     <header class="site-header">
         <div class="header-inner">
-            <a href="/store/" class="logo">Bookora</a>
+            <!-- Logo Bookora, link về trang chủ -->
+            <a th:href="@{/store/}" class="logo">Bookora</a>
             <nav class="nav-links">
-                <a href="/store/">Home</a>
-                <a href="/store/my-orders">My Orders</a>
-                <a href="/store/order-lookup">Lookup Order</a>
-                <a href="/store/cart">Cart</a>
+                <a th:href="@{/store/}">Home</a>
+                <a th:href="@{/store/my-orders}">My Orders</a>
+                <a th:href="@{/store/order-lookup}">Lookup Order</a>
+                <a th:href="@{/store/cart}">Cart</a>
+
+                <!-- KIỂM TRA ĐĂNG NHẬP: Nếu session có STORE_CUSTOMER (khách đã đăng nhập) thì hiển thị tên + nút Logout.
+                     th:if="${session.STORE_CUSTOMER != null}" kiểm tra biến session lưu thông tin khách hàng. -->
                 <div th:if="${session.STORE_CUSTOMER != null}" style="display:flex;gap:1rem;align-items:center">
+                    <!-- Hiển thị tên khách hàng (tenKH) từ session -->
                     <span style="color:var(--gold)">Welcome, <span th:text="${session.STORE_CUSTOMER.tenKH}">User</span></span>
-                    <a href="/store/logout">Logout</a>
+                    <a th:href="@{/store/logout}">Logout</a>
                 </div>
+                <!-- KIỂM TRA CHƯA ĐĂNG NHẬP: Nếu chưa có session.STORE_CUSTOMER thì hiển thị nút Sign In và Register.
+                     th:unless ngược lại với th:if. -->
                 <div th:unless="${session.STORE_CUSTOMER != null}">
-                    <a href="/store/login">Sign In</a>
-                    <a href="/store/register">Register</a>
+                    <a th:href="@{/store/login}">Sign In</a>
+                    <a th:href="@{/store/register}">Register</a>
                 </div>
             </nav>
         </div>
     </header>
 </div>
 
+<!-- FRAGMENT: footer - Chân trang dùng chung cho mọi trang -->
 <div th:fragment="footer">
     <footer class="site-footer">
         <p>&copy; 2025 Bookora. All rights reserved.</p>
     </footer>
 </div>
+
 </body>
 </html>
